@@ -1,0 +1,352 @@
+"use client";
+
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import Sidebar from "@/components/dashboard/Sidebar";
+import { createClient } from "@supabase/supabase-js";
+import { 
+  DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors, DragEndEvent 
+} from "@dnd-kit/core";
+import { 
+  arrayMove, SortableContext, sortableKeyboardCoordinates, verticalListSortingStrategy, useSortable 
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
+import { 
+  ChevronLeft, User, Type, Plus, Trash2, Search, GripVertical
+} from "lucide-react";
+import Link from "next/link";
+
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+);
+
+// --- Sortable Item Component ---
+function SortableExerciseRow({ ex, index, exercisesList, updateField, remove }: any) {
+  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: ex.tempId });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    zIndex: transform ? 999 : 1,
+  };
+
+  const selectedExercise = exercisesList.find((e: any) => e.id.toString() === ex.exercise_id);
+
+  return (
+    <div ref={setNodeRef} style={style} className="grid grid-cols-12 gap-3 bg-[#111] p-4 rounded-2xl border border-slate-800 items-center group">
+      <div {...attributes} {...listeners} className="col-span-1 cursor-grab active:cursor-grabbing text-slate-700 hover:text-orange-500 transition-colors">
+        <GripVertical size={20} />
+      </div>
+      
+      <div className="col-span-11 md:col-span-4">
+        <p className="text-[10px] font-black uppercase text-orange-500 mb-1">Movement</p>
+        <p className="text-sm font-bold text-white truncate">{selectedExercise?.title || "Select from library"}</p>
+      </div>
+
+      <div className="col-span-3 md:col-span-2">
+        <label className="text-[9px] uppercase font-bold text-slate-500 block mb-1">Sets</label>
+        <input type="number" className="w-full bg-black border border-slate-800 rounded-lg py-1.5 px-3 text-sm outline-none focus:border-orange-500 text-white" value={ex.sets} onChange={(e) => updateField(index, "sets", e.target.value)} />
+      </div>
+      <div className="col-span-3 md:col-span-2">
+        <label className="text-[9px] uppercase font-bold text-slate-500 block mb-1">Reps</label>
+        <input type="number" className="w-full bg-black border border-slate-800 rounded-lg py-1.5 px-3 text-sm outline-none focus:border-orange-500 text-white" value={ex.repetitions} onChange={(e) => updateField(index, "repetitions", e.target.value)} />
+      </div>
+      <div className="col-span-3 md:col-span-2">
+        <label className="text-[9px] uppercase font-bold text-slate-500 block mb-1">Weight</label>
+        <input type="number" step="0.5" className="w-full bg-black border border-slate-800 rounded-lg py-1.5 px-3 text-sm outline-none focus:border-orange-500 text-white" value={ex.weight_kg} onChange={(e) => updateField(index, "weight_kg", e.target.value)} />
+      </div>
+      <div className="col-span-3 md:col-span-1 flex justify-end">
+        <button type="button" onClick={() => remove(index)} className="p-2 text-slate-600 hover:text-red-500 transition-colors">
+          <Trash2 size={18} />
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// --- Main Page ---
+export default function NewWorkoutRoutinePage() {
+  const router = useRouter();
+  const [loading, setLoading] = useState(false);
+  const [trainees, setTrainees] = useState<any[]>([]);
+  const [fullExerciseLibrary, setFullExerciseLibrary] = useState<any[]>([]);
+  const [filteredLibrary, setFilteredLibrary] = useState<any[]>([]);
+  const [availableZones, setAvailableZones] = useState<string[]>(["All"]);
+  const [trainerId, setTrainerId] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
+
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedZone, setSelectedZone] = useState("All");
+
+  const [routineData, setRoutineData] = useState({ title: "", description: "", trainee_id: "" });
+  const [exercises, setExercises] = useState<any[]>([]);
+
+  const sensors = useSensors(useSensor(PointerSensor), useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }));
+useEffect(() => {
+  const fetchData = async () => {
+    // 1. Get the session user ID from Auth
+    const { data: { user: authUser } } = await supabase.auth.getUser();
+    
+    if (authUser) {
+      // 2. Fetch both the ID and the ROLE from the public users table
+      const { data: publicUser, error: publicError } = await supabase
+        .from("users")
+        .select("id, role") // Added 'role' here
+        .eq("id", authUser.id)
+        .single();
+
+      if (publicUser) {
+        setTrainerId(publicUser.id);
+
+        // 3. Build the Trainee Query
+        let traineeQuery = supabase
+          .from("users")
+          .select("id, first_name, last_name")
+          .eq("role", "trainee");
+
+        // Logic Gate: If not admin, restrict to their own trainees
+        if (publicUser.role !== 'admin') {
+          traineeQuery = traineeQuery.eq("trainer_id", publicUser.id);
+        }
+        
+        const { data: tData, error: tError } = await traineeQuery;
+        
+        if (!tError && tData) {
+          setTrainees(tData);
+        }
+      } else {
+        console.error("Trainer not found in public schema:", publicError);
+        setError("Your profile does not exist in the public database.");
+      }
+    }
+
+    // 4. Fetch Exercises (remains the same)
+    const { data: eData } = await supabase
+      .from("exercise")
+      .select(`
+        *,
+        zone_data:zone!exercise_field_zone_fkey (
+          name
+        )
+      `)
+      .order("title");
+
+    if (eData) {
+      const flattened = eData.map((ex: any) => ({
+        ...ex,
+        zone_name: ex.zone_data?.name || "General"
+      }));
+      setFullExerciseLibrary(flattened);
+      setFilteredLibrary(flattened);
+      
+      const uniqueZones = Array.from(new Set(flattened.map((ex: any) => ex.zone_name)));
+      setAvailableZones(["All", ...uniqueZones.filter(z => z !== "General")]);
+    }
+  };
+  fetchData();
+}, []);
+  // Filter Logic
+  useEffect(() => {
+    let filtered = fullExerciseLibrary.filter(ex => 
+      ex.title.toLowerCase().includes(searchTerm.toLowerCase()) &&
+      (selectedZone === "All" || ex.zone_name === selectedZone)
+    );
+    setFilteredLibrary(filtered);
+  }, [searchTerm, selectedZone, fullExerciseLibrary]);
+
+  const addFromLibrary = (libEx: any) => {
+    setExercises([...exercises, { 
+      tempId: Math.random().toString(36).substr(2, 9), 
+      exercise_id: libEx.id.toString(), 
+      weight_kg: "0", 
+      repetitions: "12", 
+      sets: "3", 
+      rest_period_seconds: "60" 
+    }]);
+  };
+
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+    if (over && active.id !== over.id) {
+      setExercises((items) => {
+        const oldIndex = items.findIndex(i => i.tempId === active.id);
+        const newIndex = items.findIndex(i => i.tempId === over.id);
+        return arrayMove(items, oldIndex, newIndex);
+      });
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError(null); // Reset error state
+
+    if (!trainerId) return setError("User session not found.");
+    if (!routineData.trainee_id) return setError("Please select an athlete.");
+    if (exercises.length === 0) return setError("Please add at least one exercise.");
+    
+    setLoading(true);
+
+    try {
+      // 1. Insert the Routine first
+      const { data: routine, error: rError } = await supabase
+        .from("workout_routines")
+        .insert([
+          { 
+            title: routineData.title || "Untitled Routine", 
+            description: routineData.description,
+            trainee_id: routineData.trainee_id, // Ensure this is a UUID
+            trainer_id: trainerId 
+          }
+        ])
+        .select()
+        .single();
+
+      if (rError) throw rError;
+      if (!routine) throw new Error("Routine created but no data returned.");
+
+      console.log("Routine created successfully:", routine.id);
+
+      // 2. Prepare the exercises data
+      // Ensure routine_id matches the type (UUID) and exercise_id matches (BigInt)
+      const finalExercises = exercises.map((ex, idx) => ({
+        routine_id: routine.id, // This should be the UUID from the inserted routine
+        exercise_id: parseInt(ex.exercise_id),
+        weight_kg: parseFloat(ex.weight_kg) || 0,
+        repetitions: parseInt(ex.repetitions) || 0,
+        sets: parseInt(ex.sets) || 0,
+        rest_period_seconds: parseInt(ex.rest_period_seconds) || 60,
+        order_index: idx
+      }));
+
+      console.log("Inserting exercises:", finalExercises);
+
+      // 3. Insert into routine_exercises
+      const { error: eError } = await supabase
+        .from("routine_exercises")
+        .insert(finalExercises);
+
+      if (eError) throw eError;
+
+      // 4. Success! Redirect
+      router.push("/dashboard/routines");
+      
+    } catch (err: any) {
+        // log the specific Supabase error fields
+        console.error("Database Error Detail:", {
+            code: err.code,
+            message: err.message,
+            details: err.details,
+            hint: err.hint
+        });
+        setError(err.message || "An unexpected error occurred.");
+        }finally {
+      setLoading(true); // Keeping it true during redirect, or set to false to allow retry
+      setLoading(false);
+    }
+  };
+  return (
+    <main className="bg-[#050505] text-slate-200 min-h-screen flex h-screen overflow-hidden">
+      
+      
+      <div className="flex-1 flex flex-col h-full overflow-hidden">
+        <header className="p-6 border-b border-slate-800 flex justify-between items-center bg-[#0b0b0b]">
+           <div className="flex items-center gap-4">
+              <Link href="/dashboard/routines"><ChevronLeft className="text-slate-500 hover:text-white" /></Link>
+              <h1 className="text-xl font-black italic uppercase tracking-tighter text-white">New workout routine</h1>
+           </div>
+           <button onClick={handleSubmit} disabled={loading} className="bg-orange-600 hover:bg-orange-500 text-white px-8 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest transition-all shadow-lg shadow-orange-600/20 active:scale-95">
+              {loading ? "Processing..." : "Create Routine"}
+           </button>
+        </header>
+
+        <div className="flex-1 flex overflow-hidden">
+          
+          <div className="flex-1 overflow-y-auto p-8 space-y-8 custom-scrollbar bg-[#050505]">
+            <div className="grid grid-cols-2 gap-6">
+              <div className="bg-[#0b0b0b] p-6 rounded-3xl border border-slate-800 shadow-xl">
+                <label className="text-[10px] font-black text-slate-500 uppercase mb-2 block flex items-center gap-2"><Type size={12}/> Title</label>
+                <input placeholder="Routine Name..." className="w-full bg-transparent text-2xl font-bold outline-none text-white border-b border-slate-800 focus:border-orange-500 pb-2 transition-all" value={routineData.title} onChange={e => setRoutineData({...routineData, title: e.target.value})} />
+              </div>
+              <div className="bg-[#0b0b0b] p-6 rounded-3xl border border-slate-800 shadow-xl">
+                <label className="text-[10px] font-black text-slate-500 uppercase mb-2 block flex items-center gap-2"><User size={12}/> Assign Athlete</label>
+                <select className="w-full bg-transparent text-lg font-bold outline-none text-orange-500 cursor-pointer" value={routineData.trainee_id} onChange={e => setRoutineData({...routineData, trainee_id: e.target.value})}>
+                  <option value="" className="bg-black text-white">Select Athlete</option>
+                  {trainees.map(t => <option key={t.id} value={t.id} className="bg-black text-white">{t.first_name} {t.last_name}</option>)}
+                </select>
+              </div>
+            </div>
+
+            <div className="space-y-4 pb-24">
+              <h3 className="text-xs font-black uppercase tracking-widest text-slate-500 ml-2">Workout Sequence</h3>
+              <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+                <SortableContext items={exercises.map(ex => ex.tempId)} strategy={verticalListSortingStrategy}>
+                  <div className="space-y-3">
+                    {exercises.map((ex, index) => (
+                      <SortableExerciseRow 
+                        key={ex.tempId} 
+                        ex={ex} 
+                        index={index} 
+                        exercisesList={fullExerciseLibrary} 
+                        remove={(i: any) => setExercises(exercises.filter((_, idx) => idx !== i))}
+                        updateField={(i: any, f: any, v: any) => {
+                          const next = [...exercises];
+                          next[i][f] = v;
+                          setExercises(next);
+                        }}
+                      />
+                    ))}
+                  </div>
+                </SortableContext>
+              </DndContext>
+
+              {exercises.length === 0 && (
+                <div className="h-48 border-2 border-dashed border-slate-800 rounded-3xl flex items-center justify-center text-slate-600 italic uppercase font-bold text-xs bg-[#080808]">
+                  Select movements from the library to begin sequence
+                </div>
+              )}
+            </div>
+          </div>
+
+          <div className="w-96 bg-[#0b0b0b] border-l border-slate-800 flex flex-col shadow-[-20px_0_50px_rgba(0,0,0,0.5)]">
+            <div className="p-6 border-b border-slate-800 space-y-4 bg-[#0d0d0d]">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-600" size={16} />
+                <input placeholder="Filter Movements..." className="w-full bg-black border border-slate-800 rounded-xl py-2.5 pl-10 pr-4 text-xs outline-none focus:border-orange-500 transition-all text-white" value={searchTerm} onChange={e => setSearchTerm(e.target.value)} />
+              </div>
+              <div className="flex gap-2 flex-wrap">
+                {availableZones.map(zone => (
+                  <button 
+                    key={zone} 
+                    onClick={() => setSelectedZone(zone)} 
+                    className={`px-3 py-1.5 rounded-lg text-[9px] font-black uppercase transition-all border ${
+                      selectedZone === zone 
+                        ? 'bg-orange-600 border-orange-500 text-white shadow-lg shadow-orange-600/20' 
+                        : 'bg-slate-900 border-slate-800 text-slate-500 hover:border-slate-700'
+                    }`}
+                  >
+                    {zone}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="flex-1 overflow-y-auto p-4 space-y-2 custom-scrollbar bg-[#080808]">
+              {filteredLibrary.map(ex => (
+                <button 
+                  key={ex.id} 
+                  onClick={() => addFromLibrary(ex)} 
+                  className="w-full text-left bg-[#111] hover:bg-orange-600/10 border border-slate-800/50 hover:border-orange-500/50 p-4 rounded-2xl transition-all group active:scale-[0.98]"
+                >
+                  <p className="text-[9px] font-black uppercase text-slate-600 group-hover:text-orange-500 mb-1 transition-colors">{ex.zone_name}</p>
+                  <h4 className="text-xs font-bold text-slate-200 group-hover:text-white transition-colors">{ex.title}</h4>
+                </button>
+              ))}
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </main>
+  );
+}

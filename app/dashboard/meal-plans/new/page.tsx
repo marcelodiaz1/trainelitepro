@@ -1,0 +1,366 @@
+"use client";
+
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { createClient } from "@supabase/supabase-js";
+import { DragDropContext, Draggable } from "@hello-pangea/dnd";
+import { StrictModeDroppable } from "@/components/dashboard/StrictModeDroppable";
+import Sidebar from "@/components/dashboard/Sidebar";
+import { 
+  ChevronLeft, Save, GripVertical, Trash2, Search, Flame, Dna 
+} from "lucide-react";
+import Link from "next/link";
+
+// Supabase Initialization
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+);
+
+const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+
+/**
+ * Nutrition calculation helper - Mirroring your MealsPage logic
+ */
+const getMealStats = (mealIngredients: any[] = []) => {
+  let totals = { cal: 0, pro: 0, carb: 0, fat: 0 };
+  mealIngredients.forEach((mi) => {
+    const ing = mi.ingredients;
+    if (!ing) return;
+    const multiplier = mi.amount / 100;
+    totals.cal += (ing.field_calories_per_100g_kcal || 0) * multiplier;
+    totals.pro += (ing.field_protein_per_100g_g || 0) * multiplier;
+  });
+  return {
+    calories: Math.round(totals.cal),
+    protein: totals.pro.toFixed(1),
+  };
+};
+
+export default function NewMealPlanPage() {
+  const router = useRouter();
+  const [loading, setLoading] = useState(false);
+  const [dataLoading, setDataLoading] = useState(true);
+  const [trainees, setTrainees] = useState<any[]>([]);
+  const [availableMeals, setAvailableMeals] = useState<any[]>([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  
+  const [formData, setFormData] = useState({
+    title: "",
+    trainee_id: "",
+    duration: "weekly",
+    schedule: DAYS.map(day => ({ day, meals: [] as any[] }))
+  });
+
+  useEffect(() => {
+    fetchInitialData();
+  }, []);
+
+const fetchInitialData = async () => {
+  setDataLoading(true);
+  
+  // 1. Get the current logged-in user and their role
+  const { data: { user: authUser } } = await supabase.auth.getUser();
+  
+  if (authUser) {
+    // Cross-reference public schema for role
+    const { data: currentUser } = await supabase
+      .from("users")
+      .select("id, role")
+      .eq("id", authUser.id)
+      .single();
+
+    if (currentUser) {
+      // 2. Fetch Trainees with Role-Based Logic
+      let traineeQuery = supabase
+        .from("users")
+        .select("id, first_name, last_name")
+        .eq("role", "trainee");
+
+      // If NOT admin, filter by trainer_id
+      if (currentUser.role !== 'admin') {
+        traineeQuery = traineeQuery.eq("trainer_id", currentUser.id);
+      }
+
+      const { data: users } = await traineeQuery;
+      if (users) setTrainees(users);
+    }
+  }
+
+  // 3. Fetch Meals with relational data (Remains the same)
+  const { data: mealsData } = await supabase
+    .from("meals")
+    .select(`id, name, ingredients`)
+    .order('name', { ascending: true });
+
+  if (mealsData) {
+    const allIngredientRelIds = Array.from(
+      new Set(mealsData.flatMap((m: any) => m.ingredients || []))
+    );
+
+    if (allIngredientRelIds.length > 0) {
+      const { data: relData } = await supabase
+        .from("meal_ingredients")
+        .select(`
+          id, amount, measure,
+          ingredients ( name, field_calories_per_100g_kcal, field_protein_per_100g_g )
+        `)
+        .in("id", allIngredientRelIds);
+
+      const ingredientLookup: Record<number, any> = {};
+      relData?.forEach((item: any) => { ingredientLookup[item.id] = item; });
+
+      const processedMeals = mealsData.map((meal: any) => {
+        const meal_ingredients = (meal.ingredients || [])
+          .map((id: number) => ingredientLookup[id])
+          .filter(Boolean);
+        
+        const stats = getMealStats(meal_ingredients);
+        
+        return {
+          id: meal.id,
+          title: meal.name,
+          calories: stats.calories,
+          protein: stats.protein
+        };
+      });
+
+      setAvailableMeals(processedMeals);
+    }
+  }
+  setDataLoading(false);
+};
+
+  const onDragEnd = (result: any) => {
+    const { source, destination } = result;
+    if (!destination) return;
+
+    const newSchedule = Array.from(formData.schedule);
+    
+    if (source.droppableId === "available-meals" && destination.droppableId !== "available-meals") {
+      const mealToAdd = filteredMeals[source.index];
+      const targetDayIndex = newSchedule.findIndex(d => d.day === destination.droppableId);
+      
+      const updatedMeals = [...newSchedule[targetDayIndex].meals];
+      updatedMeals.splice(destination.index, 0, { 
+        ...mealToAdd, 
+        instanceId: Math.random().toString(36).substr(2, 9) 
+      });
+      newSchedule[targetDayIndex].meals = updatedMeals;
+    } 
+    else if (source.droppableId !== "available-meals" && destination.droppableId !== "available-meals") {
+        const sourceDayIndex = newSchedule.findIndex(d => d.day === source.droppableId);
+        const destDayIndex = newSchedule.findIndex(d => d.day === destination.droppableId);
+        
+        const [movedMeal] = newSchedule[sourceDayIndex].meals.splice(source.index, 1);
+        newSchedule[destDayIndex].meals.splice(destination.index, 0, movedMeal);
+    }
+
+    setFormData({ ...formData, schedule: newSchedule });
+  };
+
+  const removeMeal = (dayName: string, index: number) => {
+    const newSchedule = formData.schedule.map(d => {
+      if (d.day === dayName) {
+        const newMeals = [...d.meals];
+        newMeals.splice(index, 1);
+        return { ...d, meals: newMeals };
+      }
+      return d;
+    });
+    setFormData({ ...formData, schedule: newSchedule });
+  };
+
+  const handleSave = async () => {
+    setLoading(true);
+    const allMealIds = Array.from(new Set(
+        formData.schedule.flatMap(d => d.meals.map((m: any) => m.id))
+    ));
+
+    const { data: { user } } = await supabase.auth.getUser();
+
+    const { error } = await supabase.from("meal_plans").insert({
+      title: formData.title,
+      trainee_id: formData.trainee_id,
+      trainer_id: user?.id,
+      duration: formData.duration,
+      schedule: formData.schedule,
+      all_meal_ids: allMealIds
+    });
+
+    if (error) {
+      alert(error.message);
+    } else {
+      router.push("/dashboard/meal-plans");
+    }
+    setLoading(false);
+  };
+
+  const filteredMeals = availableMeals.filter(m => 
+    m.title.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  return (
+    <main className="bg-[#050505] text-white min-h-screen flex h-screen overflow-hidden">
+      
+      <div className="flex-1 flex flex-col overflow-hidden">
+        <header className="p-6 border-b border-slate-800 flex justify-between items-center bg-[#0b0b0b]">
+          <div className="flex items-center gap-4">
+            <Link href="/dashboard/meal-plans"><ChevronLeft className="text-slate-500 hover:text-white transition-colors" /></Link>
+            <h1 className="text-xl font-black uppercase italic tracking-tighter">Create Meal Plan</h1>
+          </div>
+          <button 
+            onClick={handleSave} 
+            disabled={loading || !formData.title || !formData.trainee_id} 
+            className="bg-orange-600 hover:bg-orange-500 disabled:opacity-30 px-6 py-2 rounded-xl text-xs font-black uppercase flex items-center gap-2 transition-all shadow-lg shadow-orange-600/20"
+          >
+            <Save size={16} /> {loading ? "Saving..." : "Save Plan"}
+          </button>
+        </header>
+
+        <div className="flex-1 flex overflow-hidden">
+          <DragDropContext onDragEnd={onDragEnd}>
+            {/* Library Panel */}
+            <div className="w-80 border-r border-slate-800 bg-[#080808] flex flex-col">
+              <div className="p-4 border-b border-slate-800">
+                <div className="relative">
+                  <Search className="absolute left-3 top-3 text-slate-600" size={14} />
+                  <input 
+                    value={searchTerm}
+                    onChange={e => setSearchTerm(e.target.value)}
+                    placeholder="Search recipes..." 
+                    className="w-full bg-black border border-slate-800 rounded-lg py-2 pl-9 pr-4 text-xs outline-none focus:border-orange-500 transition-colors"
+                  />
+                </div>
+              </div>
+              
+              <StrictModeDroppable droppableId="available-meals" isDropDisabled={true}>
+                {(provided) => (
+                  <div {...provided.droppableProps} ref={provided.innerRef} className="flex-1 overflow-y-auto p-4 space-y-3 custom-scrollbar">
+                    <p className="text-[10px] font-black text-slate-500 uppercase mb-4 tracking-widest">Recipe Library</p>
+                    
+                    {dataLoading ? (
+                      <div className="flex justify-center py-10"><div className="w-4 h-4 border-b-2 border-orange-500 rounded-full animate-spin" /></div>
+                    ) : filteredMeals.map((meal, index) => (
+                      <Draggable key={`lib-${meal.id}`} draggableId={`lib-${meal.id}`} index={index}>
+                        {(provided) => (
+                          <div 
+                            ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}
+                            className="bg-[#111] border border-slate-800 p-3 rounded-xl flex items-center gap-3 group hover:border-orange-500/50 transition-all cursor-grab active:cursor-grabbing shadow-lg"
+                          >
+                            <GripVertical size={14} className="text-slate-700" />
+                            <div className="flex-1">
+                                <div className="text-xs font-bold text-slate-200 group-hover:text-white transition-colors">{meal.title}</div>
+                                <div className="flex gap-3 mt-1">
+                                  <div className="flex items-center gap-1 text-[9px] font-bold text-orange-500/70">
+                                    <Flame size={10} /> {meal.calories} kcal
+                                  </div>
+                                  <div className="flex items-center gap-1 text-[9px] font-bold text-blue-500/70">
+                                    <Dna size={10} /> {meal.protein}g P
+                                  </div>
+                                </div>
+                            </div>
+                          </div>
+                        )}
+                      </Draggable>
+                    ))}
+                    {provided.placeholder}
+                  </div>
+                )}
+              </StrictModeDroppable>
+            </div>
+
+            {/* Builder Panel */}
+            <div className="flex-1 overflow-y-auto p-8 bg-black custom-scrollbar">
+              <div className="max-w-4xl mx-auto space-y-8">
+                <div className="grid grid-cols-2 gap-6">
+                    <div className="space-y-2">
+                        <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Plan Title</label>
+                        <input 
+                            className="w-full bg-[#0b0b0b] border border-slate-800 rounded-xl px-4 py-3 outline-none focus:border-orange-500 text-sm transition-colors"
+                            placeholder="e.g. Summer Shredding 2026"
+                            value={formData.title}
+                            onChange={e => setFormData({...formData, title: e.target.value})}
+                        />
+                    </div>
+                    <div className="space-y-2">
+                        <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Assign Trainee</label>
+                        <select 
+                            className="w-full bg-[#0b0b0b] border border-slate-800 rounded-xl px-4 py-3 outline-none focus:border-orange-500 text-sm transition-colors cursor-pointer"
+                            value={formData.trainee_id}
+                            onChange={e => setFormData({...formData, trainee_id: e.target.value})}
+                        >
+                            <option value="">Select a trainee</option>
+                            {trainees.map(t => <option key={t.id} value={t.id}>{t.first_name} {t.last_name}</option>)}
+                        </select>
+                    </div>
+                </div>
+
+                <div className="grid grid-cols-1 gap-6">
+                  {formData.schedule.map((day) => {
+                    const dayTotalCals = day.meals.reduce((sum: number, m: any) => sum + m.calories, 0);
+                    
+                    return (
+                      <div key={day.day} className="bg-[#0b0b0b] border border-slate-800 rounded-2xl p-5 shadow-2xl">
+                        <div className="flex justify-between items-center mb-4">
+                          <h3 className="text-xs font-black uppercase text-orange-500 tracking-widest italic">{day.day}</h3>
+                          {dayTotalCals > 0 && (
+                            <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest bg-slate-800/50 px-3 py-1 rounded-full">
+                              Total: {dayTotalCals} kcal
+                            </span>
+                          )}
+                        </div>
+                        
+                        <StrictModeDroppable droppableId={day.day}>
+                          {(provided, snapshot) => (
+                            <div 
+                              {...provided.droppableProps} 
+                              ref={provided.innerRef}
+                              className={`min-h-[100px] rounded-xl border-2 border-dashed transition-all flex flex-wrap gap-3 p-4 ${
+                                snapshot.isDraggingOver 
+                                ? 'border-orange-500/50 bg-orange-500/5 shadow-inner' 
+                                : 'border-slate-800/50'
+                              }`}
+                            >
+                              {day.meals.map((meal: any, index: number) => (
+                                <Draggable key={meal.instanceId} draggableId={meal.instanceId} index={index}>
+                                  {(provided) => (
+                                    <div 
+                                      ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}
+                                      className="bg-black border border-slate-700 px-4 py-2 rounded-xl flex items-center gap-3 group hover:border-slate-400 transition-all shadow-lg"
+                                    >
+                                      <div className="flex flex-col">
+                                        <span className="text-xs font-bold text-slate-200">{meal.title}</span>
+                                        <span className="text-[9px] text-slate-500">{meal.calories} kcal</span>
+                                      </div>
+                                      <button 
+                                        onClick={() => removeMeal(day.day, index)} 
+                                        className="text-slate-600 hover:text-red-500 transition-colors ml-2"
+                                      >
+                                          <Trash2 size={14} />
+                                      </button>
+                                    </div>
+                                  )}
+                                </Draggable>
+                              ))}
+                              {provided.placeholder}
+                              {day.meals.length === 0 && !snapshot.isDraggingOver && (
+                                  <div className="w-full flex justify-center items-center">
+                                    <p className="text-[10px] text-slate-700 font-bold uppercase tracking-widest">Drop recipes here</p>
+                                  </div>
+                              )}
+                            </div>
+                          )}
+                        </StrictModeDroppable>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
+          </DragDropContext>
+        </div>
+      </div>
+    </main>
+  );
+}
