@@ -27,39 +27,65 @@ export default function Pricing() {
   const [loading, setLoading] = useState(true);
   const [showPaypal, setShowPaypal] = useState(false);
   const [activeButtonId, setActiveButtonId] = useState<string | null>(null);
-
-  // Fetch plans from Supabase on mount
-  useEffect(() => {
+ 
+useEffect(() => {
     async function fetchPlans() {
       try {
-        const { data, error } = await supabase
-          .from("plans")
-          .select("*")
-          .eq("trainer_id", "25b0d303-4f0e-44ae-87ca-b6bd93a97664")
-          .order("created_at", { ascending: true });
+        setLoading(true);
 
-        if (error) throw error;
+        // HARDCODED ID: Fetching plans linked to this specific user record
+        const targetUserId = "25b0d303-4f0e-44ae-87ca-b6bd93a97664";
 
-        if (data) {
-          const formattedPlans = data.map((plan: any) => ({
-            title: plan.title,
-            price: plan.price,
-            features: plan.features,
-            paypalButtonId: plan.paypal_button_id,
-            cta: plan.cta,
-          }));
-          setPlans(formattedPlans);
+        const { data: userData, error: userError } = await supabase
+          .from("users")
+          .select("own_plans")
+          .eq("id", targetUserId)
+          .single();
+
+        if (userError) throw userError;
+
+        if (userData?.own_plans && userData.own_plans.length > 0) {
+          const { data: plansData, error: plansError } = await supabase
+            .from("plans")
+            .select("*")
+            .in("id", userData.own_plans)
+            .order("created_at", { ascending: true });
+
+          if (plansError) throw plansError;
+
+          if (plansData) {
+            setPlans(formatPlans(plansData));
+          }
+        } else {
+          console.warn("No plans found for the specified User ID.");
         }
+
       } catch (err) {
-        console.error("Error fetching plans:", err);
+        console.error("Error fetching plans for specified ID:", err);
       } finally {
         setLoading(false);
       }
     }
 
+    // Helper inside the effect to keep it self-contained
+    const formatPlans = (data: any[]) => data.map((plan: any) => ({
+      title: plan.title,
+      price: plan.price,
+      features: plan.features,
+      paypalButtonId: plan.paypal_button_id,
+      cta: plan.cta,
+    }));
+
     fetchPlans();
   }, []);
-
+  // Helper moved outside or kept inside
+  const formatPlans = (data: any[]) => data.map((plan) => ({
+    title: plan.title,
+    price: plan.price,
+    features: plan.features,
+    paypalButtonId: plan.paypal_button_id,
+    cta: plan.cta,
+  }));
   const openPaypal = (buttonId: string) => {
     setActiveButtonId(buttonId);
     setShowPaypal(true);

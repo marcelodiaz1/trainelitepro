@@ -35,38 +35,62 @@ export default function NewPlanPage() {
     getBankInfo();
   }, []);
 
-  const handleSave = async (formData: any) => {
-    setLoading(true);
-    try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error("Unauthorized");
 
-      const cleanedFeatures = formData.features.filter((f: string) => f.trim() !== "");
+ const handleSave = async (formData: any) => {
+  setLoading(true);
+  try {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) throw new Error("Unauthorized");
 
-      const { error: insertError } = await supabase
-        .from("plans")
-        .insert([
-          {
-            title: formData.title,
-            price: formData.price,
-            features: cleanedFeatures,
-            trainee_limit: formData.trainee_limit,
-            paypal_button_id: formData.paypal_button_id || null,
-            // NEW FIELDS:
-            payment_method: formData.payment_method || 'paypal', 
-            show_bank_details: formData.payment_method === 'bank_transfer',
-            trainer_id: user.id,
-          },
-        ]);
+    // 1. Create the plan (This part you said is working)
+    const { data: newPlan, error: insertError } = await supabase
+      .from("plans")
+      .insert([
+        {
+          title: formData.title,
+          price: formData.price,
+          features: formData.features.filter((f: string) => f.trim() !== ""),
+          trainee_limit: formData.trainee_limit,
+          paypal_button_id: formData.paypal_button_id || null,
+          cta: formData.cta || null,
+          payment_method: 'bank_transfer', // Default since schema removed trainer_id
+        },
+      ])
+      .select("id")
+      .single();
 
-      if (insertError) throw insertError;
-      router.push("/dashboard/plans");
-    } catch (error: any) {
-      alert(error.message);
-    } finally {
-      setLoading(false);
-    }
-  };
+    if (insertError) throw insertError;
+
+    // 2. FETCH CURRENT USER DATA (CRITICAL STEP)
+    // We must get the current array to append to it
+    const { data: userData, error: fetchError } = await supabase
+      .from("users")
+      .select("own_plans")
+      .eq("id", user.id)
+      .single();
+
+    if (fetchError) throw fetchError;
+
+    // 3. UPDATE THE USER RECORD
+    const currentPlans = userData?.own_plans || []; // Fallback to empty array
+    
+    const { error: updateError } = await supabase
+      .from("users")
+      .update({ 
+        own_plans: [...currentPlans, newPlan.id] 
+      })
+      .eq("id", user.id);
+
+    if (updateError) throw updateError;
+
+    router.push("/dashboard/plans");
+  } catch (error: any) {
+    console.error("Link Error:", error.message);
+    alert("Plan created, but failed to link to your profile: " + error.message);
+  } finally {
+    setLoading(false);
+  }
+};
   return (
     <main className="bg-[#0b0b0b] text-white min-h-screen flex">
       <div className="p-8 flex-1 w-full max-w-4xl mx-auto">

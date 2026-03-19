@@ -22,7 +22,7 @@ const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 );
 
-interface Trainer {
+interface Trainee {
   id: string;
   first_name: string;
   last_name: string;
@@ -33,14 +33,14 @@ interface Trainer {
   created_at: string;
 }
 
-export default function TrainerProfilePage() {
+export default function TraineeProfilePage() {
   const { id } = useParams();
   const router = useRouter();
-  const [trainer, setTrainer] = useState<Trainer | null>(null);
+  const [Trainee, setTrainee] = useState<Trainee | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchTrainer = async () => {
+    const fetchTrainee = async () => {
       const { data, error } = await supabase
         .from("users")
         .select("*")
@@ -48,14 +48,14 @@ export default function TrainerProfilePage() {
         .single();
 
       if (error || !data) {
-        router.push("/dashboard/trainers");
+        router.push("/dashboard/trainees");
         return;
       }
-      setTrainer(data as Trainer);
+      setTrainee(data as Trainee);
       setLoading(false);
     };
 
-    fetchTrainer();
+    fetchTrainee();
   }, [id, router]);
 
   if (loading) return (
@@ -82,7 +82,7 @@ export default function TrainerProfilePage() {
 
           <div className="flex flex-col md:flex-row items-center gap-8 relative z-10">
             <div className="h-32 w-32 bg-gradient-to-br from-blue-600 to-indigo-700 rounded-2xl flex items-center justify-center text-4xl font-black text-white shadow-2xl">
-              {trainer?.first_name[0]}{trainer?.last_name[0]}
+              {Trainee?.first_name[0]}{Trainee?.last_name[0]}
             </div>
 
           <div className="text-center md:text-left flex-1">
@@ -90,21 +90,21 @@ export default function TrainerProfilePage() {
     <div>
       <div className="flex flex-wrap justify-center md:justify-start items-center gap-3 mb-2">
         <h1 className="text-4xl font-black text-white italic uppercase tracking-tighter">
-          {trainer?.first_name} {trainer?.last_name}
+          {Trainee?.first_name} {Trainee?.last_name}
         </h1>
         <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border ${
-          trainer?.status === "active" ? "bg-green-500/10 text-green-500 border-green-500/20" : "bg-red-500/10 text-red-400 border-red-500/20"
+          Trainee?.status === "active" ? "bg-green-500/10 text-green-500 border-green-500/20" : "bg-red-500/10 text-red-400 border-red-500/20"
         }`}>
-          {trainer?.status}
+          {Trainee?.status}
         </span>
       </div>
       <p className="text-slate-400 flex items-center justify-center md:justify-start gap-2">
-        <Mail size={14} className="text-blue-500" /> {trainer?.email}
+        <Mail size={14} className="text-blue-500" /> {Trainee?.email}
       </p>
     </div>
  
     <div className="flex justify-center md:justify-end gap-3">
-      <Link href={`/dashboard/trainers/${trainer?.id}/edit`}>
+      <Link href={`/dashboard/trainees/${Trainee?.id}/edit`}>
         <button className="flex items-center gap-2 px-5 py-2.5 rounded-xl border border-slate-700 bg-slate-800/50 hover:bg-slate-800 hover:border-blue-500/50 text-xs font-bold uppercase tracking-widest text-slate-300 transition-all active:scale-95 shadow-lg">
           <Edit2 size={14} className="text-blue-400" /> Edit Profile
         </button>
@@ -113,8 +113,8 @@ export default function TrainerProfilePage() {
   </div>
   
   <div className="flex flex-wrap justify-center md:justify-start gap-4">
-    <StatMini icon={<Award size={14}/>} label="Specialty" value={trainer?.specialty || "Generalist"} />
-    <StatMini icon={<Star size={14}/>} label="Rating" value={`${trainer?.rating || "0.0"} / 5.0`} color="text-yellow-500" />
+    <StatMini icon={<Award size={14}/>} label="Specialty" value={Trainee?.specialty || "Generalist"} />
+    <StatMini icon={<Star size={14}/>} label="Rating" value={`${Trainee?.rating || "0.0"} / 5.0`} color="text-yellow-500" />
   </div>
 </div>
           </div>
@@ -128,10 +128,10 @@ export default function TrainerProfilePage() {
                 <Activity size={14} className="text-blue-500" /> Professional Overview
               </h3>
               <div className="grid grid-cols-2 gap-8">
-                <DetailItem label="Staff ID" value={`#${trainer?.id.slice(0, 8)}`} />
-                <DetailItem label="Join Date" value={new Date(trainer?.created_at || "").toLocaleDateString()} />
-                <DetailItem label="Role" value="Elite Trainer" />
-                <DetailItem label="Access Level" value="Trainer Portal" />
+                <DetailItem label="Staff ID" value={`#${Trainee?.id.slice(0, 8)}`} />
+                <DetailItem label="Join Date" value={new Date(Trainee?.created_at || "").toLocaleDateString()} />
+                <DetailItem label="Role" value="Elite Trainee" />
+                <DetailItem label="Access Level" value="Trainee Portal" />
               </div>
             </section>
           </div>

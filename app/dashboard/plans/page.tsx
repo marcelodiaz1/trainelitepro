@@ -49,32 +49,58 @@ export default function PlansManagementPage() {
   const [total, setTotal] = useState(0);
   const [searchTerm, setSearchTerm] = useState("");
 
-  useEffect(() => {
+useEffect(() => {
     const fetchPlans = async () => {
-      setLoading(true);
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) { setLoading(false); return; }
+      try {
+        setLoading(true);
+        
+        // 1. Get the current logged-in user
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) {
+          setLoading(false);
+          return;
+        }
 
-      const from = (page - 1) * pageSize;
-      const to = from + pageSize - 1;
+        // 2. Fetch the 'own_plans' list from the users table for this specific ID
+        const { data: userData, error: userError } = await supabase
+          .from("users")
+          .select("own_plans")
+          .eq("id", user.id)
+          .single();
 
-      const { data, error, count } = await supabase
-        .from("plans")
-        .select("*", { count: "exact" })
-        .eq('trainer_id', user.id)
-        .ilike('title', `%${searchTerm}%`)
-        .range(from, to)
-        .order('created_at', { ascending: false });
+        if (userError) throw userError;
 
-      if (!error) {
-        setPlans(data || []);
-        setTotal(count || 0);
+        // 3. If the user has plans assigned, fetch those specific plan details
+        if (userData?.own_plans && userData.own_plans.length > 0) {
+          const from = (page - 1) * pageSize;
+          const to = from + pageSize - 1;
+
+          const { data, error, count } = await supabase
+            .from("plans")
+            .select("*", { count: "exact" })
+            .in("id", userData.own_plans) // Filter by the IDs found in own_plans
+            .ilike('title', `%${searchTerm}%`)
+            .range(from, to)
+            .order('created_at', { ascending: false });
+
+          if (error) throw error;
+
+          setPlans(data || []);
+          setTotal(count || 0);
+        } else {
+          // No plans assigned to this user
+          setPlans([]);
+          setTotal(0);
+        }
+      } catch (err) {
+        console.error("Error fetching personalized plans:", err);
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     };
+
     fetchPlans();
   }, [page, searchTerm, pageSize]);
-
   const handleDelete = async (id: string) => {
     if (!confirm("Are you sure?")) return;
     const { error } = await supabase.from("plans").delete().eq("id", id);

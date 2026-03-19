@@ -70,7 +70,25 @@ export default function Dashboard() {
           setTrainersData(trainers || []);
           setTraineesData(trainees || []);
         } 
-        
+        if (currentRole === "admin") {
+          // Fetch trainees and include their plan name
+          const { data: trainees } = await supabase
+            .from("users")
+            .select(`
+              *,
+              plans (
+                name
+              )
+            `)
+            .eq("role", "trainee")
+            .order('created_at', { ascending: false }) // See newest payments first
+            .limit(5);
+
+          const { data: trainers } = await supabase.from("users").select("*").eq("role", "trainer").limit(3);
+          
+          setTraineesData(trainees || []);
+          setTrainersData(trainers || []);
+        }
         else if (currentRole === "trainer") {
           // Example: Fetch sessions where this user is the trainer
           const { data: sessions } = await supabase.from("sessions").select("*").eq("trainer_id", user.id).limit(3);
@@ -215,12 +233,13 @@ function DashboardSection({ title, data, type }: { title: string, data: any[], t
                 </div>
                 <div>
                   <p className="text-sm font-bold uppercase italic leading-none">
-                    {item.first_name ? `${item.first_name} ${item.last_name}` : (item.title || item.message || "Unknown Entry")}
+                    {item.first_name ? `${item.first_name} ${item.last_name}` : (item.title || "No Title")}
                   </p>
-                  <p className="text-[10px] text-gray-500 font-bold uppercase mt-1">
-                    {item.specialty || item.role || item.time || "Active Status"}
+                  <p className="text-[10px] text-[#ff6b1a] font-black uppercase mt-1 tracking-tighter">
+                    {/* If a plan exists, show it; otherwise show the role */}
+                    {item.plans?.name ? `Plan: ${item.plans.name}` : (item.specialty || item.role)}
                   </p>
-                </div>
+                </div> 
               </div>
               <ChevronRight size={14} className="text-gray-700 group-hover:text-[#ff6b1a] group-hover:translate-x-1 transition-all" />
             </div>

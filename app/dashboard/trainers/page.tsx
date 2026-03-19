@@ -15,7 +15,8 @@ import {
   UserPlus,
   Star,
   Eye,
-  Dumbbell
+  Dumbbell,
+  ShieldCheck
 } from "lucide-react";
 import Link from "next/link";
 import SortableHeader from "@/components/dashboard/SortableHeader";
@@ -25,7 +26,10 @@ const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 );
-
+interface Plan {
+  id: string;
+  title: string;
+}
 interface Trainer {
   id: string;
   first_name: string;
@@ -34,14 +38,18 @@ interface Trainer {
   specialty: string | null;
   rating: number | null;
   status: string;
+  selected_plan: string | null;
+  plans?: { name: string };
 }
 
 export default function TrainersTable() {
-  const router = useRouter();
+const router = useRouter();
   const [trainers, setTrainers] = useState<Trainer[]>([]);
+  const [availablePlans, setAvailablePlans] = useState<Plan[]>([]);
   const [loading, setLoading] = useState(true);
   const [isAuthorized, setIsAuthorized] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState<string | null>(null);
+  const [updatingPlanId, setUpdatingPlanId] = useState<string | null>(null);
 
   // Pagination & Sorting
   const [page, setPage] = useState(1);
@@ -49,7 +57,6 @@ export default function TrainersTable() {
   const [total, setTotal] = useState(0);
   const [sortColumn, setSortColumn] = useState<keyof Trainer>("first_name");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
-
   useEffect(() => {
     const checkRoleAndFetch = async () => {
       setLoading(true);
@@ -80,27 +87,46 @@ export default function TrainersTable() {
       const from = (page - 1) * pageSize;
       const to = from + pageSize - 1;
 
-      const [countResponse, dataResponse] = await Promise.all([
+const [countResponse, dataResponse, plansResponse] = await Promise.all([
         supabase
           .from("users")
-          .select("*", { count: "exact", head: true })
-          .eq("role", "trainer"),
+          .select("*", { count: "exact", head: true }) ,
         supabase
           .from("users")
-          .select("*")
+          .select(`
+            *,
+            selected_plan ( title )
+          `)
           .eq("role", "trainer")
           .order(sortColumn, { ascending: sortOrder === "asc" })
-          .range(from, to)
+          .range(from, to),
+        supabase.from("plans").select("id, title")
       ]);
 
       setTotal(countResponse.count || 0);
       setTrainers((dataResponse.data as Trainer[]) || []);
+      setAvailablePlans(plansResponse.data || []);
       setLoading(false);
     };
 
     checkRoleAndFetch();
   }, [page, sortColumn, sortOrder, pageSize, router]);
+const handlePlanChange = async (trainerId: string, newPlanId: string) => {
+    setUpdatingPlanId(trainerId);
+    
+    const { error } = await supabase
+      .from("users")
+      .update({ selected_plan: newPlanId === "" ? null : newPlanId })
+      .eq("id", trainerId);
 
+    if (!error) {
+      const planName = availablePlans.find(p => p.id === newPlanId)?.title || "No Plan";
+      setTrainers((prev) =>
+        prev.map((t) => (t.id === trainerId ? { ...t, selected_plan: newPlanId, plans: { name: planName } } : t))
+      );
+    }
+    setUpdatingPlanId(null);
+  };
   const toggleStatus = async (id: string, currentStatus: string) => {
     const newStatus = currentStatus === "active" ? "blocked" : "active";
     const { error } = await supabase.from("users").update({ status: newStatus }).eq("id", id);
@@ -190,6 +216,7 @@ export default function TrainersTable() {
                   <tr className="bg-[#161616]/50 border-b border-slate-800">
                     <SortableHeader onClick={() => handleSort("first_name")} label="Trainer" active={sortColumn === "first_name"} />
                     <SortableHeader onClick={() => handleSort("email")} label="Email Address" active={sortColumn === "email"} />
+                      <SortableHeader onClick={() => handleSort("selected_plan")} label="Active Plan" active={sortColumn === "selected_plan"} />
                     <SortableHeader onClick={() => handleSort("specialty")} label="Specialty" active={sortColumn === "specialty"} />
                     <SortableHeader onClick={() => handleSort("rating")} label="Rating" active={sortColumn === "rating"} center />
                     <SortableHeader onClick={() => handleSort("status")} label="Status" active={sortColumn === "status"} center />
@@ -214,8 +241,23 @@ export default function TrainersTable() {
 
                       <td className="px-6 py-5 text-slate-500 text-xs font-medium lowercase italic">
                         {trainer.email}
+                      </td> 
+                      <td className="px-6 py-5">
+                        <div className="relative flex items-center gap-2">
+                          <select
+                            disabled={updatingPlanId === trainer.id}
+                            value={trainer.selected_plan || ""}
+                            onChange={(e) => handlePlanChange(trainer.id, e.target.value)}
+                            className={`bg-black/50 border border-slate-800 text-[10px] font-black uppercase tracking-widest text-orange-500 rounded-xl px-3 py-2 outline-none focus:border-orange-500 transition-all cursor-pointer hover:bg-black appearance-none pr-8 min-w-[140px] ${updatingPlanId === trainer.id ? 'opacity-50' : 'opacity-100'}`}
+                          >
+                            <option value="">No Plan</option>
+                            {availablePlans.map((plan) => (
+                              <option key={plan.id} value={plan.id}>{plan.title}</option>
+                            ))}
+                          </select>
+                          <ShieldCheck size={12} className="absolute right-3 text-slate-700 pointer-events-none" />
+                        </div>
                       </td>
-
                       <td className="px-6 py-5">
                         <span className="text-[10px] text-slate-400 bg-slate-900 px-2 py-1 rounded border border-slate-800 uppercase tracking-tighter font-bold">
                           {trainer.specialty || "Generalist"}

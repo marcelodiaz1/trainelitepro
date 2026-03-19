@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
-import Sidebar from "@/components/dashboard/Sidebar";
 import { createClient } from "@supabase/supabase-js";
 import { 
   ChevronLeft, 
@@ -11,7 +10,9 @@ import {
   User, 
   Award, 
   AlertCircle,
-  RefreshCw
+  RefreshCw,
+  Calendar,
+  Users
 } from "lucide-react";
 import Link from "next/link";
 
@@ -20,7 +21,6 @@ const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 );
 
-// Renamed component to EditTraineePage
 export default function EditTraineePage() {
   const router = useRouter();
   const { id } = useParams();
@@ -28,52 +28,95 @@ export default function EditTraineePage() {
   const [loading, setLoading] = useState(true);
   const [updating, setUpdating] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [trainers, setTrainers] = useState<{id: string, first_name: string, last_name: string}[]>([]);
 
   const [formData, setFormData] = useState({
     first_name: "",
     last_name: "",
     email: "",
-    specialty: "", // You might want to rename this to "goal" or "plan" for trainees later
+    specialty: "",
     status: "",
+    gender: "",
+    dob: "",
+    trainer_id: "",
   });
 
-  // 1. Fetch existing trainee data
+  // 1. Cargar datos iniciales
   useEffect(() => {
-    const fetchTrainee = async () => {
+    const fetchData = async () => {
       setLoading(true);
-      const { data, error: fetchError } = await supabase
-        .from("users")
-        .select("first_name, last_name, email, specialty, status")
-        .eq("id", id)
-        .single();
+      setError(null);
 
-      if (fetchError || !data) {
-        setError("Trainee not found or error loading data.");
-      } else {
-        setFormData(data);
+      try {
+        // Traer datos del trainee
+        const { data: trainee, error: fetchError } = await supabase
+          .from("users")
+          .select("first_name, last_name, email, specialty, status, gender, dob, trainer_id")
+          .eq("id", id)
+          .single();
+
+        if (fetchError) throw fetchError;
+
+        // Traer lista de entrenadores para el select
+        const { data: trainersData, error: trainersError } = await supabase
+          .from("users")
+          .select("id, first_name, last_name")
+          .eq("role", "trainer");
+
+        if (trainersError) throw trainersError;
+
+        if (trainee) {
+          setFormData({
+            first_name: trainee.first_name || "",
+            last_name: trainee.last_name || "",
+            email: trainee.email || "",
+            specialty: trainee.specialty || "",
+            status: trainee.status || "active",
+            gender: trainee.gender || "",
+            dob: trainee.dob || "",
+            trainer_id: trainee.trainer_id || "",
+          });
+          if (trainersData) setTrainers(trainersData);
+        }
+      } catch (err: any) {
+        setError(err.message || "Error loading data.");
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     };
 
-    if (id) fetchTrainee();
+    if (id) fetchData();
   }, [id]);
 
-  // 2. Handle update submission
+  // 2. Manejar el guardado (UPDATE)
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setUpdating(true);
     setError(null);
 
+    // CRÍTICO: Limpiar datos antes de enviar
+    // PostgreSQL falla si envías "" a un campo DATE o UUID. Debe ser null.
+    const cleanData = {
+      first_name: formData.first_name,
+      last_name: formData.last_name,
+      email: formData.email,
+      specialty: formData.specialty,
+      status: formData.status,
+      gender: formData.gender || null,
+      dob: formData.dob === "" ? null : formData.dob,
+      trainer_id: formData.trainer_id === "" ? null : formData.trainer_id,
+    };
+
     const { error: updateError } = await supabase
       .from("users")
-      .update(formData)
+      .update(cleanData)
       .eq("id", id);
 
     if (updateError) {
+      console.error("Update Error:", updateError);
       setError(updateError.message);
       setUpdating(false);
     } else {
-      // Updated route to trainees
       router.push(`/dashboard/trainees/${id}`);
       router.refresh();
     }
@@ -90,17 +133,14 @@ export default function EditTraineePage() {
 
   return (
     <main className="bg-[#050505] text-slate-200 min-h-screen flex font-sans">
-      
-
       <div className="p-8 flex-1 max-w-3xl mx-auto w-full">
-        {/* Updated link text and path */}
         <Link href={`/dashboard/trainees/${id}`} className="flex items-center gap-2 text-slate-500 hover:text-white transition-colors mb-8 text-xs font-bold uppercase tracking-widest">
           <ChevronLeft size={16} /> Discard Changes
         </Link>
 
         <div className="mb-10">
           <h1 className="text-4xl font-extrabold tracking-tight text-white mb-2 uppercase italic">Edit Trainee</h1>
-          <p className="text-slate-500 text-sm">Update profile details and membership status for this trainee.</p>
+          <p className="text-slate-500 text-sm">Modify profile details and trainer assignment.</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-8 bg-[#111] border border-slate-800 rounded-3xl p-8 shadow-2xl">
@@ -110,91 +150,97 @@ export default function EditTraineePage() {
             </div>
           )}
 
+          {/* Nombres */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <label className={labelClasses}>First Name</label>
               <div className="relative">
                 <User className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-700" size={16} />
-                <input
-                  required
-                  type="text"
-                  className={inputClasses}
-                  value={formData.first_name || ''}
+                <input required type="text" className={inputClasses} value={formData.first_name}
                   onChange={(e) => setFormData({...formData, first_name: e.target.value})}
                 />
               </div>
             </div>
-
             <div>
               <label className={labelClasses}>Last Name</label>
               <div className="relative">
                 <User className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-700" size={16} />
-                <input
-                  required
-                  type="text"
-                  className={inputClasses}
-                  value={formData.last_name || ''}
+                <input required type="text" className={inputClasses} value={formData.last_name}
                   onChange={(e) => setFormData({...formData, last_name: e.target.value})}
                 />
               </div>
             </div>
           </div>
 
-          <div>
-            <label className={labelClasses}>Email Address</label>
-            <div className="relative">
-              <Mail className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-700" size={16} />
-              <input
-                required
-                type="email"
-                className={inputClasses}
-                value={formData.email || ''}
-                onChange={(e) => setFormData({...formData, email: e.target.value})}
-              />
+          {/* Género y Fecha Nacimiento */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label className={labelClasses}>Gender</label>
+              <select className={`${inputClasses} appearance-none cursor-pointer`} value={formData.gender}
+                onChange={(e) => setFormData({...formData, gender: e.target.value})}
+              >
+                <option value="">Select Gender</option>
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+              </select>
+            </div>
+            <div>
+              <label className={labelClasses}>Date of Birth</label>
+              <div className="relative">
+                <Calendar className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-700" size={16} />
+                <input type="date" className={`${inputClasses} [color-scheme:dark]`} value={formData.dob}
+                  onChange={(e) => setFormData({...formData, dob: e.target.value})}
+                />
+              </div>
             </div>
           </div>
 
-          <div>
-            <label className={labelClasses}>Training Focus</label>
-            <div className="relative">
-              <Award className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-700" size={16} />
-              <input
-                required
-                type="text"
-                className={inputClasses}
-                placeholder="e.g. Hypertrophy, Weight Loss"
-                value={formData.specialty}
+          {/* Email y Status */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label className={labelClasses}>Email Address</label>
+              <input required type="email" className={inputClasses} value={formData.email}
+                onChange={(e) => setFormData({...formData, email: e.target.value})}
+              />
+            </div>
+            <div>
+              <label className={labelClasses}>Account Status</label>
+              <select className={`${inputClasses} appearance-none cursor-pointer`} value={formData.status}
+                onChange={(e) => setFormData({...formData, status: e.target.value})}
+              >
+                <option value="active">Active</option>
+                <option value="pending">Pending</option>
+                <option value="blocked">Blocked</option>
+              </select>
+            </div>
+          </div>
+
+          {/* Coach y Especialidad */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label className={labelClasses}>Assigned Trainer</label>
+              <select className={`${inputClasses} appearance-none cursor-pointer`} value={formData.trainer_id}
+                onChange={(e) => setFormData({...formData, trainer_id: e.target.value})}
+              >
+                <option value="">Unassigned</option>
+                {trainers.map(t => (
+                  <option key={t.id} value={t.id}>{t.first_name} {t.last_name}</option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label className={labelClasses}>Specialty / Goal</label>
+              <input type="text" className={inputClasses} value={formData.specialty}
                 onChange={(e) => setFormData({...formData, specialty: e.target.value})}
               />
             </div>
           </div>
 
-          <div>
-            <label className={labelClasses}>Account Status</label>
-            <select
-              className={`${inputClasses} appearance-none cursor-pointer`}
-              value={formData.status}
-              onChange={(e) => setFormData({...formData, status: e.target.value})}
+          <div className="pt-4 border-t border-slate-800/50 flex justify-end">
+            <button type="submit" disabled={updating}
+              className="w-full sm:w-auto bg-blue-600 hover:bg-blue-500 disabled:bg-slate-800 text-white px-10 py-3 rounded-xl font-black text-xs uppercase tracking-widest flex items-center justify-center gap-2 transition-all active:scale-95 shadow-xl shadow-blue-600/20"
             >
-              <option value="active">Active</option>
-              <option value="pending">Pending</option>
-              <option value="blocked">Blocked</option>
-            </select>
-          </div>
-
-          <div className="pt-4 border-t border-slate-800/50 flex flex-col sm:flex-row gap-4 items-center justify-end">
-            <button
-              type="submit"
-              disabled={updating}
-              className="w-full sm:w-auto bg-blue-600 hover:bg-blue-500 disabled:bg-slate-800 text-white px-8 py-3 rounded-xl font-black text-xs uppercase tracking-widest flex items-center justify-center gap-2 transition-all active:scale-95 shadow-xl shadow-blue-600/20"
-            >
-              {updating ? (
-                <RefreshCw className="h-4 w-4 animate-spin" />
-              ) : (
-                <>
-                  <Save size={16} /> Save Changes
-                </>
-              )}
+              {updating ? <RefreshCw className="h-4 w-4 animate-spin" /> : <><Save size={16} /> Update Profile</>}
             </button>
           </div>
         </form>
