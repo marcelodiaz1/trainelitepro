@@ -24,6 +24,7 @@ const supabase = createClient(
 interface Plan {
   id: string;
   title: string;
+  price: string;
   trainee_limit: number;
 }
 
@@ -64,43 +65,56 @@ export default function Register() {
   useEffect(() => {
     const fetchData = async () => {
       // 1. Fetch Plans first (to get limits)
-      const { data: plansData } = await supabase
+      const { data: userData, error: userError } = await supabase
+      .from("users")
+      .select("own_plans")
+      .eq("id", "25b0d303-4f0e-44ae-87ca-b6bd93a97664")
+      .single();
+      let plansData: Plan[] = []; 
+      if (userData?.own_plans && Array.isArray(userData.own_plans)) {
+      // 2. Fetch only the plans whose IDs are in that "own_plans" array
+      const { data: filteredPlans, error: plansError } = await supabase
         .from("plans")
-        .select("id, title, trainee_limit")
+        .select("id, title, trainee_limit, price")
+        .in("id", userData.own_plans) // Filters by the array of IDs
         .order("title");
+
+      if (filteredPlans) {
+        plansData = filteredPlans;
+        setAvailablePlans(filteredPlans);
+      }
+    }
 
       if (plansData) setAvailablePlans(plansData);
 
       // 2. Fetch Trainers and count their trainees
       // We use a flat select to prevent join errors
-      const { data: trainersData, error: tError } = await supabase
-        .from("users")
-        .select(`
-          id, 
-          first_name, 
-          last_name, 
-          specialty,
-          selected_plan,
-          trainees:users!trainer_id(count)
-        `)
-        .eq("role", "trainer")
-        .eq("status", "active");
-
-      if (!tError && trainersData) {
-        const formatted = trainersData.map((t: any) => {
-          // Link the plan data manually in JS
-          const plan = plansData?.find(p => p.id === t.selected_plan);
-          return {
-            id: t.id,
-            first_name: t.first_name,
-            last_name: t.last_name,
-            specialty: t.specialty,
-            trainee_limit: plan ? plan.trainee_limit : 3, // Fallback if no plan
-            trainee_count: t.trainees?.[0]?.count || 0
-          };
-        });
-        setAllTrainers(formatted);
-      }
+     const { data: trainersData, error: tError } = await supabase
+      .from("users")
+      .select(`
+        id, 
+        first_name, 
+        last_name, 
+        specialty,
+        selected_plan,
+        trainees:users!trainer_id(count)
+      `)
+      .eq("role", "trainer")
+      .eq("status", "active");
+     if (!tError && trainersData) {
+      const formatted = trainersData.map((t: any) => {
+        const plan = plansData?.find(p => p.id === t.selected_plan);
+        return {
+          id: t.id,
+          first_name: t.first_name,
+          last_name: t.last_name,
+          specialty: t.specialty,
+          trainee_limit: plan ? plan.trainee_limit : 3,
+          trainee_count: t.trainees?.[0]?.count || 0
+        };
+      });
+      setAllTrainers(formatted);
+    }
     };
     fetchData();
   }, []);
@@ -280,7 +294,7 @@ export default function Register() {
                     </label>
                     <select name="selected_plan" required onChange={handleChange} className="input-field w-full border-orange-500/20 text-orange-500 font-bold appearance-none">
                       <option value="">Select Plan</option>
-                      {availablePlans.map(p => <option key={p.id} value={p.id}>{p.title}</option>)}
+                      {availablePlans.map(p => <option key={p.id} value={p.id}>{p.title} {"("+p.price+")"}</option>)}
                     </select>
                   </div>
                   <input name="specialty" placeholder="Specialty (e.g. Strength, Pilates)" onChange={handleChange} className="input-field w-full" />
