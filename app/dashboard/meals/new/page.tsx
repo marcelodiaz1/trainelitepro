@@ -64,13 +64,17 @@ export default function NewMealPage() {
     };
   }, { cal: 0, pro: 0, carb: 0, fat: 0 });
 
-  const handleSave = async () => {
+const handleSave = async () => {
     if (!name || selectedIngredients.length === 0) return alert("Please provide a name and ingredients.");
     setLoading(true);
 
     let finalImageUrl = pictureUrl;
 
     try {
+      // 0. Get the current Authenticated User ID
+      const { data: { user: authUser } } = await supabase.auth.getUser();
+      if (!authUser) throw new Error("User session not found. Please log in again.");
+
       // 1. Upload Image to Storage if file is selected
       if (selectedFile) {
         const fileExt = selectedFile.name.split('.').pop();
@@ -78,7 +82,7 @@ export default function NewMealPage() {
         const filePath = `meal-previews/${fileName}`;
 
         const { error: uploadError } = await supabase.storage
-          .from("meal-images") // Ensure this bucket exists
+          .from("meal-images")
           .upload(filePath, selectedFile);
 
         if (uploadError) throw uploadError;
@@ -106,9 +110,10 @@ export default function NewMealPage() {
 
       const relIds = insertedRels.map((r) => r.id);
 
-      // 3. Create the final meal record
+      // 3. Create the final meal record WITH trainer_id
       const { error: mealError } = await supabase.from("meals").insert({
         name,
+        trainer_id: authUser.id, // <--- This links the meal to the coach
         picture_url: finalImageUrl,
         recipe,
         ingredients: relIds,

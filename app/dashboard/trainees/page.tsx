@@ -14,7 +14,8 @@ import {
   Lock,
   LockOpen,
   Eye,
-  Loader2
+  Loader2,
+  Zap
 } from "lucide-react";
 import Pagination from "@/components/dashboard/Pagination";
 import SortableHeader from "@/components/dashboard/SortableHeader";
@@ -37,6 +38,7 @@ export default function TraineesTable() {
   const [trainees, setTrainees] = useState<Trainee[]>([]);
   const [loading, setLoading] = useState(true);
   const [dropdownOpen, setDropdownOpen] = useState<string | null>(null);
+  const [isAtLimit, setIsAtLimit] = useState(false);
 
   // Pagination & Sorting
   const [page, setPage] = useState(1);
@@ -50,53 +52,51 @@ export default function TraineesTable() {
       try {
         setLoading(true);
 
-        // 1. Get the current auth user
+        // 1. Obtener usuario actual
         const { data: { user: authUser }, error: authError } = await supabase.auth.getUser();
-        
-        if (authError || !authUser) {
-          console.error("Auth session not found:", authError);
-          setLoading(false);
-          return;
-        }
+        if (authError || !authUser) return;
 
-        // 2. Fetch the role of the logged-in user
-        const { data: profile, error: profileError } = await supabase
+        // 2. Obtener perfil (Rol y Plan) en una sola consulta
+        const { data: profile } = await supabase
           .from("users")
-          .select("role")
+          .select("role, selected_plan")
           .eq("id", authUser.id)
           .single();
 
-        if (profileError) console.error("Profile fetch error:", profileError);
-        
         const userRole = profile?.role;
-        console.log("Current Logged-in Role:", userRole);
 
+        // 3. Preparar query de Trainees
         const from = (page - 1) * pageSize;
         const to = from + pageSize - 1;
 
-        // 3. Initialize the query for trainees
         let query = supabase
           .from("users")
           .select("*", { count: "exact" })
           .eq("role", "trainee");
 
-        // 4. Role-Based Filter
+        // Filtrar por trainer_id si no es admin
         if (userRole === "trainer") {
-          console.log("Trainer Mode: Filtering by trainer_id", authUser.id);
           query = query.eq("trainer_id", authUser.id);
-        } else if (userRole === "admin") {
-          console.log("Admin Mode: Fetching all trainees");
-          // No trainer_id filter applied
         }
 
-        // 5. Execute
         const { data, count, error } = await query
           .order(sortColumn, { ascending: sortOrder === "asc" })
           .range(from, to);
 
-        if (error) {
-          console.error("Query Execution Error:", error.message);
-          throw error;
+        if (error) throw error;
+
+        // 4. Lógica de verificación de límite (Solo para Trainers)
+        if (userRole === "trainer" && profile?.selected_plan) {
+          const { data: planData } = await supabase
+            .from("plans")
+            .select("trainee_limit")
+            .eq("id", profile.selected_plan)
+            .single();
+
+          if (planData) {
+            // El límite se basa en el total de trainees (count) vs el límite del plan
+            setIsAtLimit((count || 0) >= planData.trainee_limit);
+          }
         }
 
         setTrainees(data as Trainee[] || []);
@@ -162,11 +162,23 @@ export default function TraineesTable() {
                 className="w-full bg-[#111] border border-slate-800 rounded-lg py-2.5 pl-10 pr-4 text-xs focus:border-orange-500 outline-none transition-all placeholder:text-slate-700 text-white"
               />
             </div>
-            <Link href="/dashboard/trainees/new">
-              <button className="bg-orange-600 hover:bg-orange-500 text-white px-5 py-2.5 rounded-lg text-xs font-black uppercase tracking-widest flex items-center gap-2 transition-all active:scale-95 shadow-lg shadow-orange-600/20">
-                <UserPlus size={16} /> Add Trainee
-              </button>
-            </Link>
+
+            {/* BOTÓN DINÁMICO SEGÚN LÍMITE */}
+            {isAtLimit ? (
+              <Link href="/pricing">
+                <button className="bg-white/5 border border-white/10 hover:border-orange-500/50 text-white px-5 py-2.5 rounded-lg text-xs font-black uppercase tracking-widest flex items-center gap-2 transition-all group">
+                  <Lock size={16} className="text-orange-500" /> 
+                  Limit Reached
+                  <Zap size={14} className="text-orange-500 animate-pulse" />
+                </button>
+              </Link>
+            ) : (
+              <Link href="/dashboard/trainees/new">
+                <button className="bg-orange-600 hover:bg-orange-500 text-white px-5 py-2.5 rounded-lg text-xs font-black uppercase tracking-widest flex items-center gap-2 transition-all active:scale-95 shadow-lg shadow-orange-600/20">
+                  <UserPlus size={16} /> Add Trainee
+                </button>
+              </Link>
+            )}
           </div>
         </div>
 
@@ -247,13 +259,9 @@ export default function TraineesTable() {
                                   className="flex items-center gap-3 w-full px-4 py-3 text-xs font-bold hover:bg-slate-800 transition-colors text-slate-300 border-t border-slate-800"
                                 >
                                   {trainee.status === "active" ? (
-                                    <>
-                                      <Lock size={14} className="text-orange-400" /> Restrict Login
-                                    </>
+                                    <><Lock size={14} className="text-orange-400" /> Restrict Login</>
                                   ) : (
-                                    <>
-                                      <LockOpen size={14} className="text-emerald-400" /> Enable Login
-                                    </>
+                                    <><LockOpen size={14} className="text-emerald-400" /> Enable Login</>
                                   )}
                                 </button>
                                 <button

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react"; // Añadido useEffect
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@supabase/supabase-js";
 import { 
@@ -9,9 +9,9 @@ import {
   Mail, 
   User, 
   Award, 
-  CheckCircle2,
   AlertCircle,
-  Calendar
+  Calendar,
+  Loader2
 } from "lucide-react";
 import Link from "next/link";
 
@@ -23,19 +23,9 @@ const supabase = createClient(
 export default function NewTraineePage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const [checkingLimit, setCheckingLimit] = useState(true); // Bloqueo visual inicial
   const [error, setError] = useState<string | null>(null);
   const [currentTrainerId, setCurrentTrainerId] = useState<string | null>(null);
-
-  // Obtener el ID del entrenador logueado al cargar
-  useEffect(() => {
-    const getTrainer = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (user) {
-        setCurrentTrainerId(user.id);
-      }
-    };
-    getTrainer();
-  }, []);
 
   const [formData, setFormData] = useState({
     first_name: "",
@@ -48,13 +38,64 @@ export default function NewTraineePage() {
     role: "trainee",
   });
 
+  useEffect(() => {
+    const validateAccess = async () => {
+      try {
+        setCheckingLimit(true);
+        
+        // 1. Obtener el usuario
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) {
+          router.push("/login");
+          return;
+        }
+        setCurrentTrainerId(user.id);
+
+        // 2. Obtener perfil y plan
+        const { data: profile } = await supabase
+          .from("users")
+          .select("role, selected_plan")
+          .eq("id", user.id)
+          .single();
+
+        // 3. Si es trainer, verificar límites
+        if (profile?.role === "trainer") {
+          // Contar trainees actuales
+          const { count } = await supabase
+            .from("users")
+            .select("*", { count: "exact", head: true })
+            .eq("role", "trainee")
+            .eq("trainer_id", user.id);
+
+          // Obtener límite del plan
+          if (profile.selected_plan) {
+            const { data: planData } = await supabase
+              .from("plans")
+              .select("trainee_limit")
+              .eq("id", profile.selected_plan)
+              .single();
+
+            if (planData && (count || 0) >= planData.trainee_limit) {
+              // REDIRECCIÓN SI ESTÁ AL LÍMITE
+              router.push("/pricing?reason=limit_reached");
+              return;
+            }
+          }
+        }
+        
+        setCheckingLimit(false);
+      } catch (err) {
+        console.error("Error validando acceso:", err);
+        setCheckingLimit(false);
+      }
+    };
+
+    validateAccess();
+  }, [router]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    if (!currentTrainerId) {
-      setError("No se pudo identificar al entrenador. Por favor, re-inicia sesión.");
-      return;
-    }
+    if (!currentTrainerId) return;
 
     setLoading(true);
     setError(null);
@@ -67,14 +108,8 @@ export default function NewTraineePage() {
           email: formData.email,
           password: "TemporaryPassword123!", 
           userData: {
-            first_name: formData.first_name,
-            last_name: formData.last_name,
-            role: "trainee",
-            status: formData.status,
-            specialty: formData.specialty,
-            gender: formData.gender,
-            dob: formData.dob,
-            trainer_id: currentTrainerId, // <--- Vinculación automática
+            ...formData,
+            trainer_id: currentTrainerId,
           },
         }),
       });
@@ -88,6 +123,16 @@ export default function NewTraineePage() {
       setLoading(false);
     }
   };
+
+  // Pantalla de carga mientras se verifica el límite
+  if (checkingLimit) {
+    return (
+      <div className="min-h-screen bg-[#050505] flex flex-col items-center justify-center text-slate-500">
+        <Loader2 className="h-10 w-10 text-blue-500 animate-spin mb-4" />
+        <p className="animate-pulse font-medium tracking-widest text-[10px] uppercase">Verifying Subscription...</p>
+      </div>
+    );
+  }
 
   const inputClasses = "w-full bg-[#0a0a0a] border border-slate-800 rounded-xl py-3 px-4 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none text-white transition-all placeholder:text-slate-600";
   const labelClasses = "text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 mb-2 block";
@@ -111,7 +156,6 @@ export default function NewTraineePage() {
             </div>
           )}
 
-          {/* Nombre y Apellido */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <label className={labelClasses}>First Name</label>
@@ -133,7 +177,6 @@ export default function NewTraineePage() {
             </div>
           </div>
 
-          {/* Email */}
           <div>
             <label className={labelClasses}>Email Address</label>
             <div className="relative">
@@ -144,7 +187,6 @@ export default function NewTraineePage() {
             </div>
           </div>
 
-          {/* Género y Fecha de Nacimiento */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <label className={labelClasses}>Gender</label>
@@ -163,10 +205,7 @@ export default function NewTraineePage() {
               <label className={labelClasses}>Date of Birth</label>
               <div className="relative">
                 <Calendar className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-700" size={16} />
-                <input 
-                  required 
-                  type="date" 
-                  className={`${inputClasses} [color-scheme:dark]`} 
+                <input required type="date" className={`${inputClasses} [color-scheme:dark]`} 
                   value={formData.dob}
                   onChange={(e) => setFormData({...formData, dob: e.target.value})}
                 />
@@ -174,7 +213,6 @@ export default function NewTraineePage() {
             </div>
           </div>
 
-          {/* Especialidad */}
           <div>
             <label className={labelClasses}>Specialty / Focus</label>
             <div className="relative">
@@ -185,25 +223,13 @@ export default function NewTraineePage() {
             </div>
           </div>
 
-          {/* Estatus */}
-          <div>
-            <label className={labelClasses}>Initial Status</label>
-            <select className={`${inputClasses} appearance-none cursor-pointer`} value={formData.status}
-              onChange={(e) => setFormData({...formData, status: e.target.value})}
-            >
-              <option value="active">Active</option>
-              <option value="pending">Pending</option>
-              <option value="blocked">Blocked</option>
-            </select>
-          </div>
-
           <div className="pt-4 border-t border-slate-800/50 flex flex-col sm:flex-row gap-4 items-center justify-between">
             <p className="text-[10px] text-slate-500 font-medium uppercase tracking-widest">
-              Assigning to: <span className="text-blue-500 font-black">{currentTrainerId ? "Your Account" : "Loading..."}</span>
+              Assigning to: <span className="text-blue-500 font-black">Your Account</span>
             </p>
             <button 
               type="submit" 
-              disabled={loading || !currentTrainerId} 
+              disabled={loading} 
               className="w-full sm:w-auto bg-blue-600 hover:bg-blue-500 disabled:bg-slate-800 text-white px-8 py-3 rounded-xl font-black text-xs uppercase tracking-widest flex items-center justify-center gap-2 transition-all active:scale-95 shadow-xl shadow-blue-600/20"
             >
               {loading ? (

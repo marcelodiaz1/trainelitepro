@@ -2,255 +2,287 @@
 
 import { useEffect, useState } from "react";
 import { createClient } from "@supabase/supabase-js";
+import Link from "next/link";
 import { 
-  Users, Dumbbell, Star, Calendar, CheckCircle2, 
-  AlertTriangle, UtensilsCrossed, Clock, ChevronRight,
-  TrendingUp, Zap, Activity
+  Users, Dumbbell, Activity, UtensilsCrossed, 
+  ClipboardList, UserPlus, PlusCircle, Zap, Clock, ChevronRight
 } from "lucide-react";
+import { motion } from "framer-motion";
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 );
 
-// --- TYPES & INTERFACES ---
-interface UserProfile {
-  id: string;
-  first_name: string;
-  last_name: string;
-  role: string;
-  profile_picture?: string;
-  specialty?: string;
-}
-
-interface GenericData {
-  id: string;
-  title?: string;
-  message?: string;
-  client?: string;
-  time?: string;
-  first_name?: string;
-  last_name?: string;
-  role?: string;
-  specialty?: string;
+// --- INTERFACES ---
+interface TrainerPlan {
+  name: string;
+  trainee_limit: number;
+  routine_limit: number;
+  evaluation_limit: number;
+  meal_plan_limit: number;
+  meal_limit: number;
+  plan_limit: number;
 }
 
 export default function Dashboard() {
   const [role, setRole] = useState<"admin" | "trainer" | "trainee" | null>(null);
   const [loading, setLoading] = useState(true);
-
-  // Top-level State Hooks (Must be here, not inside useEffect)
-  const [trainersData, setTrainersData] = useState<UserProfile[]>([]);
-  const [traineesData, setTraineesData] = useState<UserProfile[]>([]);
-  const [alertsData, setAlertsData] = useState<any[]>([]);
+  const [user, setUser] = useState<any>(null);
+  const [traineesData, setTraineesData] = useState<any[]>([]);
+  const [trainerPlan, setTrainerPlan] = useState<TrainerPlan | null>(null);
   const [sessionData, setSessionData] = useState<any[]>([]);
+  
+  const [stats, setStats] = useState({
+    routines: 0,
+    evaluations: 0,
+    meals: 0,
+    mealPlans: 0,
+    customPlans: 0 // Añadido para planes personalizados
+  });
 
   useEffect(() => {
     async function initializeDashboard() {
       try {
         setLoading(true);
-        const { data: { user } } = await supabase.auth.getUser();
+        const { data: { user: authUser } } = await supabase.auth.getUser();
+        if (!authUser) return;
+        setUser(authUser);
 
-        if (!user) return;
-
-        // 1. Fetch User Role from public.users
+        // 1. Obtenemos perfil para saber el rol y el plan activo
         const { data: profile } = await supabase
           .from("users")
-          .select("role")
-          .eq("id", user.id)
+          .select("role, selected_plan, own_plans")
+          .eq("id", authUser.id)
           .single();
 
         const currentRole = profile?.role || "trainee";
         setRole(currentRole as any);
 
-        // 2. Conditional Data Fetching based on Role
-        if (currentRole === "admin") {
-          const { data: trainers } = await supabase.from("users").select("*").eq("role", "trainer").limit(3);
-          const { data: trainees } = await supabase.from("users").select("*").eq("role", "trainee").limit(3);
-          setTrainersData(trainers || []);
-          setTraineesData(trainees || []);
-        } 
-        if (currentRole === "admin") {
-          // Fetch trainees and include their plan name
-          const { data: trainees } = await supabase
-            .from("users")
-            .select(`
-              *,
-              plans (
-                name
-              )
-            `)
-            .eq("role", "trainee")
-            .order('created_at', { ascending: false }) // See newest payments first
-            .limit(5);
+        if (currentRole === "trainer") {
+          // 2. Fetch de conteos y datos en paralelo
+          const [
+            routines,
+            evals,
+            meals,
+            mealPlans,
+            trainees,
+            sessions
+          ] = await Promise.all([
+            supabase.from("workout_routines").select("*", { count: 'exact', head: true }).eq("trainer_id", authUser.id),
+            supabase.from("evaluations").select("*", { count: 'exact', head: true }).eq("trainer_id", authUser.id),
+            supabase.from("meals").select("*", { count: 'exact', head: true }).eq("trainer_id", authUser.id),
+            supabase.from("meal_plans").select("*", { count: 'exact', head: true }).eq("trainer_id", authUser.id),
+            supabase.from("users").select("*").eq("role", "trainee").eq("trainer_id", authUser.id),
+            supabase.from("sessions").select("*").eq("trainer_id", authUser.id).limit(3)
+          ]);
 
-          const { data: trainers } = await supabase.from("users").select("*").eq("role", "trainer").limit(3);
-          
-          setTraineesData(trainees || []);
-          setTrainersData(trainers || []);
-        }
-        else if (currentRole === "trainer") {
-          // Example: Fetch sessions where this user is the trainer
-          const { data: sessions } = await supabase.from("sessions").select("*").eq("trainer_id", user.id).limit(3);
-          setSessionData(sessions || []);
-        }
+          // 3. Fetch del Plan (Límites)
+          if (profile?.selected_plan) {
+            const { data: planData } = await supabase
+              .from("plans")
+              .select("*")
+              .eq("id", profile.selected_plan)
+              .single();
+            
+            if (planData) {
+              setTrainerPlan({
+                name: planData.title,
+                trainee_limit: planData.trainee_limit,
+                routine_limit: planData.routine_limit,
+                evaluation_limit: planData.evaluation_limit,
+                meal_plan_limit: planData.meal_plan_limit,
+                meal_limit: planData.meal_limit,
+                plan_limit: planData.plan_limit
+              });
+            }
+          }
 
-        else if (currentRole === "trainee") {
-          // Example: Fetch the trainer assigned to this trainee
-          const { data: myTrainers } = await supabase.from("users").select("*").eq("role", "trainer").limit(3);
-          setTrainersData(myTrainers || []);
+          setStats({
+            routines: routines.count || 0,
+            evaluations: evals.count || 0,
+            meals: meals.count || 0,
+            mealPlans: mealPlans.count || 0,
+            customPlans: profile?.own_plans?.length || 0
+          });
+          setTraineesData(trainees.data || []);
+          setSessionData(sessions.data || []);
         }
-
       } catch (error) {
-        console.error("Dashboard Init Error:", error);
+        console.error("Dashboard Error:", error);
       } finally {
         setLoading(false);
       }
     }
-
     initializeDashboard();
   }, []);
 
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-[#0b0b0b] flex flex-col items-center justify-center">
-        <div className="w-12 h-12 border-t-2 border-[#ff6b1a] rounded-full animate-spin mb-4" />
-        <p className="text-[10px] font-black uppercase tracking-[0.3em] text-gray-500">Initializing Portal</p>
-      </div>
-    );
-  }
+  if (loading) return <LoadingScreen />;
 
   return (
-    <main className="bg-[#0b0b0b] text-white min-h-screen">
+    <main className="bg-[#0b0b0b] text-white min-h-screen font-sans">
       <div className="p-8 lg:p-12 max-w-7xl mx-auto space-y-10">
         
-        {/* HEADER SECTION */}
+        {/* HEADER */}
         <div className="border-l-4 border-[#ff6b1a] pl-6">
           <h1 className="text-4xl font-black uppercase italic tracking-tighter">
-            {role === "admin" && "System Command"}
-            {role === "trainer" && "Coach Hub"}
-            {role === "trainee" && "Performance"}
+            {role === "trainer" ? "Coach Hub" : "System Command"}
           </h1>
           <p className="text-gray-500 text-[10px] font-black uppercase tracking-widest mt-1">
-            Status: Active Access • {role} Mode
+            {user?.email} • {role} Mode
           </p>
         </div>
 
-        {/* STATS GRID */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {role === "admin" && (
-            <>
-              <StatCard title="Total Trainers" value="42" icon={<Dumbbell size={20}/>} />
-              <StatCard title="Total Trainees" value="183" icon={<Users size={20}/>} />
-              <StatCard title="Revenue" value="$12.4k" icon={<TrendingUp size={20}/>} />
-              <StatCard title="Alerts" value="2" icon={<AlertTriangle size={20}/>} warning />
-            </>
-          )}
-          {role === "trainer" && (
-            <>
-              <StatCard title="Clients" value="12" icon={<Users size={20}/>} />
-              <StatCard title="Sessions" value="28" icon={<Calendar size={20}/>} />
-              <StatCard title="Rating" value="4.9" icon={<Star size={20}/>} />
-              <StatCard title="Earnings" value="$3.2k" icon={<Activity size={20}/>} />
-            </>
-          )}
-          {role === "trainee" && (
-            <>
-              <StatCard title="Workouts" value="14" icon={<CheckCircle2 size={20}/>} />
-              <StatCard title="Streak" value="5 Days" icon={<Zap size={20}/>} />
-              <StatCard title="Next Up" value="2pm" icon={<Clock size={20}/>} />
-              <StatCard title="Calories" value="12k" icon={<TrendingUp size={20}/>} />
-            </>
-          )}
-        </div>
+        {/* CAPACITY GRID */}
+        {role === "trainer" && trainerPlan && (
+          <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-1 gap-6"> 
+               <CapacityCard 
+                title="Active Trainees" 
+                current={traineesData.length} 
+                limit={trainerPlan.trainee_limit} 
+                icon={Users} 
+                label="Trainees" 
+                isLarge 
+                tierName={trainerPlan.name}
+                actionHref="/dashboard/trainees/new"
+                actionLabel="Add Trainee"
+                actionIcon={<UserPlus size={14} />}
+              /> 
 
-        {/* MAIN CONTENT GRID */}
-        <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
-          {role === "admin" && (
-            <>
-              <DashboardSection title="New Trainers" data={trainersData} type="trainer" />
-              <DashboardSection title="Recent Trainees" data={traineesData} type="trainee" />
-              <DashboardSection title="Critical Alerts" data={alertsData} type="alert" />
-            </>
-          )}
-
-          {role === "trainer" && (
-            <>
-              <DashboardSection title="Upcoming Sessions" data={sessionData} type="session" />
-              <DashboardSection title="Client Requests" data={[]} type="request" />
-              <DashboardSection title="Recent Feedback" data={[]} type="feedback" />
-            </>
-          )}
-
-          {role === "trainee" && (
-            <>
-              <DashboardSection title="Active Meal Plan" data={[]} type="meal" />
-              <DashboardSection title="Workout of the Day" data={[]} type="workout" />
-              <DashboardSection title="Your Trainers" data={trainersData} type="trainer" />
-            </>
-          )}
-        </div>
+            <CapacityCard 
+              title="Routines" 
+              current={stats.routines} 
+              limit={trainerPlan.routine_limit} 
+              icon={Dumbbell} 
+              label="Routines" 
+              actionHref="/dashboard/routines/new"
+              actionLabel="New"
+            />
+            <CapacityCard 
+              title="Evaluations" 
+              current={stats.evaluations} 
+              limit={trainerPlan.evaluation_limit} 
+              icon={Activity} 
+              label="Evals" 
+              actionHref="/dashboard/evaluations/new"
+              actionLabel="New"
+            />
+            <CapacityCard 
+              title="Meal Plans" 
+              current={stats.mealPlans} 
+              limit={trainerPlan.meal_plan_limit} 
+              icon={ClipboardList} 
+              label="Plans" 
+              actionHref="/dashboard/meal-plans/new"
+              actionLabel="New"
+            />
+            <CapacityCard 
+              title="Individual Meals" 
+              current={stats.meals} 
+              limit={trainerPlan.meal_limit} 
+              icon={UtensilsCrossed} 
+              label="Meals" 
+              actionHref="/dashboard/meals/new"
+              actionLabel="New"
+            />
+            <CapacityCard 
+              title="Subscription Tiers" 
+              current={stats.customPlans} 
+              limit={trainerPlan.plan_limit} 
+              icon={Zap} 
+              label="Slots" 
+              actionHref="/dashboard/plans/new"
+              actionLabel="Configure"
+            />
+          </div>
+        )}
+ 
+        {role === "admin" &&  ( 
+          <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
+            <DashboardList title="Upcoming Sessions" data={sessionData} type="session" />
+            <DashboardList title="Recent Trainees" data={traineesData.slice(0, 3)} type="trainee" />
+          </div> 
+        )} 
       </div>
     </main>
   );
 }
 
-// --- SUB-COMPONENTS ---
+// --- COMPONENTES AUXILIARES ---
 
-function StatCard({ title, value, icon, warning }: any) {
+function CapacityCard({ title, current, limit, icon: Icon, label, isLarge, tierName, actionHref, actionLabel, actionIcon }: any) {
+  const percentage = Math.min((current / limit) * 100, 100);
+  const isAtLimit = current >= limit;
+
   return (
-    <div className="bg-[#111] p-6 rounded-2xl border border-white/5 flex items-center justify-between group hover:border-[#ff6b1a]/50 transition-all cursor-default shadow-xl">
-      <div>
-        <p className="text-gray-500 text-[10px] font-black uppercase tracking-widest">{title}</p>
-        <p className="text-2xl font-black italic mt-1">{value}</p>
+    <section className={`bg-[#111] border border-white/5 rounded-[2.5rem] relative overflow-hidden shadow-2xl p-7 ${isLarge ? 'lg:p-10' : ''}`}>
+      <div className="flex justify-between items-start mb-6">
+        <div>
+          <h2 className={`${isLarge ? 'text-2xl' : 'text-lg'} font-black italic uppercase tracking-tighter flex items-center gap-3`}>
+            <Icon className="text-[#ff6b1a]" size={isLarge ? 28 : 20} /> {title}
+          </h2>
+          {isLarge && <p className="text-[#ff6b1a] text-[10px] font-black uppercase tracking-widest mt-1">Tier: {tierName}</p>}
+        </div>
+        
+        <Link 
+          href={isAtLimit ? "/pricing" : actionHref}
+          className={`px-4 py-2 rounded-xl text-[9px] font-black uppercase flex items-center gap-2 transition-all ${
+            isAtLimit ? "bg-red-500/10 text-red-500 border border-red-500/20" : "bg-[#ff6b1a] text-black"
+          }`}
+        >
+          {isAtLimit ? "Upgrade Required" : actionLabel} {isAtLimit ? <Zap size={14}/> : actionIcon || <PlusCircle size={14} />}
+        </Link>
       </div>
-      <div className={`${warning ? "text-red-500" : "text-[#ff6b1a]"} bg-black/40 p-3 rounded-xl shadow-inner`}>
-        {icon}
+
+      <div className="space-y-4">
+        <div className="flex items-baseline gap-2">
+          <span className={`${isLarge ? 'text-6xl' : 'text-4xl'} font-black italic text-white`}>{current}</span>
+          <span className="text-gray-600 font-black uppercase italic text-sm">/ {limit} {label}</span>
+        </div>
+
+        <div className="h-2 bg-white/5 rounded-full overflow-hidden">
+          <motion.div 
+            initial={{ width: 0 }}
+            animate={{ width: `${percentage}%` }}
+            className={`h-full rounded-full ${percentage > 90 ? 'bg-red-500' : 'bg-[#ff6b1a]'}`}
+          />
+        </div>
       </div>
-    </div>
+    </section>
   );
 }
 
-function DashboardSection({ title, data, type }: { title: string, data: any[], type: string }) {
+function DashboardList({ title, data, type }: any) {
   return (
-    <section className="bg-[#111] border border-white/5 p-6 rounded-[2rem] shadow-2xl transition-all">
-      <h2 className="text-[10px] font-black uppercase tracking-[0.2em] mb-6 text-gray-500 flex items-center gap-2">
-        <span className="w-1.5 h-1.5 bg-[#ff6b1a] rounded-full shadow-[0_0_5px_#ff6b1a]" /> {title}
+    <section className="bg-[#111] border border-white/5 p-8 rounded-[2.5rem]">
+      <h2 className="text-[10px] font-black uppercase tracking-widest mb-6 text-gray-500 flex items-center gap-2">
+        <span className="w-1.5 h-1.5 bg-[#ff6b1a] rounded-full" /> {title}
       </h2>
-
       <div className="space-y-3">
-        {data.length > 0 ? (
-          data.map((item, idx) => (
-            <div key={idx} className="bg-white/5 border border-white/5 p-4 rounded-2xl flex justify-between items-center group hover:bg-white/10 transition-all cursor-pointer">
-              <div className="flex items-center gap-4">
-                <div className="p-2.5 bg-black rounded-xl text-[#ff6b1a] group-hover:scale-110 transition-transform">
-                   {type === 'trainer' && <Dumbbell size={16} />}
-                   {type === 'trainee' && <Users size={16} />}
-                   {type === 'session' && <Clock size={16} />}
-                   {type === 'meal' && <UtensilsCrossed size={16} />}
-                   {type === 'alert' && <AlertTriangle size={16} className="text-red-500" />}
-                   {(!['trainer', 'trainee', 'session', 'meal', 'alert'].includes(type)) && <Activity size={16} />}
-                </div>
-                <div>
-                  <p className="text-sm font-bold uppercase italic leading-none">
-                    {item.first_name ? `${item.first_name} ${item.last_name}` : (item.title || "No Title")}
-                  </p>
-                  <p className="text-[10px] text-[#ff6b1a] font-black uppercase mt-1 tracking-tighter">
-                    {/* If a plan exists, show it; otherwise show the role */}
-                    {item.plans?.name ? `Plan: ${item.plans.name}` : (item.specialty || item.role)}
-                  </p>
-                </div> 
-              </div>
-              <ChevronRight size={14} className="text-gray-700 group-hover:text-[#ff6b1a] group-hover:translate-x-1 transition-all" />
+        {data.length > 0 ? data.map((item: any, idx: number) => (
+          <div key={idx} className="bg-white/5 p-4 rounded-2xl flex justify-between items-center group hover:bg-white/10 transition-all">
+            <div className="flex items-center gap-4">
+               <div className="p-2 bg-black rounded-lg text-[#ff6b1a]">
+                  {type === 'session' ? <Clock size={16} /> : <Users size={16} />}
+               </div>
+               <div>
+                  <p className="text-sm font-bold uppercase italic">{item.first_name ? `${item.first_name} ${item.last_name}` : (item.title || "No Title")}</p>
+                  <p className="text-[10px] text-gray-500 uppercase font-black">{item.email || "Recent Activity"}</p>
+               </div>
             </div>
-          ))
-        ) : (
-          <div className="py-12 flex flex-col items-center justify-center opacity-20">
-            <Activity size={32} className="mb-2" />
-            <p className="text-[10px] font-black uppercase tracking-widest">No Recent Activity</p>
+            <ChevronRight size={14} className="text-gray-700 group-hover:text-[#ff6b1a]" />
           </div>
-        )}
+        )) : <p className="text-center py-10 text-[10px] font-black uppercase text-gray-700 tracking-[.2em]">No Data Available</p>}
       </div>
     </section>
+  );
+}
+
+function LoadingScreen() {
+  return (
+    <div className="min-h-screen bg-[#0b0b0b] flex flex-col items-center justify-center">
+      <div className="w-12 h-12 border-t-2 border-[#ff6b1a] rounded-full animate-spin mb-4" />
+      <p className="text-[10px] font-black uppercase tracking-widest text-gray-500">Syncing Systems</p>
+    </div>
   );
 }
