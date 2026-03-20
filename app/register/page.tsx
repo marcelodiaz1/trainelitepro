@@ -15,6 +15,8 @@ import {
   AlertCircle,
   Lock 
 } from "lucide-react";
+import Footer from "@/components/Footer";
+import Navbar from "@/components/Navbar";
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -171,6 +173,7 @@ export default function Register() {
 
   return (
     <main className="bg-[#0b0b0b] text-white min-h-screen flex flex-col font-sans selection:bg-orange-500/30">
+          <Navbar />
       <section className="flex-1 flex items-center justify-center py-16 px-6">
         <div className="max-w-6xl w-full grid md:grid-cols-2 gap-16 items-center">
           
@@ -359,6 +362,8 @@ export default function Register() {
           cursor: pointer;
         }
       `}</style>
+      
+            <Footer />
     </main>
   );
 }
