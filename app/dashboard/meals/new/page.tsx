@@ -3,7 +3,6 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@supabase/supabase-js";
-import Sidebar from "@/components/dashboard/Sidebar";
 import { 
   ChevronLeft, Save, Plus, Trash2, Search, Flame, Dna, Utensils, Info, Image as ImageIcon, Loader2
 } from "lucide-react";
@@ -16,6 +15,7 @@ const supabase = createClient(
 export default function NewMealPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const [checkingLimit, setCheckingLimit] = useState(true); // Subscription verification state
   const [allIngredients, setAllIngredients] = useState<any[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   
@@ -27,8 +27,55 @@ export default function NewMealPage() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
   useEffect(() => {
+    validateAccess();
     fetchIngredients();
   }, []);
+
+  const validateAccess = async () => {
+    try {
+      setCheckingLimit(true);
+      
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        router.push("/login");
+        return;
+      }
+
+      // Get profile and plan
+      const { data: profile } = await supabase
+        .from("users")
+        .select("role, selected_plan")
+        .eq("id", user.id)
+        .single();
+
+      if (profile?.role === "trainer") {
+        // 1. Count current meals created by this trainer
+        const { count } = await supabase
+          .from("meals")
+          .select("*", { count: "exact", head: true })
+          .eq("trainer_id", user.id);
+
+        // 2. Check against plan meal_limit
+        if (profile.selected_plan) {
+          const { data: planData } = await supabase
+            .from("plans")
+            .select("meal_limit")
+            .eq("id", profile.selected_plan)
+            .single();
+
+          if (planData && (count || 0) >= planData.meal_limit) {
+            router.push("/pricing?reason=limit_reached");
+            return;
+          }
+        }
+      }
+      
+      setCheckingLimit(false);
+    } catch (err) {
+      console.error("Error validating access:", err);
+      setCheckingLimit(false);
+    }
+  };
 
   const fetchIngredients = async () => {
     const { data } = await supabase
@@ -64,18 +111,16 @@ export default function NewMealPage() {
     };
   }, { cal: 0, pro: 0, carb: 0, fat: 0 });
 
-const handleSave = async () => {
+  const handleSave = async () => {
     if (!name || selectedIngredients.length === 0) return alert("Please provide a name and ingredients.");
     setLoading(true);
 
     let finalImageUrl = pictureUrl;
 
     try {
-      // 0. Get the current Authenticated User ID
       const { data: { user: authUser } } = await supabase.auth.getUser();
-      if (!authUser) throw new Error("User session not found. Please log in again.");
+      if (!authUser) throw new Error("User session not found.");
 
-      // 1. Upload Image to Storage if file is selected
       if (selectedFile) {
         const fileExt = selectedFile.name.split('.').pop();
         const fileName = `${Date.now()}-${Math.random().toString(36).substring(2, 7)}.${fileExt}`;
@@ -94,7 +139,6 @@ const handleSave = async () => {
         finalImageUrl = publicUrl;
       }
 
-      // 2. Batch Insert into meal_ingredients
       const { data: insertedRels, error: relError } = await supabase
         .from("meal_ingredients")
         .insert(
@@ -110,10 +154,9 @@ const handleSave = async () => {
 
       const relIds = insertedRels.map((r) => r.id);
 
-      // 3. Create the final meal record WITH trainer_id
       const { error: mealError } = await supabase.from("meals").insert({
         name,
-        trainer_id: authUser.id, // <--- This links the meal to the coach
+        trainer_id: authUser.id,
         picture_url: finalImageUrl,
         recipe,
         ingredients: relIds,
@@ -134,6 +177,15 @@ const handleSave = async () => {
     }
   };
 
+  if (checkingLimit) {
+    return (
+      <div className="min-h-screen bg-[#050505] flex flex-col items-center justify-center text-slate-500">
+        <Loader2 className="h-10 w-10 text-orange-500 animate-spin mb-4" />
+        <p className="animate-pulse font-black tracking-widest text-[10px] uppercase">Verifying Subscription...</p>
+      </div>
+    );
+  }
+
   const filteredSearch = allIngredients.filter(i => 
     i.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
     !selectedIngredients.find(s => s.id === i.id)
@@ -141,7 +193,6 @@ const handleSave = async () => {
 
   return (
     <main className="bg-[#050505] text-white min-h-screen flex">
-      
       <div className="flex-1 flex flex-col h-screen overflow-hidden">
         <header className="p-6 border-b border-slate-800 flex justify-between items-center bg-[#0b0b0b]">
           <div className="flex items-center gap-4">
@@ -162,7 +213,6 @@ const handleSave = async () => {
 
         <div className="flex-1 overflow-y-auto p-8 custom-scrollbar">
           <div className="max-w-5xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-8">
-            
             <div className="lg:col-span-2 space-y-6">
               <section className="bg-[#0b0b0b] border border-slate-800 rounded-2xl p-6 space-y-4">
                 <div className="flex items-center gap-2 mb-2 text-orange-500 font-bold uppercase text-[10px] tracking-widest">
@@ -236,7 +286,6 @@ const handleSave = async () => {
                 </div>
               </section>
 
-              {/* Ingredient Selector Section */}
               <section className="bg-[#0b0b0b] border border-slate-800 rounded-2xl p-6">
                 <div className="flex items-center justify-between mb-6">
                   <div className="flex items-center gap-2 text-orange-500 font-bold uppercase text-[10px] tracking-widest">
@@ -298,7 +347,6 @@ const handleSave = async () => {
               </section>
             </div>
 
-            {/* Right Column: Macro Summary */}
             <div className="space-y-6">
               <section className="bg-orange-600 rounded-2xl p-6 shadow-2xl shadow-orange-900/20 relative overflow-hidden">
                 <div className="relative z-10">
@@ -329,7 +377,6 @@ const handleSave = async () => {
                 </div>
               </section>
             </div>
-
           </div>
         </div>
       </div>

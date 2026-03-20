@@ -12,10 +12,10 @@ import {
   Search, 
   Users, 
   ChevronRight,
-  AlertCircle 
+  AlertCircle,
+  Lock 
 } from "lucide-react";
 
-// Inicialización de Supabase
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
@@ -24,6 +24,7 @@ const supabase = createClient(
 interface Plan {
   id: string;
   title: string;
+  trainee_limit: number;
 }
 
 interface TrainerOption {
@@ -31,22 +32,19 @@ interface TrainerOption {
   first_name: string;
   last_name: string;
   specialty: string | null;
+  trainee_limit: number;
+  trainee_count: number;
 }
 
 export default function Register() {
   const router = useRouter();
-  
-  // Estados de Formulario y UI
   const [role, setRole] = useState("trainee");
   const [gender, setGender] = useState("Male");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   
-  // Datos desde Supabase
   const [availablePlans, setAvailablePlans] = useState<Plan[]>([]);
   const [allTrainers, setAllTrainers] = useState<TrainerOption[]>([]);
-  
-  // Estado de Búsqueda de Entrenadores
   const [searchTerm, setSearchTerm] = useState("");
   const [showResults, setShowResults] = useState(false);
 
@@ -63,19 +61,46 @@ export default function Register() {
     trainer_id: "", 
   });
 
-  // Fetch inicial de Planes y Entrenadores
   useEffect(() => {
     const fetchData = async () => {
-      const [plansRes, trainersRes] = await Promise.all([
-        supabase.from("plans").select("id, title").order("title"),
-        supabase.from("users")
-          .select("id, first_name, last_name, specialty")
-          .eq("role", "trainer")
-          .eq("status", "active")
-      ]);
+      // 1. Fetch Plans first (to get limits)
+      const { data: plansData } = await supabase
+        .from("plans")
+        .select("id, title, trainee_limit")
+        .order("title");
 
-      if (!plansRes.error) setAvailablePlans(plansRes.data || []);
-      if (!trainersRes.error) setAllTrainers(trainersRes.data || []);
+      if (plansData) setAvailablePlans(plansData);
+
+      // 2. Fetch Trainers and count their trainees
+      // We use a flat select to prevent join errors
+      const { data: trainersData, error: tError } = await supabase
+        .from("users")
+        .select(`
+          id, 
+          first_name, 
+          last_name, 
+          specialty,
+          selected_plan,
+          trainees:users!trainer_id(count)
+        `)
+        .eq("role", "trainer")
+        .eq("status", "active");
+
+      if (!tError && trainersData) {
+        const formatted = trainersData.map((t: any) => {
+          // Link the plan data manually in JS
+          const plan = plansData?.find(p => p.id === t.selected_plan);
+          return {
+            id: t.id,
+            first_name: t.first_name,
+            last_name: t.last_name,
+            specialty: t.specialty,
+            trainee_limit: plan ? plan.trainee_limit : 3, // Fallback if no plan
+            trainee_count: t.trainees?.[0]?.count || 0
+          };
+        });
+        setAllTrainers(formatted);
+      }
     };
     fetchData();
   }, []);
@@ -89,7 +114,16 @@ export default function Register() {
     setError(null);
     setLoading(true);
 
-    // Registro en Supabase Auth con metadatos para el Trigger
+    // Capacity Check
+    if (role === "trainee" && form.trainer_id) {
+      const selected = allTrainers.find(t => t.id === form.trainer_id);
+      if (selected && selected.trainee_count >= selected.trainee_limit) {
+        setError("This trainer is currently at maximum capacity.");
+        setLoading(false);
+        return;
+      }
+    }
+
     const { error: signUpError } = await supabase.auth.signUp({
       email: form.email,
       password: form.password,
@@ -117,7 +151,6 @@ export default function Register() {
     }
   };
 
-  // Filtrado de entrenadores en tiempo real
   const filteredTrainers = allTrainers.filter(t => 
     `${t.first_name} ${t.last_name}`.toLowerCase().includes(searchTerm.toLowerCase())
   );
@@ -127,7 +160,6 @@ export default function Register() {
       <section className="flex-1 flex items-center justify-center py-16 px-6">
         <div className="max-w-6xl w-full grid md:grid-cols-2 gap-16 items-center">
           
-          {/* LADO IZQUIERDO: FORMULARIO */}
           <div className="bg-[#111] p-8 md:p-10 rounded-[2.5rem] shadow-2xl border border-white/5 relative">
             <div className="mb-8">
               <h2 className="text-4xl font-black italic uppercase tracking-tighter leading-none mb-2">Join the <span className="text-orange-600">Elite</span></h2>
@@ -143,19 +175,16 @@ export default function Register() {
             )}
 
             <form onSubmit={handleRegister} className="space-y-5">
-              {/* Selector de Rol */}
               <div className="grid grid-cols-2 gap-3">
                 <RoleButton active={role === "trainee"} onClick={() => setRole("trainee")} icon={<User size={16}/>} label="Trainee" />
                 <RoleButton active={role === "trainer"} onClick={() => setRole("trainer")} icon={<Zap size={16}/>} label="Trainer" />
               </div>
 
-              {/* Información Personal */}
               <div className="grid grid-cols-2 gap-4">
                 <input name="first_name" placeholder="First Name" required onChange={handleChange} className="input-field" />
                 <input name="last_name" placeholder="Last Name" required onChange={handleChange} className="input-field" />
               </div>
 
-              {/* Selector de Género (Segmentado) */}
               <div className="space-y-2">
                 <label className="text-[10px] uppercase font-black text-slate-600 tracking-widest ml-1">Gender Identification</label>
                 <div className="grid grid-cols-2 gap-2">
@@ -179,7 +208,6 @@ export default function Register() {
               <input type="email" name="email" placeholder="Email Address" required onChange={handleChange} className="input-field w-full" />
               <input type="password" name="password" placeholder="Create Password" required onChange={handleChange} className="input-field w-full" />
 
-              {/* TRAINEE: Búsqueda de Entrenador */}
               {role === "trainee" && (
                 <div className="space-y-1 relative">
                   <label className="text-[10px] uppercase font-black text-slate-500 tracking-widest ml-1 flex items-center gap-2">
@@ -201,25 +229,42 @@ export default function Register() {
                   </div>
 
                   {showResults && searchTerm.length > 0 && (
-                    <div className="absolute z-50 w-full mt-2 bg-[#161616] border border-white/10 rounded-2xl shadow-2xl max-h-52 overflow-y-auto divide-y divide-white/5 scrollbar-hide">
-                      {filteredTrainers.length > 0 ? filteredTrainers.map(t => (
-                        <button
-                          key={t.id}
-                          type="button"
-                          onClick={() => {
-                            setSearchTerm(`${t.first_name} ${t.last_name}`);
-                            setForm({...form, trainer_id: t.id});
-                            setShowResults(false);
-                          }}
-                          className="w-full px-5 py-4 text-left hover:bg-orange-500/10 transition-colors group flex justify-between items-center"
-                        >
-                          <div>
-                            <p className="text-sm font-bold text-white group-hover:text-orange-500">{t.first_name} {t.last_name}</p>
-                            <p className="text-[9px] uppercase text-slate-500 font-black tracking-tighter">{t.specialty || "Elite Coach"}</p>
-                          </div>
-                          {form.trainer_id === t.id && <CheckCircle size={16} className="text-orange-500" />}
-                        </button>
-                      )) : (
+                    <div className="absolute z-50 w-full mt-2 bg-[#161616] border border-white/10 rounded-2xl shadow-2xl max-h-60 overflow-y-auto divide-y divide-white/5 scrollbar-hide">
+                      {filteredTrainers.length > 0 ? filteredTrainers.map(t => {
+                        const isFull = t.trainee_count >= t.trainee_limit;
+                        return (
+                          <button
+                            key={t.id}
+                            type="button"
+                            disabled={isFull}
+                            onClick={() => {
+                              setSearchTerm(`${t.first_name} ${t.last_name}`);
+                              setForm({...form, trainer_id: t.id});
+                              setShowResults(false);
+                            }}
+                            className={`w-full px-5 py-4 text-left transition-colors group flex justify-between items-center ${
+                              isFull ? 'opacity-40 grayscale bg-[#0d0d0d] cursor-not-allowed' : 'hover:bg-orange-500/10'
+                            }`}
+                          >
+                            <div>
+                              <div className="flex items-center gap-2">
+                                <p className={`text-sm font-bold ${isFull ? 'text-slate-500' : 'text-white group-hover:text-orange-500'}`}>
+                                  {t.first_name} {t.last_name}
+                                </p>
+                                {isFull && <Lock size={12} className="text-red-500" />}
+                              </div>
+                              <p className="text-[9px] uppercase text-slate-500 font-black tracking-tighter">
+                                {isFull ? "Maximum Capacity Reached" : (t.specialty || "Elite Coach")}
+                              </p>
+                            </div>
+                            <div className="text-right">
+                              <p className={`text-[10px] font-black ${isFull ? 'text-red-500' : 'text-slate-400'}`}>
+                                {t.trainee_count} / {t.trainee_limit}
+                              </p>
+                            </div>
+                          </button>
+                        );
+                      }) : (
                         <div className="p-5 text-[10px] text-slate-600 uppercase font-black text-center italic">Coach not found</div>
                       )}
                     </div>
@@ -227,7 +272,6 @@ export default function Register() {
                 </div>
               )}
 
-              {/* TRAINER: Plan y Especialidad */}
               {role === "trainer" && (
                 <div className="space-y-4 animate-in fade-in slide-in-from-top-2 duration-500">
                   <div className="space-y-1">
@@ -253,7 +297,6 @@ export default function Register() {
             </form>
           </div>
 
-          {/* LADO DERECHO: BRANDING */}
           <div className="hidden md:flex flex-col space-y-10">
              <div>
                 <h3 className="text-7xl font-black italic uppercase leading-[0.85] tracking-tighter mb-4">
@@ -306,7 +349,6 @@ export default function Register() {
   );
 }
 
-// Componentes Auxiliares
 function RoleButton({ active, onClick, icon, label }: any) {
   return (
     <button

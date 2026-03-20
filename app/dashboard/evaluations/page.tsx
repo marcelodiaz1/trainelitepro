@@ -13,7 +13,9 @@ import {
   User,
   ClipboardCheck,
   ClipboardPlus,
-  Loader2
+  Loader2,
+  Lock,
+  Zap
 } from "lucide-react";
 import Link from "next/link";
 import SortableHeader from "@/components/dashboard/SortableHeader";
@@ -28,7 +30,8 @@ export default function EvaluationsTable() {
   const [evals, setEvals] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [dropdownOpen, setDropdownOpen] = useState<string | null>(null);
-const [role, setRole] = useState<string | null>(null);
+  const [role, setRole] = useState<string | null>(null);
+  const [isAtLimit, setIsAtLimit] = useState(false);
 
   // Pagination & Filters
   const [page, setPage] = useState(1);
@@ -47,15 +50,16 @@ const [role, setRole] = useState<string | null>(null);
         const { data: { user: authUser } } = await supabase.auth.getUser();
         if (!authUser) return;
 
-        // 2. Get User Role (Fallback to Metadata)
+        // 2. Get User Profile (Role and Plan)
         const { data: profile } = await supabase
           .from("users")
-          .select("role")
+          .select("role, selected_plan")
           .eq("id", authUser.id)
           .single();
         
         const userRole = profile?.role || authUser.user_metadata?.role; 
-setRole(userRole); // Add this line to save it for the UI
+        setRole(userRole); 
+
         const from = (page - 1) * pageSize;
         const to = from + pageSize - 1;
 
@@ -69,13 +73,10 @@ setRole(userRole); // Add this line to save it for the UI
 
         // 4. Role-Based Filtering Logic
         if (userRole === "trainer") {
-          // Trainers only see evaluations they are linked to
           query = query.eq("trainer_id", authUser.id);
         } else if (userRole === "trainee") {
-          // Trainees only see their own results
           query = query.eq("trainee_id", authUser.id);
         }
-        // Note: Admin (userRole === 'admin') has no filters applied here
 
         // 5. Search Filter
         if (searchTerm) {
@@ -87,6 +88,19 @@ setRole(userRole); // Add this line to save it for the UI
           .range(from, to);
 
         if (error) throw error;
+
+        // 6. Database Limit Check (Logic for Trainers)
+        if (userRole === "trainer" && profile?.selected_plan) {
+          const { data: planData } = await supabase
+            .from("plans")
+            .select("evaluation_limit")
+            .eq("id", profile.selected_plan)
+            .single();
+
+          if (planData) {
+            setIsAtLimit((count || 0) >= planData.evaluation_limit);
+          }
+        }
 
         setEvals(data || []);
         setTotal(count || 0);
@@ -120,16 +134,18 @@ setRole(userRole); // Add this line to save it for the UI
   };
 
   return ( 
-
-      <main className="bg-[#0b0b0b] text-white min-h-screen flex">
-        
-        <div className="p-8 flex-1 max-w-1xl   w-full"> 
+    <main className="bg-[#0b0b0b] text-white min-h-screen flex">
+      <div className="p-8 flex-1 max-w-1xl w-full"> 
         <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 mb-8">
           <div>
             <h1 className="text-4xl font-extrabold tracking-tight text-white mb-2 uppercase italic flex items-center gap-3">
               <ClipboardCheck className="text-orange-500" /> Evaluations
             </h1>
-            <p className="text-slate-500 text-sm">Analyze body composition and physical progress.</p>
+            <p className="text-slate-500 text-sm">
+              {isAtLimit && role === "trainer" 
+                ? "Evaluation storage limit reached." 
+                : "Analyze body composition and physical progress."}
+            </p>
           </div>
           
           <div className="flex gap-3 w-full md:w-auto">
@@ -142,13 +158,24 @@ setRole(userRole); // Add this line to save it for the UI
                 placeholder="Search results..." 
                 className="w-full bg-[#111] border border-slate-800 rounded-lg py-2.5 pl-10 pr-4 text-xs focus:border-orange-500 outline-none transition-all placeholder:text-slate-700 text-white"
               />
-            </div>  
+            </div>   
+
             {role !== "trainee" && (
-              <Link href="/dashboard/evaluations/new">
-                    <button className="bg-orange-600 hover:bg-orange-500 text-white px-5 py-2.5 rounded-lg text-xs font-black uppercase tracking-widest flex items-center gap-2 transition-all active:scale-95 shadow-lg shadow-orange-600/20">
-                      <ClipboardPlus size={16} /> Add Evaluation
-                </button>
-              </Link>
+              isAtLimit ? (
+                <Link href="/pricing">
+                  <button className="bg-white/5 border border-white/10 hover:border-orange-500/50 text-white px-5 py-2.5 rounded-lg text-xs font-black uppercase tracking-widest flex items-center gap-2 transition-all group shadow-lg">
+                    <Lock size={16} className="text-orange-500" /> 
+                    Limit Reached
+                    <Zap size={14} className="text-orange-500 animate-pulse" />
+                  </button>
+                </Link>
+              ) : (
+                <Link href="/dashboard/evaluations/new">
+                  <button className="bg-orange-600 hover:bg-orange-500 text-white px-5 py-2.5 rounded-lg text-xs font-black uppercase tracking-widest flex items-center gap-2 transition-all active:scale-95 shadow-lg shadow-orange-600/20">
+                    <ClipboardPlus size={16} /> Add Evaluation
+                  </button>
+                </Link>
+              )
             )}
           </div>
         </div>
@@ -160,8 +187,8 @@ setRole(userRole); // Add this line to save it for the UI
           </div>
         ) : evals.length === 0 ? (
           <div className="bg-[#111] border border-slate-800 border-dashed rounded-2xl p-20 text-center text-slate-500">
-             <ClipboardCheck className="mx-auto mb-4 opacity-20" size={48} />
-             <p className="font-medium">No evaluation records found.</p>
+            <ClipboardCheck className="mx-auto mb-4 opacity-20" size={48} />
+            <p className="font-medium">No evaluation records found.</p>
           </div>
         ) : (
           <>

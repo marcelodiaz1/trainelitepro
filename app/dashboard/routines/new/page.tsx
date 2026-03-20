@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import Sidebar from "@/components/dashboard/Sidebar";
 import { createClient } from "@supabase/supabase-js";
 import { 
   DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors, DragEndEvent 
@@ -12,7 +11,7 @@ import {
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { 
-  ChevronLeft, User, Type, Plus, Trash2, Search, GripVertical
+  ChevronLeft, User, Type, Trash2, Search, GripVertical, Loader2
 } from "lucide-react";
 import Link from "next/link";
 
@@ -69,6 +68,7 @@ function SortableExerciseRow({ ex, index, exercisesList, updateField, remove }: 
 export default function NewWorkoutRoutinePage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const [checkingAccess, setCheckingAccess] = useState(true);
   const [trainees, setTrainees] = useState<any[]>([]);
   const [fullExerciseLibrary, setFullExerciseLibrary] = useState<any[]>([]);
   const [filteredLibrary, setFilteredLibrary] = useState<any[]>([]);
@@ -83,69 +83,86 @@ export default function NewWorkoutRoutinePage() {
   const [exercises, setExercises] = useState<any[]>([]);
 
   const sensors = useSensors(useSensor(PointerSensor), useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }));
-useEffect(() => {
-  const fetchData = async () => {
-    // 1. Get the session user ID from Auth
-    const { data: { user: authUser } } = await supabase.auth.getUser();
-    
-    if (authUser) {
-      // 2. Fetch both the ID and the ROLE from the public users table
-      const { data: publicUser, error: publicError } = await supabase
-        .from("users")
-        .select("id, role") // Added 'role' here
-        .eq("id", authUser.id)
-        .single();
 
-      if (publicUser) {
+  useEffect(() => {
+    const initializePage = async () => {
+      try {
+        setCheckingAccess(true);
+        const { data: { user: authUser } } = await supabase.auth.getUser();
+        
+        if (!authUser) {
+          router.push("/login");
+          return;
+        }
+
+        const { data: publicUser, error: publicError } = await supabase
+          .from("users")
+          .select("id, role, selected_plan")
+          .eq("id", authUser.id)
+          .single();
+
+        if (publicError || !publicUser) throw new Error("Profile not found.");
+        
         setTrainerId(publicUser.id);
 
-        // 3. Build the Trainee Query
-        let traineeQuery = supabase
-          .from("users")
-          .select("id, first_name, last_name")
-          .eq("role", "trainee");
+        // --- PLAN VALIDATION ---
+        if (publicUser.role === 'trainer') {
+          // Count current routines
+          const { count } = await supabase
+            .from("workout_routines")
+            .select("*", { count: "exact", head: true })
+            .eq("trainer_id", publicUser.id);
 
-        // Logic Gate: If not admin, restrict to their own trainees
+          if (publicUser.selected_plan) {
+            const { data: planData } = await supabase
+              .from("plans")
+              .select("trainee_limit") // Ensure this matches your column for limits
+              .eq("id", publicUser.selected_plan)
+              .single();
+
+            if (planData && (count || 0) >= planData.trainee_limit) {
+              router.push("/pricing?reason=limit_reached");
+              return;
+            }
+          }
+        }
+
+        // --- FETCH TRAINEES ---
+        let traineeQuery = supabase.from("users").select("id, first_name, last_name").eq("role", "trainee");
         if (publicUser.role !== 'admin') {
           traineeQuery = traineeQuery.eq("trainer_id", publicUser.id);
         }
-        
-        const { data: tData, error: tError } = await traineeQuery;
-        
-        if (!tError && tData) {
-          setTrainees(tData);
+        const { data: tData } = await traineeQuery;
+        if (tData) setTrainees(tData);
+
+        // --- FETCH EXERCISES ---
+        const { data: eData } = await supabase
+          .from("exercise")
+          .select(`*, zone_data:zone!exercise_field_zone_fkey (name)`)
+          .order("title");
+
+        if (eData) {
+          const flattened = eData.map((ex: any) => ({
+            ...ex,
+            zone_name: ex.zone_data?.name || "General"
+          }));
+          setFullExerciseLibrary(flattened);
+          setFilteredLibrary(flattened);
+          const uniqueZones = Array.from(new Set(flattened.map((ex: any) => ex.zone_name)));
+          setAvailableZones(["All", ...uniqueZones.filter(z => z !== "General")]);
         }
-      } else {
-        console.error("Trainer not found in public schema:", publicError);
-        setError("Your profile does not exist in the public database.");
+
+        setCheckingAccess(false);
+      } catch (err: any) {
+        console.error("Initialization Error:", err);
+        setError(err.message);
+        setCheckingAccess(false);
       }
-    }
+    };
 
-    // 4. Fetch Exercises (remains the same)
-    const { data: eData } = await supabase
-      .from("exercise")
-      .select(`
-        *,
-        zone_data:zone!exercise_field_zone_fkey (
-          name
-        )
-      `)
-      .order("title");
+    initializePage();
+  }, [router]);
 
-    if (eData) {
-      const flattened = eData.map((ex: any) => ({
-        ...ex,
-        zone_name: ex.zone_data?.name || "General"
-      }));
-      setFullExerciseLibrary(flattened);
-      setFilteredLibrary(flattened);
-      
-      const uniqueZones = Array.from(new Set(flattened.map((ex: any) => ex.zone_name)));
-      setAvailableZones(["All", ...uniqueZones.filter(z => z !== "General")]);
-    }
-  };
-  fetchData();
-}, []);
   // Filter Logic
   useEffect(() => {
     let filtered = fullExerciseLibrary.filter(ex => 
@@ -179,7 +196,7 @@ useEffect(() => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError(null); // Reset error state
+    setError(null);
 
     if (!trainerId) return setError("User session not found.");
     if (!routineData.trainee_id) return setError("Please select an athlete.");
@@ -188,29 +205,20 @@ useEffect(() => {
     setLoading(true);
 
     try {
-      // 1. Insert the Routine first
       const { data: routine, error: rError } = await supabase
         .from("workout_routines")
-        .insert([
-          { 
+        .insert([{ 
             title: routineData.title || "Untitled Routine", 
             description: routineData.description,
-            trainee_id: routineData.trainee_id, // Ensure this is a UUID
+            trainee_id: routineData.trainee_id,
             trainer_id: trainerId 
-          }
-        ])
-        .select()
-        .single();
+        }])
+        .select().single();
 
       if (rError) throw rError;
-      if (!routine) throw new Error("Routine created but no data returned.");
 
-      console.log("Routine created successfully:", routine.id);
-
-      // 2. Prepare the exercises data
-      // Ensure routine_id matches the type (UUID) and exercise_id matches (BigInt)
       const finalExercises = exercises.map((ex, idx) => ({
-        routine_id: routine.id, // This should be the UUID from the inserted routine
+        routine_id: routine.id,
         exercise_id: parseInt(ex.exercise_id),
         weight_kg: parseFloat(ex.weight_kg) || 0,
         repetitions: parseInt(ex.repetitions) || 0,
@@ -219,36 +227,27 @@ useEffect(() => {
         order_index: idx
       }));
 
-      console.log("Inserting exercises:", finalExercises);
-
-      // 3. Insert into routine_exercises
-      const { error: eError } = await supabase
-        .from("routine_exercises")
-        .insert(finalExercises);
-
+      const { error: eError } = await supabase.from("routine_exercises").insert(finalExercises);
       if (eError) throw eError;
 
-      // 4. Success! Redirect
       router.push("/dashboard/routines");
-      
     } catch (err: any) {
-        // log the specific Supabase error fields
-        console.error("Database Error Detail:", {
-            code: err.code,
-            message: err.message,
-            details: err.details,
-            hint: err.hint
-        });
-        setError(err.message || "An unexpected error occurred.");
-        }finally {
-      setLoading(true); // Keeping it true during redirect, or set to false to allow retry
+      setError(err.message || "An unexpected error occurred.");
       setLoading(false);
     }
   };
+
+  if (checkingAccess) {
+    return (
+      <div className="min-h-screen bg-[#050505] flex flex-col items-center justify-center text-slate-500">
+        <Loader2 className="h-10 w-10 text-orange-500 animate-spin mb-4" />
+        <p className="animate-pulse font-medium tracking-widest text-[10px] uppercase">Verifying Access...</p>
+      </div>
+    );
+  }
+
   return (
     <main className="bg-[#050505] text-slate-200 min-h-screen flex h-screen overflow-hidden">
-      
-      
       <div className="flex-1 flex flex-col h-full overflow-hidden">
         <header className="p-6 border-b border-slate-800 flex justify-between items-center bg-[#0b0b0b]">
            <div className="flex items-center gap-4">
@@ -261,8 +260,12 @@ useEffect(() => {
         </header>
 
         <div className="flex-1 flex overflow-hidden">
-          
           <div className="flex-1 overflow-y-auto p-8 space-y-8 custom-scrollbar bg-[#050505]">
+            {error && (
+              <div className="bg-red-500/10 border border-red-500/20 text-red-400 p-4 rounded-xl text-xs font-bold uppercase tracking-widest">
+                {error}
+              </div>
+            )}
             <div className="grid grid-cols-2 gap-6">
               <div className="bg-[#0b0b0b] p-6 rounded-3xl border border-slate-800 shadow-xl">
                 <label className="text-[10px] font-black text-slate-500 uppercase mb-2 block flex items-center gap-2"><Type size={12}/> Title</label>
@@ -344,7 +347,6 @@ useEffect(() => {
               ))}
             </div>
           </div>
-
         </div>
       </div>
     </main>

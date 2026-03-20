@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@supabase/supabase-js";
 import { 
@@ -10,7 +10,6 @@ import {
   AlertCircle, 
   Users, 
   Layers,
-  Info,
   Loader2
 } from "lucide-react";
 import Link from "next/link";
@@ -23,9 +22,9 @@ const supabase = createClient(
 export default function NewEvaluationPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const [checkingAccess, setCheckingAccess] = useState(true);
   const [trainees, setTrainees] = useState<any[]>([]);
   const [error, setError] = useState<string | null>(null);
-  const [currentTrainerId, setCurrentTrainerId] = useState<string | null>(null);
 
   const [formData, setFormData] = useState({
     trainee_id: "",
@@ -51,51 +50,68 @@ export default function NewEvaluationPage() {
     body: ""
   });
 
-useEffect(() => {
-  const initializeData = async () => {
-    // 1. Get the current logged-in user session
-    const { data: { user: authUser } } = await supabase.auth.getUser();
+  // 1. INITIALIZATION & LIMIT CHECK
+  useEffect(() => {
+    const validateAndLoad = async () => {
+      try {
+        setCheckingAccess(true);
+        const { data: { user: authUser } } = await supabase.auth.getUser();
 
-    if (authUser) {
-      // 2. Get the current user's role and ID from the public users table
-      const { data: currentUser } = await supabase
-        .from("users")
-        .select("id, role")
-        .eq("id", authUser.id)
-        .single();
-
-      if (currentUser) {
-        setCurrentTrainerId(currentUser.id);
-
-        // 3. Build the query
-        let query = supabase
-          .from("users")
-          .select("*")
-          .eq("role", "trainee");
-
-        // 4. If NOT an admin, restrict trainees to those assigned to this trainer
-        if (currentUser.role !== 'admin') {
-          query = query.eq("trainer_id", currentUser.id);
+        if (!authUser) {
+          router.push("/login");
+          return;
         }
 
-        const { data, error } = await query;
+        const { data: currentUser } = await supabase
+          .from("users")
+          .select("id, role, selected_plan")
+          .eq("id", authUser.id)
+          .single();
 
-        if (error) {
-          console.error("Supabase Error:", error);
-          setError(`Database Error: ${error.message}`);
-        } else {
+        if (currentUser) {
+          // Verify Limits for Trainers
+          if (currentUser.role === 'trainer') {
+            const { count } = await supabase
+              .from("evaluations")
+              .select("*", { count: "exact", head: true })
+              .eq("trainer_id", currentUser.id);
+
+            if (currentUser.selected_plan) {
+              const { data: planData } = await supabase
+                .from("plans")
+                .select("trainee_limit") // Verify if your column is trainee_limit or evaluation_limit
+                .eq("id", currentUser.selected_plan)
+                .single();
+
+              if (planData && (count || 0) >= planData.trainee_limit) {
+                router.push("/pricing?reason=limit_reached");
+                return;
+              }
+            }
+          }
+
+          // Load Trainees
+          let query = supabase.from("users").select("*").eq("role", "trainee");
+          if (currentUser.role !== 'admin') {
+            query = query.eq("trainer_id", currentUser.id);
+          }
+
+          const { data, error: traineeError } = await query;
+          if (traineeError) throw traineeError;
           setTrainees(data || []);
         }
+        setCheckingAccess(false);
+      } catch (err: any) {
+        console.error("Access Error:", err);
+        setError(err.message);
+        setCheckingAccess(false);
       }
-    } else {
-      setError("User session not found.");
-    }
-  };
+    };
 
-  initializeData();
-}, []);
+    validateAndLoad();
+  }, [router]);
 
-  // Calculation Engine
+  // 2. CALCULATION ENGINE
   useEffect(() => {
     const calculateMetrics = () => {
       const selectedTrainee = trainees.find(t => t.id === formData.trainee_id);
@@ -171,60 +187,64 @@ useEffect(() => {
     calculateMetrics();
   }, [formData.trainee_id, formData.weight, formData.height, formData.biceps, formData.triceps, formData.shoulder_blade, formData.suprailiac, trainees]);
 
-const handleSubmit = async (e: React.FormEvent) => {
-  e.preventDefault();
-  setLoading(true);
-  setError(null);
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setError(null);
 
-  // Helper: Converts empty string to null, otherwise returns a number
-  const n = (val: string) => (val === "" ? null : parseFloat(val));
+    const n = (val: string) => (val === "" ? null : parseFloat(val));
+    const { data: { user } } = await supabase.auth.getUser();
+    
+    if (!user) {
+      setError("You must be logged in to save an evaluation.");
+      setLoading(false);
+      return;
+    }
 
-  // Get the fresh user ID just to be absolutely sure before the insert
-  const { data: { user } } = await supabase.auth.getUser();
-  
-  if (!user) {
-    setError("You must be logged in to save an evaluation.");
-    setLoading(false);
-    return;
-  }
+    const payload = {
+      trainee_id: formData.trainee_id,
+      trainer_id: user.id,
+      weight: n(formData.weight),
+      height: n(formData.height),
+      imc: n(formData.imc),
+      fat_percentage: n(formData.fat_percentage),
+      fat_mass: n(formData.fat_mass),
+      lean_mass: n(formData.lean_mass),
+      biceps: n(formData.biceps),
+      triceps: n(formData.triceps),
+      shoulder_blade: n(formData.shoulder_blade),
+      suprailiac: n(formData.suprailiac),
+      waist: n(formData.waist),
+      arm: n(formData.arm),
+      torso: n(formData.torso),
+      hip: n(formData.hip),
+      leg: n(formData.leg),
+      shin: n(formData.shin),
+      wrist: n(formData.wrist),
+      addition: n(formData.addition),
+      results: formData.results || null,
+      body: formData.body || null
+    };
 
-  const payload = {
-    trainee_id: formData.trainee_id, // UUID
-    trainer_id: user.id,            // Use the ID directly from the auth session
-    weight: n(formData.weight),
-    height: n(formData.height),
-    imc: n(formData.imc),
-    fat_percentage: n(formData.fat_percentage),
-    fat_mass: n(formData.fat_mass),
-    lean_mass: n(formData.lean_mass),
-    biceps: n(formData.biceps),
-    triceps: n(formData.triceps),
-    shoulder_blade: n(formData.shoulder_blade),
-    suprailiac: n(formData.suprailiac),
-    waist: n(formData.waist),
-    arm: n(formData.arm),
-    torso: n(formData.torso),
-    hip: n(formData.hip),
-    leg: n(formData.leg),
-    shin: n(formData.shin),
-    wrist: n(formData.wrist),
-    addition: n(formData.addition),
-    results: formData.results || null,
-    body: formData.body || null
+    const { error: submitError } = await supabase.from("evaluations").insert([payload]);
+
+    if (submitError) {
+      setError(submitError.message);
+      setLoading(false);
+    } else {
+      router.push("/dashboard/evaluations");
+    }
   };
 
-  const { error: submitError } = await supabase
-    .from("evaluations")
-    .insert([payload]);
-
-  if (submitError) {
-    console.error("Insert failed:", submitError.message);
-    setError(submitError.message);
-    setLoading(false);
-  } else {
-    router.push("/dashboard/evaluations");
+  if (checkingAccess) {
+    return (
+      <div className="min-h-screen bg-[#050505] flex flex-col items-center justify-center text-slate-500">
+        <Loader2 className="h-10 w-10 text-orange-500 animate-spin mb-4" />
+        <p className="animate-pulse font-medium tracking-widest text-[10px] uppercase">Verifying Subscription...</p>
+      </div>
+    );
   }
-};
+
   const inputClasses = "w-full bg-[#0a0a0a] border border-slate-800 rounded-xl py-3 px-4 text-sm focus:border-orange-500 outline-none text-white transition-all placeholder:text-slate-600";
   const labelClasses = "text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 mb-2 block";
   const sectionHeader = "text-xs font-black uppercase tracking-[0.3em] text-orange-500/80 mb-6 flex items-center gap-2 border-b border-slate-800 pb-2";
@@ -293,7 +313,7 @@ const handleSubmit = async (e: React.FormEvent) => {
               <div className="bg-[#111] border border-slate-800 rounded-3xl p-8 shadow-2xl">
                 <h3 className={sectionHeader}><Activity size={16}/> Perimeters</h3>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-                  {['waist', 'arm', 'torso', 'hip'].map((f) => (
+                  {['waist', 'arm', 'torso', 'hip', 'leg', 'shin', 'wrist'].map((f) => (
                     <div key={f}>
                       <label className={labelClasses}>{f}</label>
                       <input type="number" step="0.01" className={inputClasses} placeholder="0.0" value={(formData as any)[f]} onChange={(e) => setFormData({...formData, [f]: e.target.value})} />
@@ -301,21 +321,6 @@ const handleSubmit = async (e: React.FormEvent) => {
                   ))}
                 </div>
               </div>
-              <div className="bg-[#111] border border-slate-800 rounded-3xl p-8 shadow-2xl">
-                <h3 className={sectionHeader}><Activity size={16}/> Perimeters</h3>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-                  {['shoulder_blade', 'leg', 'shin', 'wrist'].map((f) => (
-                    <div key={f}>
-                      <label className={labelClasses}>{f}</label>
-                      <input type="number" step="0.01" className={inputClasses} placeholder="0.0" value={(formData as any)[f]} onChange={(e) => setFormData({...formData, [f]: e.target.value})} />
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-
- 
-      
             </div>
 
             <div className="lg:col-span-4">
@@ -326,9 +331,7 @@ const handleSubmit = async (e: React.FormEvent) => {
                       <ResultBox label="Fat %" value={formData.fat_percentage} unit="%" color="text-orange-500" />
                       <ResultBox label="Lean Mass" value={formData.lean_mass} unit="kg" />
                       <ResultBox label="Fat Mass" value={formData.fat_mass} unit="kg" />
-                      <ResultBox label="Fat Mass" value={formData.fat_mass} unit="kg" />
-                      <ResultBox label="imc" value={formData.imc} unit="kg" />
-                      <ResultBox label="addition" value={formData.addition} unit="kg" />
+                      <ResultBox label="BMI" value={formData.imc} unit="" />
                       <div className="pt-6 border-t border-slate-800">
                         <p className={labelClasses}>Classification</p>
                         <div className="text-2xl font-black italic uppercase text-emerald-500">{formData.results || "---"}</div>

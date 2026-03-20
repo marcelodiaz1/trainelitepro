@@ -5,9 +5,8 @@ import { useRouter } from "next/navigation";
 import { createClient } from "@supabase/supabase-js";
 import { DragDropContext, Draggable } from "@hello-pangea/dnd";
 import { StrictModeDroppable } from "@/components/dashboard/StrictModeDroppable";
-import Sidebar from "@/components/dashboard/Sidebar";
 import { 
-  ChevronLeft, Save, GripVertical, Trash2, Search, Flame, Dna 
+  ChevronLeft, Save, GripVertical, Trash2, Search, Flame, Dna, Loader2 
 } from "lucide-react";
 import Link from "next/link";
 
@@ -20,7 +19,7 @@ const supabase = createClient(
 const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 
 /**
- * Nutrition calculation helper - Mirroring your MealsPage logic
+ * Nutrition calculation helper
  */
 const getMealStats = (mealIngredients: any[] = []) => {
   let totals = { cal: 0, pro: 0, carb: 0, fat: 0 };
@@ -40,10 +39,13 @@ const getMealStats = (mealIngredients: any[] = []) => {
 export default function NewMealPlanPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const [checkingAccess, setCheckingAccess] = useState(true);
   const [dataLoading, setDataLoading] = useState(true);
   const [trainees, setTrainees] = useState<any[]>([]);
   const [availableMeals, setAvailableMeals] = useState<any[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const [trainerId, setTrainerId] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
   
   const [formData, setFormData] = useState({
     title: "",
@@ -53,83 +55,103 @@ export default function NewMealPlanPage() {
   });
 
   useEffect(() => {
-    fetchInitialData();
-  }, []);
+    const initializePage = async () => {
+      try {
+        setCheckingAccess(true);
+        setDataLoading(true);
 
-const fetchInitialData = async () => {
-  setDataLoading(true);
-  
-  // 1. Get the current logged-in user and their role
-  const { data: { user: authUser } } = await supabase.auth.getUser();
-  
-  if (authUser) {
-    // Cross-reference public schema for role
-    const { data: currentUser } = await supabase
-      .from("users")
-      .select("id, role")
-      .eq("id", authUser.id)
-      .single();
+        const { data: { user: authUser } } = await supabase.auth.getUser();
+        if (!authUser) {
+          router.push("/login");
+          return;
+        }
 
-    if (currentUser) {
-      // 2. Fetch Trainees with Role-Based Logic
-      let traineeQuery = supabase
-        .from("users")
-        .select("id, first_name, last_name")
-        .eq("role", "trainee");
+        const { data: currentUser, error: userError } = await supabase
+          .from("users")
+          .select("id, role, selected_plan")
+          .eq("id", authUser.id)
+          .single();
 
-      // If NOT admin, filter by trainer_id
-      if (currentUser.role !== 'admin') {
-        traineeQuery = traineeQuery.eq("trainer_id", currentUser.id);
+        if (userError || !currentUser) throw new Error("User profile not found.");
+        setTrainerId(currentUser.id);
+
+        // --- SUBSCRIPTION CHECK ---
+        if (currentUser.role === 'trainer') {
+          const { count } = await supabase
+            .from("meal_plans")
+            .select("*", { count: "exact", head: true })
+            .eq("trainer_id", currentUser.id);
+
+          if (currentUser.selected_plan) {
+            const { data: planData } = await supabase
+              .from("plans")
+              .select("trainee_limit")
+              .eq("id", currentUser.selected_plan)
+              .single();
+
+            if (planData && (count || 0) >= planData.trainee_limit) {
+              router.push("/pricing?reason=limit_reached");
+              return;
+            }
+          }
+        }
+
+        // --- FETCH TRAINEES ---
+        let traineeQuery = supabase.from("users").select("id, first_name, last_name").eq("role", "trainee");
+        if (currentUser.role !== 'admin') {
+          traineeQuery = traineeQuery.eq("trainer_id", currentUser.id);
+        }
+        const { data: users } = await traineeQuery;
+        if (users) setTrainees(users);
+
+        // --- FETCH MEALS ---
+        const { data: mealsData } = await supabase
+          .from("meals")
+          .select(`id, name, ingredients`)
+          .order('name', { ascending: true });
+
+        if (mealsData) {
+          const allIngredientRelIds = Array.from(new Set(mealsData.flatMap((m: any) => m.ingredients || [])));
+          if (allIngredientRelIds.length > 0) {
+            const { data: relData } = await supabase
+              .from("meal_ingredients")
+              .select(`
+                id, amount, measure,
+                ingredients ( name, field_calories_per_100g_kcal, field_protein_per_100g_g )
+              `)
+              .in("id", allIngredientRelIds);
+
+            const ingredientLookup: Record<number, any> = {};
+            relData?.forEach((item: any) => { ingredientLookup[item.id] = item; });
+
+            const processedMeals = mealsData.map((meal: any) => {
+              const meal_ingredients = (meal.ingredients || [])
+                .map((id: number) => ingredientLookup[id])
+                .filter(Boolean);
+              const stats = getMealStats(meal_ingredients);
+              return {
+                id: meal.id,
+                title: meal.name,
+                calories: stats.calories,
+                protein: stats.protein
+              };
+            });
+            setAvailableMeals(processedMeals);
+          }
+        }
+
+        setCheckingAccess(false);
+        setDataLoading(false);
+      } catch (err: any) {
+        console.error("Initialization Error:", err);
+        setError(err.message);
+        setCheckingAccess(false);
+        setDataLoading(false);
       }
+    };
 
-      const { data: users } = await traineeQuery;
-      if (users) setTrainees(users);
-    }
-  }
-
-  // 3. Fetch Meals with relational data (Remains the same)
-  const { data: mealsData } = await supabase
-    .from("meals")
-    .select(`id, name, ingredients`)
-    .order('name', { ascending: true });
-
-  if (mealsData) {
-    const allIngredientRelIds = Array.from(
-      new Set(mealsData.flatMap((m: any) => m.ingredients || []))
-    );
-
-    if (allIngredientRelIds.length > 0) {
-      const { data: relData } = await supabase
-        .from("meal_ingredients")
-        .select(`
-          id, amount, measure,
-          ingredients ( name, field_calories_per_100g_kcal, field_protein_per_100g_g )
-        `)
-        .in("id", allIngredientRelIds);
-
-      const ingredientLookup: Record<number, any> = {};
-      relData?.forEach((item: any) => { ingredientLookup[item.id] = item; });
-
-      const processedMeals = mealsData.map((meal: any) => {
-        const meal_ingredients = (meal.ingredients || [])
-          .map((id: number) => ingredientLookup[id])
-          .filter(Boolean);
-        
-        const stats = getMealStats(meal_ingredients);
-        
-        return {
-          id: meal.id,
-          title: meal.name,
-          calories: stats.calories,
-          protein: stats.protein
-        };
-      });
-
-      setAvailableMeals(processedMeals);
-    }
-  }
-  setDataLoading(false);
-};
+    initializePage();
+  }, [router]);
 
   const onDragEnd = (result: any) => {
     const { source, destination } = result;
@@ -140,7 +162,6 @@ const fetchInitialData = async () => {
     if (source.droppableId === "available-meals" && destination.droppableId !== "available-meals") {
       const mealToAdd = filteredMeals[source.index];
       const targetDayIndex = newSchedule.findIndex(d => d.day === destination.droppableId);
-      
       const updatedMeals = [...newSchedule[targetDayIndex].meals];
       updatedMeals.splice(destination.index, 0, { 
         ...mealToAdd, 
@@ -151,11 +172,9 @@ const fetchInitialData = async () => {
     else if (source.droppableId !== "available-meals" && destination.droppableId !== "available-meals") {
         const sourceDayIndex = newSchedule.findIndex(d => d.day === source.droppableId);
         const destDayIndex = newSchedule.findIndex(d => d.day === destination.droppableId);
-        
         const [movedMeal] = newSchedule[sourceDayIndex].meals.splice(source.index, 1);
         newSchedule[destDayIndex].meals.splice(destination.index, 0, movedMeal);
     }
-
     setFormData({ ...formData, schedule: newSchedule });
   };
 
@@ -172,37 +191,42 @@ const fetchInitialData = async () => {
   };
 
   const handleSave = async () => {
+    if (!trainerId) return;
     setLoading(true);
-    const allMealIds = Array.from(new Set(
-        formData.schedule.flatMap(d => d.meals.map((m: any) => m.id))
-    ));
+    const allMealIds = Array.from(new Set(formData.schedule.flatMap(d => d.meals.map((m: any) => m.id))));
 
-    const { data: { user } } = await supabase.auth.getUser();
-
-    const { error } = await supabase.from("meal_plans").insert({
+    const { error: saveError } = await supabase.from("meal_plans").insert({
       title: formData.title,
       trainee_id: formData.trainee_id,
-      trainer_id: user?.id,
+      trainer_id: trainerId,
       duration: formData.duration,
       schedule: formData.schedule,
       all_meal_ids: allMealIds
     });
 
-    if (error) {
-      alert(error.message);
+    if (saveError) {
+      setError(saveError.message);
+      setLoading(false);
     } else {
       router.push("/dashboard/meal-plans");
     }
-    setLoading(false);
   };
 
   const filteredMeals = availableMeals.filter(m => 
     m.title.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  if (checkingAccess) {
+    return (
+      <div className="min-h-screen bg-[#050505] flex flex-col items-center justify-center text-slate-500">
+        <Loader2 className="h-10 w-10 text-orange-500 animate-spin mb-4" />
+        <p className="animate-pulse font-medium tracking-widest text-[10px] uppercase">Verifying Access...</p>
+      </div>
+    );
+  }
+
   return (
     <main className="bg-[#050505] text-white min-h-screen flex h-screen overflow-hidden">
-      
       <div className="flex-1 flex flex-col overflow-hidden">
         <header className="p-6 border-b border-slate-800 flex justify-between items-center bg-[#0b0b0b]">
           <div className="flex items-center gap-4">
@@ -214,13 +238,12 @@ const fetchInitialData = async () => {
             disabled={loading || !formData.title || !formData.trainee_id} 
             className="bg-orange-600 hover:bg-orange-500 disabled:opacity-30 px-6 py-2 rounded-xl text-xs font-black uppercase flex items-center gap-2 transition-all shadow-lg shadow-orange-600/20"
           >
-            <Save size={16} /> {loading ? "Saving..." : "Save Plan"}
+            {loading ? <Loader2 className="animate-spin h-4 w-4" /> : <Save size={16} />} {loading ? "Saving..." : "Save Plan"}
           </button>
         </header>
 
         <div className="flex-1 flex overflow-hidden">
           <DragDropContext onDragEnd={onDragEnd}>
-            {/* Library Panel */}
             <div className="w-80 border-r border-slate-800 bg-[#080808] flex flex-col">
               <div className="p-4 border-b border-slate-800">
                 <div className="relative">
@@ -238,9 +261,8 @@ const fetchInitialData = async () => {
                 {(provided) => (
                   <div {...provided.droppableProps} ref={provided.innerRef} className="flex-1 overflow-y-auto p-4 space-y-3 custom-scrollbar">
                     <p className="text-[10px] font-black text-slate-500 uppercase mb-4 tracking-widest">Recipe Library</p>
-                    
                     {dataLoading ? (
-                      <div className="flex justify-center py-10"><div className="w-4 h-4 border-b-2 border-orange-500 rounded-full animate-spin" /></div>
+                      <div className="flex justify-center py-10"><Loader2 className="w-4 h-4 text-orange-500 animate-spin" /></div>
                     ) : filteredMeals.map((meal, index) => (
                       <Draggable key={`lib-${meal.id}`} draggableId={`lib-${meal.id}`} index={index}>
                         {(provided) => (
@@ -270,9 +292,9 @@ const fetchInitialData = async () => {
               </StrictModeDroppable>
             </div>
 
-            {/* Builder Panel */}
             <div className="flex-1 overflow-y-auto p-8 bg-black custom-scrollbar">
               <div className="max-w-4xl mx-auto space-y-8">
+                {error && <div className="bg-red-500/10 border border-red-500/20 text-red-400 p-4 rounded-xl text-[10px] font-black uppercase">{error}</div>}
                 <div className="grid grid-cols-2 gap-6">
                     <div className="space-y-2">
                         <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Plan Title</label>
@@ -299,7 +321,6 @@ const fetchInitialData = async () => {
                 <div className="grid grid-cols-1 gap-6">
                   {formData.schedule.map((day) => {
                     const dayTotalCals = day.meals.reduce((sum: number, m: any) => sum + m.calories, 0);
-                    
                     return (
                       <div key={day.day} className="bg-[#0b0b0b] border border-slate-800 rounded-2xl p-5 shadow-2xl">
                         <div className="flex justify-between items-center mb-4">
@@ -317,9 +338,7 @@ const fetchInitialData = async () => {
                               {...provided.droppableProps} 
                               ref={provided.innerRef}
                               className={`min-h-[100px] rounded-xl border-2 border-dashed transition-all flex flex-wrap gap-3 p-4 ${
-                                snapshot.isDraggingOver 
-                                ? 'border-orange-500/50 bg-orange-500/5 shadow-inner' 
-                                : 'border-slate-800/50'
+                                snapshot.isDraggingOver ? 'border-orange-500/50 bg-orange-500/5 shadow-inner' : 'border-slate-800/50'
                               }`}
                             >
                               {day.meals.map((meal: any, index: number) => (
@@ -333,10 +352,7 @@ const fetchInitialData = async () => {
                                         <span className="text-xs font-bold text-slate-200">{meal.title}</span>
                                         <span className="text-[9px] text-slate-500">{meal.calories} kcal</span>
                                       </div>
-                                      <button 
-                                        onClick={() => removeMeal(day.day, index)} 
-                                        className="text-slate-600 hover:text-red-500 transition-colors ml-2"
-                                      >
+                                      <button onClick={() => removeMeal(day.day, index)} className="text-slate-600 hover:text-red-500 transition-colors ml-2">
                                           <Trash2 size={14} />
                                       </button>
                                     </div>

@@ -1,21 +1,19 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Sidebar from "@/components/dashboard/Sidebar";
 import { createClient } from "@supabase/supabase-js";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
   MoreVertical, 
   Trash2, 
   Edit2, 
-  ChevronLeft, 
-  ChevronRight, 
-  ArrowUpDown, 
   Search, 
   ListChecks,
   ClipboardList,
   User,
-  Eye
+  Eye,
+  Lock,
+  Zap
 } from "lucide-react";
 import Link from "next/link";
 import Pagination from "@/components/dashboard/Pagination";
@@ -38,8 +36,9 @@ export default function WorkoutRoutinesTable() {
   const [routines, setRoutines] = useState<Routine[]>([]);
   const [loading, setLoading] = useState(true);
   const [dropdownOpen, setDropdownOpen] = useState<string | null>(null);
+  const [role, setRole] = useState<string | null>(null);
+  const [isAtLimit, setIsAtLimit] = useState(false);
 
-const [role, setRole] = useState<string | null>(null);
   // Pagination & Sorting
   const [page, setPage] = useState(1);
   const [pageSize] = useState(10);
@@ -47,66 +46,74 @@ const [role, setRole] = useState<string | null>(null);
   const [sortColumn, setSortColumn] = useState<string>("created_at");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
 
-useEffect(() => {
-  const fetchRoutines = async () => {
-    setLoading(true);
-    
-    // 1. Get the current logged-in user
-    const { data: { user } } = await supabase.auth.getUser();
-    
-    if (!user) {
+  useEffect(() => {
+    const fetchRoutines = async () => {
+      setLoading(true);
+      
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        setLoading(false);
+        return;
+      }
+
+      // Fetch User Role and Plan
+      const { data: profile } = await supabase
+        .from("users")
+        .select("role, selected_plan")
+        .eq("id", user.id)
+        .single();
+      
+      const userRole = profile?.role;
+      setRole(userRole);
+
+      const from = (page - 1) * pageSize;
+      const to = from + pageSize - 1;
+
+      // Build the base query
+      let query = supabase
+        .from("workout_routines")
+        .select(`
+          id,
+          title,
+          description,
+          created_at,
+          trainer:trainer_id(first_name, last_name),
+          trainee:trainee_id(first_name, last_name)
+        `, { count: "exact" });
+
+      if (userRole === "trainer") {
+        query = query.eq("trainer_id", user.id);
+      } else if (userRole === "trainee") {
+        query = query.eq("trainee_id", user.id);
+      }
+
+      const { data, error, count } = await query
+        .order(sortColumn, { ascending: sortOrder === "asc" })
+        .range(from, to);
+
+      if (!error) {
+        // Limit Check logic for Trainers
+        if (userRole === "trainer" && profile?.selected_plan) {
+          const { data: planData } = await supabase
+            .from("plans")
+            .select("routine_limit")
+            .eq("id", profile.selected_plan)
+            .single();
+
+          if (planData) {
+            setIsAtLimit((count || 0) >= planData.routine_limit);
+          }
+        }
+
+        setRoutines(data as unknown as Routine[]);
+        setTotal(count || 0);
+      }
+      
       setLoading(false);
-      return;
-    }
+    };
 
-    // 2. Fetch the user's role
-    const { data: profile } = await supabase
-      .from("users")
-      .select("role")
-      .eq("id", user.id)
-      .single();
-    
-    const userRole = profile?.role;
-    setRole(userRole);
-
-    const from = (page - 1) * pageSize;
-    const to = from + pageSize - 1;
-
-    // 3. Build the base query
-    let query = supabase
-      .from("workout_routines")
-      .select(`
-        id,
-        title,
-        description,
-        created_at,
-        trainer:trainer_id(first_name, last_name),
-        trainee:trainee_id(first_name, last_name)
-      `, { count: "exact" });
-
-    // 4. Filter based on Role
-    if (userRole === "trainer") {
-      query = query.eq("trainer_id", user.id);
-    } else if (userRole === "trainee") {
-      query = query.eq("trainee_id", user.id);
-    }
-    // Admin (or others) see all
-
-    const { data, error, count } = await query
-      .order(sortColumn, { ascending: sortOrder === "asc" })
-      .range(from, to);
-
-    if (!error) {
-      setRoutines(data as unknown as Routine[]);
-      setTotal(count || 0);
-    }
-    
-    setLoading(false);
-  };
-
-  fetchRoutines();
-}, [page, sortColumn, sortOrder]);
-
+    fetchRoutines();
+  }, [page, sortColumn, sortOrder]);
 
   const handleDelete = async (id: string) => {
     if (!confirm("Are you sure you want to delete this routine?")) return;
@@ -127,41 +134,47 @@ useEffect(() => {
     }
   };
 
-  const totalPages = Math.ceil(total / pageSize);
-
   return (
-
-      <main className="bg-[#0b0b0b] text-white min-h-screen flex">
-        
-        <div className="p-8 flex-1 max-w-1xl   w-full"> 
-     
+    <main className="bg-[#0b0b0b] text-white min-h-screen flex">
+      <div className="p-8 flex-1 max-w-1xl w-full"> 
         <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 mb-8">
           <div>
-           <h1 className="text-4xl font-extrabold tracking-tight text-white mb-2 uppercase italic flex items-center gap-3">
-              <ListChecks className="text-orange-500" />Workout Routine</h1>
-            <p className="text-slate-500 text-sm">Review and manage assigned training routines.</p>
+            <h1 className="text-4xl font-extrabold tracking-tight text-white mb-2 uppercase italic flex items-center gap-3">
+              <ListChecks className="text-orange-500" /> Workout Routine
+            </h1>
+            <p className="text-slate-500 text-sm">
+              {isAtLimit && role === "trainer" 
+                ? "Routine limit reached for your current plan." 
+                : "Review and manage assigned training routines."}
+            </p>
           </div>
           
-         
           <div className="flex gap-3 w-full md:w-auto">
-           
             <div className="relative flex-1 md:w-64">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-700" size={16} />
               <input 
                 type="text" 
                 placeholder="Search routines..." 
-                className="w-full bg-[#111] border border-slate-800 rounded-lg py-2.5 pl-10 pr-4 text-xs focus:border-blue-500 outline-none transition-all placeholder:text-slate-700"
+                className="w-full bg-[#111] border border-slate-800 rounded-lg py-2.5 pl-10 pr-4 text-xs focus:border-orange-500 outline-none transition-all placeholder:text-slate-700"
               />
             </div>
           
-            
             {role !== "trainee" && (
-            <Link href="/dashboard/routines/new">
-              <button className="bg-orange-600 hover:bg-orange-500 text-white px-5 py-2.5 rounded-lg text-xs font-black uppercase tracking-widest flex items-center gap-2 transition-all active:scale-95 shadow-lg shadow-blue-600/20">
-                <ListChecks size={16} /> Add Routine
-              </button>
-            </Link>
-            
+              isAtLimit ? (
+                <Link href="/pricing">
+                  <button className="bg-white/5 border border-white/10 hover:border-orange-500/50 text-white px-5 py-2.5 rounded-lg text-xs font-black uppercase tracking-widest flex items-center gap-2 transition-all group shadow-lg">
+                    <Lock size={16} className="text-orange-500" /> 
+                    Limit Reached
+                    <Zap size={14} className="text-orange-500 animate-pulse" />
+                  </button>
+                </Link>
+              ) : (
+                <Link href="/dashboard/routines/new">
+                  <button className="bg-orange-600 hover:bg-orange-500 text-white px-5 py-2.5 rounded-lg text-xs font-black uppercase tracking-widest flex items-center gap-2 transition-all active:scale-95 shadow-lg shadow-orange-600/20">
+                    <ListChecks size={16} /> Add Routine
+                  </button>
+                </Link>
+              )
             )}
           </div>
         </div>
@@ -192,13 +205,12 @@ useEffect(() => {
                 <tbody className="divide-y divide-slate-800/50">
                   {routines.map((routine) => (
                     <tr key={routine.id} className="hover:bg-white/[0.02] transition-colors group">
-                     <td className="px-6 py-4">
+                      <td className="px-6 py-4">
                         <div className="flex items-center gap-3">
-                            <div className="p-2 bg-orange-500/10 rounded-lg text-orange-500">
+                          <div className="p-2 bg-orange-500/10 rounded-lg text-orange-500">
                             <ClipboardList size={18} />
-                            </div>
-                            <div>
-                            {/* Link the title here */}
+                          </div>
+                          <div>
                             <Link 
                                 href={`/dashboard/routines/${routine.id}`}
                                 className="font-bold text-white hover:text-orange-400 transition-colors uppercase tracking-tight italic"
@@ -206,9 +218,9 @@ useEffect(() => {
                                 {routine.title}
                             </Link>
                             <p className="text-[10px] text-slate-500 truncate max-w-[200px]">{routine.description}</p>
-                            </div>
+                          </div>
                         </div>
-                        </td>
+                      </td>
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-2 text-slate-300">
                           <User size={14} className="text-slate-600" />
@@ -245,11 +257,8 @@ useEffect(() => {
                                 <Link href={`/dashboard/routines/${routine.id}`} className="flex items-center gap-3 w-full px-4 py-3 text-xs font-bold hover:bg-slate-800 transition-colors text-slate-300">
                                   <Eye size={14} className="text-orange-400" /> View Exercises
                                 </Link>
-                             
-                                <Link 
-                                  href={`/dashboard/routines/${routine.id}/edit`} 
-                                 >
-                                  <button className="flex items-center gap-3 w-full px-4 py-3 text-xs font-bold hover:bg-slate-800 transition-colors text-slate-300"  >
+                                <Link href={`/dashboard/routines/${routine.id}/edit`}>
+                                  <button className="flex items-center gap-3 w-full px-4 py-3 text-xs font-bold hover:bg-slate-800 transition-colors text-slate-300">
                                     <Edit2 size={14} className="text-blue-400" /> Edit Routine
                                   </button>
                                 </Link>
@@ -269,7 +278,7 @@ useEffect(() => {
                 </tbody>
               </table>
             </div>
-           <Pagination 
+            <Pagination 
               currentPage={page}
               totalItems={total}
               pageSize={pageSize}
@@ -282,5 +291,3 @@ useEffect(() => {
     </main>
   );
 }
-
- 

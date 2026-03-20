@@ -1,26 +1,24 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Sidebar from "@/components/dashboard/Sidebar";
 import { createClient } from "@supabase/supabase-js";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { 
   MoreVertical, 
   Search, 
-  Plus, 
   ChefHat, 
   Utensils,
-  ChevronLeft,
-  ChevronRight,
   AlertTriangle,
   Flame,
   Dna,
   Edit2,
   Trash2,
   Eye,
-  X,
-  Salad
+  Salad,
+  Loader2,
+  Lock,
+  Zap
 } from "lucide-react";
 import Pagination from "@/components/dashboard/Pagination";
 
@@ -62,6 +60,9 @@ export default function MealsPage() {
   const [meals, setMeals] = useState<Meal[]>([]);
   const [loading, setLoading] = useState(true);
   const [dropdownOpen, setDropdownOpen] = useState<number | null>(null);
+  const [isAtLimit, setIsAtLimit] = useState(false);
+  
+  // Pagination & Search
   const [page, setPage] = useState(1);
   const [pageSize] = useState(8);
   const [total, setTotal] = useState(0);
@@ -69,68 +70,92 @@ export default function MealsPage() {
 
   useEffect(() => {
     const fetchFullMealData = async () => {
-      setLoading(true);
-      const from = (page - 1) * pageSize;
-      const to = from + pageSize - 1;
+      try {
+        setLoading(true);
+        const from = (page - 1) * pageSize;
+        const to = from + pageSize - 1;
 
-      // 1. Fetch meals
-      const { data: mealsData, error: mealsError, count } = await supabase
-        .from("meals")
-        .select("*", { count: "exact" })
-        .ilike('name', `%${searchTerm}%`)
-        .range(from, to)
-        .order('id', { ascending: false });
+        // 1. Get current trainer session
+        const { data: { user: authUser } } = await supabase.auth.getUser();
+        if (!authUser) return;
 
-      if (mealsError || !mealsData) {
-        console.error("Error fetching meals:", mealsError);
-        setLoading(false);
-        return;
-      }
+        // 2. Fetch trainer profile to get the plan
+        const { data: profile } = await supabase
+          .from("users")
+          .select("selected_plan")
+          .eq("id", authUser.id)
+          .single();
 
-      // 2. Map ingredient relationship IDs
-      const allIngredientRelIds = Array.from(
-        new Set(mealsData.flatMap((m: Meal) => m.ingredients || []))
-      );
+        // 3. Fetch meals with search and range
+        const { data: mealsData, error: mealsError, count } = await supabase
+          .from("meals")
+          .select("*", { count: "exact" })
+          .ilike('name', `%${searchTerm}%`)
+          .range(from, to)
+          .order('id', { ascending: false });
 
-      let ingredientLookup: Record<number, MealIngredient> = {};
+        if (mealsError || !mealsData) throw mealsError;
 
-      // 3. Fetch detailed ingredient data
-      if (allIngredientRelIds.length > 0) {
-        const { data: relData, error: relError } = await supabase
-          .from("meal_ingredients")
-          .select(`
-            id, amount, measure,
-            ingredients (
-              name,
-              field_calories_per_100g_kcal,
-              field_protein_per_100g_g,
-              field_carbs_per_100g_g,
-              field_fat_per_100g_g,
-              field_dietary_restrictions_ethic,
-              field_dietary_restrictions_medic,
-              field_dietary_restrictions_relig
-            )
-          `)
-          .in("id", allIngredientRelIds);
+        // 4. Database Limit Check (Logic from your Trainees table)
+        if (profile?.selected_plan) {
+          const { data: planData } = await supabase
+            .from("plans")
+            .select("meal_limit") // Ensure this column exists in your 'plans' table
+            .eq("id", profile.selected_plan)
+            .single();
 
-        if (!relError && relData) {
-          relData.forEach((item: any) => {
-            ingredientLookup[item.id] = item;
-          });
+          if (planData) {
+            // Check if total meals (count) meets or exceeds plan limit
+            setIsAtLimit((count || 0) >= planData.meal_limit);
+          }
         }
+
+        // 5. Map ingredient relationship IDs and fetch details
+        const allIngredientRelIds = Array.from(
+          new Set(mealsData.flatMap((m: Meal) => m.ingredients || []))
+        );
+
+        let ingredientLookup: Record<number, MealIngredient> = {};
+
+        if (allIngredientRelIds.length > 0) {
+          const { data: relData } = await supabase
+            .from("meal_ingredients")
+            .select(`
+              id, amount, measure,
+              ingredients (
+                name,
+                field_calories_per_100g_kcal,
+                field_protein_per_100g_g,
+                field_carbs_per_100g_g,
+                field_fat_per_100g_g,
+                field_dietary_restrictions_ethic,
+                field_dietary_restrictions_medic,
+                field_dietary_restrictions_relig
+              )
+            `)
+            .in("id", allIngredientRelIds);
+
+          if (relData) {
+            relData.forEach((item: any) => {
+              ingredientLookup[item.id] = item;
+            });
+          }
+        }
+
+        const finalMeals = mealsData.map((meal: Meal) => ({
+          ...meal,
+          meal_ingredients: (meal.ingredients || [])
+            .map(id => ingredientLookup[id])
+            .filter(Boolean)
+        }));
+
+        setMeals(finalMeals);
+        setTotal(count || 0);
+      } catch (err) {
+        console.error("Meal Fetch Error:", err);
+      } finally {
+        setLoading(false);
       }
-
-      // 4. Combine data for the state
-      const finalMeals = mealsData.map((meal: Meal) => ({
-        ...meal,
-        meal_ingredients: (meal.ingredients || [])
-          .map(id => ingredientLookup[id])
-          .filter(Boolean)
-      }));
-
-      setMeals(finalMeals);
-      setTotal(count || 0);
-      setLoading(false);
     };
 
     fetchFullMealData();
@@ -142,6 +167,8 @@ export default function MealsPage() {
     if (!error) {
       setMeals((prev) => prev.filter((m) => m.id !== id));
       setTotal((prev) => prev - 1);
+      // Re-evaluate limit after deletion
+      setIsAtLimit(false); 
     }
     setDropdownOpen(null);
   };
@@ -153,7 +180,6 @@ export default function MealsPage() {
     mealIngredients.forEach((mi) => {
       const ing = mi.ingredients;
       if (!ing) return;
-      
       const multiplier = mi.amount / 100;
       totals.cal += (ing.field_calories_per_100g_kcal || 0) * multiplier;
       totals.pro += (ing.field_protein_per_100g_g || 0) * multiplier;
@@ -173,44 +199,54 @@ export default function MealsPage() {
     };
   };
 
-  const totalPages = Math.ceil(total / pageSize);
-
   return (
-     <main className="bg-[#0b0b0b] text-white min-h-screen flex">
+    <main className="bg-[#0b0b0b] text-white min-h-screen flex">
+      <div className="p-8 flex-1 max-w-7xl mx-auto w-full"> 
         
-        <div className="p-8 flex-1 max-w-1xl   w-full">  
-      
         <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 mb-8">
           <div>
             <h1 className="text-4xl font-extrabold tracking-tight text-white mb-2 uppercase italic flex items-center gap-3">
-              <Salad className="text-orange-500" />Meal Planner</h1>
-            <p className="text-slate-500 text-sm">Calculated nutrition and restriction monitoring.</p>
+              <Salad className="text-orange-500" />Meal Planner
+            </h1>
+            <p className="text-slate-500 text-sm">
+              {isAtLimit ? "Plan limit reached. Upgrade to add more recipes." : "Calculated nutrition and restriction monitoring."}
+            </p>
           </div>
           
-        
           <div className="flex gap-3 w-full md:w-auto">
-           
             <div className="relative flex-1 md:w-64">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-700" size={16} />
               <input 
                 type="text" 
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
                 placeholder="Search meals..." 
-                className="w-full bg-[#111] border border-slate-800 rounded-lg py-2.5 pl-10 pr-4 text-xs focus:border-blue-500 outline-none transition-all placeholder:text-slate-700"
+                className="w-full bg-[#111] border border-slate-800 rounded-lg py-2.5 pl-10 pr-4 text-xs focus:border-orange-500 outline-none transition-all placeholder:text-slate-700 text-white"
               />
             </div> 
             
-            <Link href="/dashboard/meals/new">
-              <button className="bg-orange-600 hover:bg-orange-500 text-white px-5 py-2.5 rounded-lg text-xs font-black uppercase tracking-widest flex items-center gap-2 transition-all active:scale-95 shadow-lg shadow-orange-600/20">
-                <Salad size={16} /> Add Meal  
-              </button>
-            </Link> 
+            {isAtLimit ? (
+              <Link href="/pricing">
+                <button className="bg-white/5 border border-white/10 hover:border-orange-500/50 text-white px-5 py-2.5 rounded-lg text-xs font-black uppercase tracking-widest flex items-center gap-2 transition-all group shadow-lg">
+                  <Lock size={16} className="text-orange-500" /> 
+                  Upgrade Plan
+                  <Zap size={14} className="text-orange-500 animate-pulse" />
+                </button>
+              </Link>
+            ) : (
+              <Link href="/dashboard/meals/new">
+                <button className="bg-orange-600 hover:bg-orange-500 text-white px-5 py-2.5 rounded-lg text-xs font-black uppercase tracking-widest flex items-center gap-2 transition-all active:scale-95 shadow-lg shadow-orange-600/20">
+                  <Salad size={16} /> Add Meal  
+                </button>
+              </Link>
+            )}
           </div>
         </div>
 
         {loading ? (
-          <div className="flex flex-col items-center justify-center h-96">
-            <div className="h-10 w-10 border-b-2 border-orange-500 rounded-full animate-spin mb-4" />
-            <p className="tracking-widest text-[10px] text-slate-500 animate-pulse">LOADING MEAL PLANS</p>
+          <div className="flex flex-col items-center justify-center h-96 text-slate-500">
+            <Loader2 className="h-10 w-10 text-orange-500 animate-spin mb-4" />
+            <p className="tracking-widest text-[10px] uppercase font-bold animate-pulse">Syncing Meal Library</p>
           </div>
         ) : meals.length === 0 ? (
           <div className="bg-[#111] border border-slate-800 border-dashed rounded-2xl p-20 text-center text-slate-500">
@@ -221,7 +257,6 @@ export default function MealsPage() {
             <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
               {meals.map((meal) => {
                 const stats = getMealStats(meal.meal_ingredients);
-                
                 return (
                   <motion.div 
                     layout
@@ -230,19 +265,7 @@ export default function MealsPage() {
                     key={meal.id} 
                     className="bg-[#111] border border-slate-800 rounded-2xl overflow-visible group hover:border-orange-500/30 transition-all shadow-2xl relative"
                   >
-                    {/* Restriction Alert 
-                    {stats.restrictions.length > 0 && (
-                      <div className="absolute top-4 left-4 z-10 flex flex-wrap gap-1 max-w-[150px]">
-                        {stats.restrictions.map((res, i) => (
-                          <div key={i} className="flex items-center gap-1 bg-amber-500/10 backdrop-blur-md border border-amber-500/30 text-amber-500 px-2 py-1 rounded-lg text-[8px] font-black uppercase">
-                            <AlertTriangle size={10} /> {res}
-                          </div>
-                        ))}
-                      </div>
-                    )}
-*/}
                     <div className="flex flex-col sm:flex-row h-full">
-                      {/* Image container with localized rounding */}
                       <div className="w-full sm:w-48 h-48 sm:h-auto overflow-hidden bg-slate-900 rounded-t-2xl sm:rounded-l-2xl sm:rounded-tr-none">
                         <img 
                           src={meal.picture_url} 
@@ -267,7 +290,6 @@ export default function MealsPage() {
                             </div>
                           </div>
                           
-                          {/* Dropdown Logic */}
                           <div className="relative">
                             <button 
                               onClick={() => setDropdownOpen(dropdownOpen === meal.id ? null : meal.id)}
@@ -289,10 +311,8 @@ export default function MealsPage() {
                                     <Link href={`/dashboard/meals/${meal.id}`} className="flex items-center gap-3 w-full px-4 py-3 text-xs font-bold hover:bg-slate-800 transition-colors text-slate-300">
                                       <Eye size={14} className="text-orange-400" /> View Recipe
                                     </Link>
-                                    <Link href={`/dashboard/meals/${meal.id}/edit`} className="flex items-center gap-3 w-full px-4 py-3 text-xs font-bold hover:bg-slate-800 transition-colors text-slate-300">
-                                     
-                                         <Edit2 size={14} className="text-blue-400" /> Edit Meal
-                                     
+                                    <Link href={`/dashboard/meals/${meal.id}/edit`} className="flex items-center gap-3 w-full px-4 py-3 text-xs font-bold hover:bg-slate-800 transition-colors text-slate-300 border-t border-slate-800/50">
+                                      <Edit2 size={14} className="text-blue-400" /> Edit Meal
                                     </Link> 
                                     <button
                                       onClick={() => handleDelete(meal.id)}
@@ -338,14 +358,13 @@ export default function MealsPage() {
               })}
             </div>
 
-         
-                           <Pagination 
-                            currentPage={page}
-                            totalItems={total}
-                            pageSize={pageSize}
-                            onPageChange={setPage}
-                            label="Meals"
-                            />
+            <Pagination 
+              currentPage={page}
+              totalItems={total}
+              pageSize={pageSize}
+              onPageChange={setPage}
+              label="Meals"
+            />
           </>
         )}
       </div>

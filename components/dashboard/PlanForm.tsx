@@ -84,7 +84,7 @@ export default function PlanForm({ initialData, onSave, onCancel, loading }: Pla
   );
 
   return (
-    <div className="bg-[#111] border border-slate-800 rounded-2xl p-8 max-w-2xl w-full relative shadow-2xl">
+    <div >
       <AnimatePresence>
         {showVideo && (
           <motion.div 
@@ -99,12 +99,7 @@ export default function PlanForm({ initialData, onSave, onCancel, loading }: Pla
         )}
       </AnimatePresence>
 
-      <div className="flex justify-between items-center mb-8">
-        <h2 className="text-2xl font-bold italic uppercase flex items-center gap-2">
-          <CreditCard className="text-[#ff6b1a]" /> {initialData ? "Edit Plan" : "Create New Plan"}
-        </h2>
-        <button onClick={onCancel} className="text-slate-500 hover:text-white transition"><X size={24} /></button>
-      </div>
+    
 
       <div className="space-y-6">
         <div className="grid grid-cols-2 gap-4">
