@@ -43,7 +43,7 @@ export default function RoutineDetailPage() {
                 name:title, 
                 category:field_exercise_type, 
                 muscle_group:field_zone,
-                image:field_media_image
+                field_media_image:field_media_image
                 ) 
             )
             `)
@@ -116,6 +116,7 @@ export default function RoutineDetailPage() {
             <thead>
               <tr className="bg-[#161616] border-b border-slate-800 text-slate-500 text-[11px] font-bold uppercase tracking-wider">
                 <th className="px-6 py-4">#</th>
+                <th className="px-6 py-4">Image</th>
                 <th className="px-6 py-4">Exercise</th>
                 <th className="px-6 py-4">Weight</th>
                 <th className="px-6 py-4 text-center">Volume</th>
@@ -126,6 +127,37 @@ export default function RoutineDetailPage() {
               {routine.exercises.map((ex: any, idx: number) => (
                 <tr key={ex.id} className="hover:bg-white/[0.02] transition-colors">
                   <td className="px-6 py-6 font-mono text-slate-500">{idx + 1}</td>
+                  <td>
+                    
+                  <div className="h-10 w-10 rounded-lg bg-black border border-slate-800 flex-shrink-0 relative">
+                    {ex.exercise_info.field_media_image ? (
+                      <>
+                        <img 
+                          src={ex.exercise_info.field_media_image} 
+                          alt={ex.title} 
+                          className="w-full h-full object-cover opacity-60 group-hover:opacity-100 transition-opacity rounded-lg" 
+                        />
+                        
+                        {/* FLOATING ZOOM: Centered and "Popping" up */}
+                        <div className="absolute left-0 top-0 z-[100] w-[300px] opacity-0 pointer-events-none group-hover:opacity-100 transition-all duration-200 scale-90 group-hover:scale-100 origin-top-left">
+                          <div className="bg-[#161616] border-2 border-orange-500 p-1 rounded-2xl shadow-[0_25px_50px_rgba(0,0,0,1)]">
+                            <img 
+                              src={ex.field_media_image} 
+                              alt="zoom" 
+                              className="w-full h-auto rounded-xl" 
+                            />
+                            <div className="p-3 bg-gradient-to-t from-black to-transparent">
+                              <p className="text-[10px] font-black text-orange-500 uppercase tracking-widest">{ex.zone_name}</p>
+                              <h4 className="text-sm font-bold text-white uppercase italic">{ex.title}</h4>
+                            </div>
+                          </div>
+                        </div>
+                      </>
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center text-[8px] text-slate-800 uppercase font-bold">No Img</div>
+                    )}
+                  </div>
+                  </td>
                   <td className="px-6 py-6">
                     <p className="font-bold text-white text-lg">{ex.exercise_info?.name || "Unknown Exercise"}</p>
                     <p className="text-xs text-slate-500 mt-0.5">{ex.exercise_info?.muscle_group} • {ex.exercise_info?.category}</p>
