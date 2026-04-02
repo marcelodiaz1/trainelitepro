@@ -37,6 +37,7 @@ interface Trainer {
   email: string;
   specialty: string | null;
   rating: number | null;
+  subscription_expiration: string | null;
   status: string;
   selected_plan: string | null;
   plans?: { name: string };
@@ -220,6 +221,7 @@ const handlePlanChange = async (trainerId: string, newPlanId: string) => {
                     <SortableHeader onClick={() => handleSort("specialty")} label="Specialty" active={sortColumn === "specialty"} />
                     <SortableHeader onClick={() => handleSort("rating")} label="Rating" active={sortColumn === "rating"} center />
                     <SortableHeader onClick={() => handleSort("status")} label="Status" active={sortColumn === "status"} center />
+                    <SortableHeader onClick={() => handleSort("subscription_expiration")} label="Expiration" active={sortColumn === "subscription_expiration"} center />
                     <th className="px-6 py-4 text-[10px] uppercase tracking-[0.2em] text-slate-600 text-right">Actions</th>
                   </tr>
                 </thead>
@@ -280,7 +282,20 @@ const handlePlanChange = async (trainerId: string, newPlanId: string) => {
                           {trainer.status}
                         </span>
                       </td>
-
+                      <td className="px-6 py-5">
+                        <div className="flex flex-col">
+                          <span className="text-xs text-slate-300">
+                            {trainer.subscription_expiration 
+                              ? new Date(trainer.subscription_expiration).toLocaleDateString() 
+                              : "No Date"}
+                          </span>
+                          {trainer.subscription_expiration && new Date(trainer.subscription_expiration) < new Date() && (
+                            <span className="text-[9px] text-red-500 font-bold uppercase tracking-tighter">
+                              Payment Overdue
+                            </span>
+                          )}
+                        </div>
+                      </td>
                       <td className="px-6 py-5 text-right relative">
                         <button
                           onClick={() => setDropdownOpen(dropdownOpen === trainer.id ? null : trainer.id)}
