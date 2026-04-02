@@ -31,16 +31,41 @@ function SortableExerciseRow({ ex, index, exercisesList, updateField, remove }: 
   };
 
   const selectedExercise = exercisesList.find((e: any) => e.id.toString() === ex.exercise_id);
-
+const imageUrl = selectedExercise?.field_media_image;
   return (
     <div ref={setNodeRef} style={style} className="grid grid-cols-12 gap-3 bg-[#111] p-4 rounded-2xl border border-slate-800 items-center group">
       <div {...attributes} {...listeners} className="col-span-1 cursor-grab active:cursor-grabbing text-slate-700 hover:text-orange-500 transition-colors">
         <GripVertical size={20} />
       </div>
       
-      <div className="col-span-11 md:col-span-4">
-        <p className="text-[10px] font-black uppercase text-orange-500 mb-1">Movement</p>
-        <p className="text-sm font-bold text-white truncate">{selectedExercise?.title || "Select from library"}</p>
+   <div className="col-span-11 md:col-span-4 flex items-center gap-3">  
+        <div className="h-12 w-12 rounded-lg bg-black border border-slate-800 overflow-visible flex-shrink-0 relative group/img">
+          {imageUrl ? (
+            <> 
+              <img src={imageUrl} alt="thumb" className="w-full h-full object-cover rounded-lg" />
+              
+              {/* This div will now be visible because the parent allows overflow */}
+              <div className="absolute left-14 top-0 z-[100] w-[300px] opacity-0 pointer-events-none group-hover/img:opacity-100 transition-all duration-300 scale-95 group-hover/img:scale-100 shadow-2xl">
+                <div className="bg-[#161616] border border-orange-500/30 p-1 rounded-xl shadow-[0_20px_50px_rgba(0,0,0,0.8)]">
+                  <img src={imageUrl} alt="zoom" className="w-full h-auto rounded-lg" />
+                  <div className="p-2">
+                    <p className="text-[10px] font-black text-orange-500 uppercase">
+                      {selectedExercise?.title}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </>
+          ) : (
+            <div className="w-full h-full flex items-center justify-center text-[10px] text-slate-700 uppercase font-black">
+              N/A
+            </div>
+          )}
+        </div>
+        <div className="truncate">
+          <p className="text-[10px] font-black uppercase text-orange-500 mb-0.5">Movement</p>
+          <p className="text-sm font-bold text-white truncate">{selectedExercise?.title || "Select from library"}</p>
+        </div>
       </div>
 
       <div className="col-span-3 md:col-span-2">
@@ -272,9 +297,9 @@ export default function NewWorkoutRoutinePage() {
                 <input placeholder="Routine Name..." className="w-full bg-transparent text-2xl font-bold outline-none text-white border-b border-slate-800 focus:border-orange-500 pb-2 transition-all" value={routineData.title} onChange={e => setRoutineData({...routineData, title: e.target.value})} />
               </div>
               <div className="bg-[#0b0b0b] p-6 rounded-3xl border border-slate-800 shadow-xl">
-                <label className="text-[10px] font-black text-slate-500 uppercase mb-2 block flex items-center gap-2"><User size={12}/> Assign Athlete</label>
+                <label className="text-[10px] font-black text-slate-500 uppercase mb-2 block flex items-center gap-2"><User size={12}/> Assign trainee</label>
                 <select className="w-full bg-transparent text-lg font-bold outline-none text-orange-500 cursor-pointer" value={routineData.trainee_id} onChange={e => setRoutineData({...routineData, trainee_id: e.target.value})}>
-                  <option value="" className="bg-black text-white">Select Athlete</option>
+                  <option value="" className="bg-black text-white">Select trainee</option>
                   {trainees.map(t => <option key={t.id} value={t.id} className="bg-black text-white">{t.first_name} {t.last_name}</option>)}
                 </select>
               </div>
@@ -339,10 +364,42 @@ export default function NewWorkoutRoutinePage() {
                 <button 
                   key={ex.id} 
                   onClick={() => addFromLibrary(ex)} 
-                  className="w-full text-left bg-[#111] hover:bg-orange-600/10 border border-slate-800/50 hover:border-orange-500/50 p-4 rounded-2xl transition-all group active:scale-[0.98]"
+                  /* hover:z-50 is the key to make this row sit on top of others when hovered */
+                  className="w-full text-left bg-[#111] hover:bg-[#1a1a1a] border border-slate-800/50 hover:border-orange-500/50 p-3 rounded-2xl transition-all group active:scale-[0.98] flex items-center gap-3 relative hover:z-50"
                 >
-                  <p className="text-[9px] font-black uppercase text-slate-600 group-hover:text-orange-500 mb-1 transition-colors">{ex.zone_name}</p>
-                  <h4 className="text-xs font-bold text-slate-200 group-hover:text-white transition-colors">{ex.title}</h4>
+                  <div className="h-10 w-10 rounded-lg bg-black border border-slate-800 flex-shrink-0 relative">
+                    {ex.field_media_image ? (
+                      <>
+                        <img 
+                          src={ex.field_media_image} 
+                          alt={ex.title} 
+                          className="w-full h-full object-cover opacity-60 group-hover:opacity-100 transition-opacity rounded-lg" 
+                        />
+                        
+                        {/* FLOATING ZOOM: Centered and "Popping" up */}
+                        <div className="absolute left-0 top-0 z-[100] w-[300px] opacity-0 pointer-events-none group-hover:opacity-100 transition-all duration-200 scale-90 group-hover:scale-100 origin-top-left">
+                          <div className="bg-[#161616] border-2 border-orange-500 p-1 rounded-2xl shadow-[0_25px_50px_rgba(0,0,0,1)]">
+                            <img 
+                              src={ex.field_media_image} 
+                              alt="zoom" 
+                              className="w-full h-auto rounded-xl" 
+                            />
+                            <div className="p-3 bg-gradient-to-t from-black to-transparent">
+                              <p className="text-[10px] font-black text-orange-500 uppercase tracking-widest">{ex.zone_name}</p>
+                              <h4 className="text-sm font-bold text-white uppercase italic">{ex.title}</h4>
+                            </div>
+                          </div>
+                        </div>
+                      </>
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center text-[8px] text-slate-800 uppercase font-bold">No Img</div>
+                    )}
+                  </div>
+
+                  <div className="flex-1 truncate">
+                    <p className="text-[9px] font-black uppercase text-slate-600 group-hover:text-orange-500 mb-0.5 transition-colors">{ex.zone_name}</p>
+                    <h4 className="text-xs font-bold text-slate-200 group-hover:text-white transition-colors truncate">{ex.title}</h4>
+                  </div>
                 </button>
               ))}
             </div>

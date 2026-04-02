@@ -102,9 +102,13 @@ export default function Sidebar() {
         ${open ? "translate-x-0" : "-translate-x-full md:translate-x-0"}
         `}
       >
-        <h2 className="text-2xl font-bold mb-10 text-[#ff6b1a] uppercase italic tracking-tighter">
-          TrainElitePro
-        </h2>
+        
+        <Link href="/" className="flex items-center gap-2 text-1xl md:text-1xl font-extrabold mb-4">
+          <Dumbbell size={30} className="text-[#ff6b1a] drop-shadow-[0_0_8px_#ff6b1a]" />
+          <span className="bg-gradient-to-r from-[#ff6b1a] to-orange-400 bg-clip-text text-transparent">
+            TrainElitePro
+          </span>
+        </Link>
 
         <nav className="space-y-2 flex-1">
           {loading ? (

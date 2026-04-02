@@ -28,32 +28,89 @@ function SortableExerciseRow({ ex, index, exercisesList, updateField, remove }: 
   const selectedExercise = exercisesList.find((e: any) => e.id.toString() === ex.exercise_id.toString());
 
   return (
-    <div ref={setNodeRef} style={style} className="grid grid-cols-12 gap-3 bg-[#111] p-4 rounded-2xl border border-slate-800 items-center group">
-      <div {...attributes} {...listeners} className="col-span-1 cursor-grab active:cursor-grabbing text-slate-700 hover:text-orange-500 transition-colors">
-        <GripVertical size={20} />
+    <div 
+        ref={setNodeRef} 
+        style={style} 
+        className="grid grid-cols-12 gap-3 bg-[#111] p-4 rounded-2xl border border-slate-800 items-center group relative  z-0 hover:z-[999] transition-all"
+      >
+        {/* Drag Handle */}
+        <div {...attributes} {...listeners} className="col-span-1 cursor-grab active:cursor-grabbing text-slate-700 hover:text-orange-500 transition-colors">
+          <GripVertical size={20} />
+        </div>
+
+        {/* Movement Column with Image + Zoom */}
+        <div className="col-span-11 md:col-span-4 flex items-center gap-3 relative">
+          
+          {/* THUMBNAIL CONTAINER */}
+          <div className="h-12 w-12 rounded-lg bg-black border border-slate-800 overflow-visible flex-shrink-0 relative group/img">
+            {selectedExercise?.field_media_image ? (
+              <>
+                <img 
+                  src={selectedExercise.field_media_image} 
+                  alt="thumb" 
+                  className="w-full h-full object-cover rounded-lg opacity-80 group-hover/img:opacity-100 transition-opacity" 
+                />
+
+                {/* FLOATING ZOOM PREVIEW */}
+                <div className="absolute left-0 bottom-0 z-[1000] w-[300px] opacity-0 pointer-events-none group-hover/img:opacity-100 transition-all duration-300 scale-90 group-hover/img:scale-100 origin-top-left shadow-2xl">
+                 <div className="bg-[#161616] border-2 border-orange-500 p-1 rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.8)]">
+                    <img 
+                      src={selectedExercise.field_media_image} 
+                      alt="zoom" 
+                      className="w-full h-auto rounded-xl" 
+                    />
+                    <div className="p-3 bg-gradient-to-t from-black/80 to-transparent">
+                      <p className="text-[10px] font-black text-orange-500 uppercase tracking-widest">
+                        {selectedExercise?.zone_data?.name || "Exercise Detail"}
+                      </p>
+                      <h4 className="text-sm font-bold text-white uppercase italic truncate">
+                        {selectedExercise?.title}
+                      </h4>
+                    </div>
+                  </div>
+                </div>
+              </>
+            ) : (
+              <div className="w-full h-full flex items-center justify-center text-[10px] text-slate-700 uppercase font-black">
+                N/A
+              </div>
+            )}
+          </div>
+
+          {/* Text Info */}
+          <div className="truncate">
+            <p className="text-[10px] font-black uppercase text-orange-500 mb-0.5">Movement</p>
+            <p className="text-sm font-bold text-white truncate">
+              {selectedExercise?.title || "Loading movement..."}
+            </p>
+          </div>
+        </div>
+
+        {/* Sets Input */}
+        <div className="col-span-3 md:col-span-2">
+          <label className="text-[9px] uppercase font-bold text-slate-500 block mb-1">Sets</label>
+          <input type="number" className="w-full bg-black border border-slate-800 rounded-lg py-1.5 px-3 text-sm outline-none focus:border-orange-500 text-white" value={ex.sets} onChange={(e) => updateField(index, "sets", e.target.value)} />
+        </div>
+
+        {/* Reps Input */}
+        <div className="col-span-3 md:col-span-2">
+          <label className="text-[9px] uppercase font-bold text-slate-500 block mb-1">Reps</label>
+          <input type="number" className="w-full bg-black border border-slate-800 rounded-lg py-1.5 px-3 text-sm outline-none focus:border-orange-500 text-white" value={ex.repetitions} onChange={(e) => updateField(index, "repetitions", e.target.value)} />
+        </div>
+
+        {/* Weight Input */}
+        <div className="col-span-3 md:col-span-2">
+          <label className="text-[9px] uppercase font-bold text-slate-500 block mb-1">Weight</label>
+          <input type="number" step="0.5" className="w-full bg-black border border-slate-800 rounded-lg py-1.5 px-3 text-sm outline-none focus:border-orange-500 text-white" value={ex.weight_kg} onChange={(e) => updateField(index, "weight_kg", e.target.value)} />
+        </div>
+
+        {/* Delete Button */}
+        <div className="col-span-3 md:col-span-1 flex justify-end">
+          <button type="button" onClick={() => remove(index)} className="p-2 text-slate-600 hover:text-red-500 transition-colors">
+            <Trash2 size={18} />
+          </button>
+        </div>
       </div>
-      <div className="col-span-11 md:col-span-4">
-        <p className="text-[10px] font-black uppercase text-orange-500 mb-1">Movement</p>
-        <p className="text-sm font-bold text-white truncate">{selectedExercise?.title || "Loading movement..."}</p>
-      </div>
-      <div className="col-span-3 md:col-span-2">
-        <label className="text-[9px] uppercase font-bold text-slate-500 block mb-1">Sets</label>
-        <input type="number" className="w-full bg-black border border-slate-800 rounded-lg py-1.5 px-3 text-sm outline-none focus:border-orange-500 text-white" value={ex.sets} onChange={(e) => updateField(index, "sets", e.target.value)} />
-      </div>
-      <div className="col-span-3 md:col-span-2">
-        <label className="text-[9px] uppercase font-bold text-slate-500 block mb-1">Reps</label>
-        <input type="number" className="w-full bg-black border border-slate-800 rounded-lg py-1.5 px-3 text-sm outline-none focus:border-orange-500 text-white" value={ex.repetitions} onChange={(e) => updateField(index, "repetitions", e.target.value)} />
-      </div>
-      <div className="col-span-3 md:col-span-2">
-        <label className="text-[9px] uppercase font-bold text-slate-500 block mb-1">Weight</label>
-        <input type="number" step="0.5" className="w-full bg-black border border-slate-800 rounded-lg py-1.5 px-3 text-sm outline-none focus:border-orange-500 text-white" value={ex.weight_kg} onChange={(e) => updateField(index, "weight_kg", e.target.value)} />
-      </div>
-      <div className="col-span-3 md:col-span-1 flex justify-end">
-        <button type="button" onClick={() => remove(index)} className="p-2 text-slate-600 hover:text-red-500 transition-colors">
-          <Trash2 size={18} />
-        </button>
-      </div>
-    </div>
   );
 }
 
@@ -294,9 +351,45 @@ export default function EditRoutinePage() {
             </div>
             <div className="flex-1 overflow-y-auto p-4 space-y-2 custom-scrollbar bg-[#080808]">
               {filteredLibrary.map(ex => (
-                <button key={ex.id} onClick={() => addFromLibrary(ex)} className="w-full text-left bg-[#111] hover:bg-orange-600/10 border border-slate-800/50 p-4 rounded-2xl transition-all group active:scale-[0.98]">
-                  <p className="text-[9px] font-black uppercase text-slate-600 group-hover:text-orange-500 mb-1">{ex.zone_name}</p>
-                  <h4 className="text-xs font-bold text-slate-200 group-hover:text-white">{ex.title}</h4>
+                <button 
+                  key={ex.id} 
+                  onClick={() => addFromLibrary(ex)} 
+                  /* hover:z-50 is the key to make this row sit on top of others when hovered */
+                  className="w-full text-left bg-[#111] hover:bg-[#1a1a1a] border border-slate-800/50 hover:border-orange-500/50 p-3 rounded-2xl transition-all group active:scale-[0.98] flex items-center gap-3 relative hover:z-50"
+                >
+                  <div className="h-10 w-10 rounded-lg bg-black border border-slate-800 flex-shrink-0 relative">
+                    {ex.field_media_image ? (
+                      <>
+                        <img 
+                          src={ex.field_media_image} 
+                          alt={ex.title} 
+                          className="w-full h-full object-cover opacity-60 group-hover:opacity-100 transition-opacity rounded-lg" 
+                        />
+                        
+                        {/* FLOATING ZOOM: Centered and "Popping" up */}
+                        <div className="absolute left-0 top-0 z-[100] w-[300px] opacity-0 pointer-events-none group-hover:opacity-100 transition-all duration-200 scale-90 group-hover:scale-100 origin-top-left">
+                          <div className="bg-[#161616] border-2 border-orange-500 p-1 rounded-2xl shadow-[0_25px_50px_rgba(0,0,0,1)]">
+                            <img 
+                              src={ex.field_media_image} 
+                              alt="zoom" 
+                              className="w-full h-auto rounded-xl" 
+                            />
+                            <div className="p-3 bg-gradient-to-t from-black to-transparent">
+                              <p className="text-[10px] font-black text-orange-500 uppercase tracking-widest">{ex.zone_name}</p>
+                              <h4 className="text-sm font-bold text-white uppercase italic">{ex.title}</h4>
+                            </div>
+                          </div>
+                        </div>
+                      </>
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center text-[8px] text-slate-800 uppercase font-bold">No Img</div>
+                    )}
+                  </div>
+
+                  <div className="flex-1 truncate">
+                    <p className="text-[9px] font-black uppercase text-slate-600 group-hover:text-orange-500 mb-0.5 transition-colors">{ex.zone_name}</p>
+                    <h4 className="text-xs font-bold text-slate-200 group-hover:text-white transition-colors truncate">{ex.title}</h4>
+                  </div>
                 </button>
               ))}
             </div>
