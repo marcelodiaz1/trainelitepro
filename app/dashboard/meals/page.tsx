@@ -9,7 +9,6 @@ import {
   Search, 
   ChefHat, 
   Utensils,
-  AlertTriangle,
   Flame,
   Dna,
   Edit2,
@@ -53,6 +52,7 @@ interface Meal {
   picture_url: string;
   recipe: string;
   ingredients: number[]; 
+  trainer_id: string; // Added trainer_id to the interface
   meal_ingredients?: MealIngredient[]; 
 }
 
@@ -61,6 +61,7 @@ export default function MealsPage() {
   const [loading, setLoading] = useState(true);
   const [dropdownOpen, setDropdownOpen] = useState<number | null>(null);
   const [isAtLimit, setIsAtLimit] = useState(false);
+  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   
   // Pagination & Search
   const [page, setPage] = useState(1);
@@ -78,6 +79,7 @@ export default function MealsPage() {
         // 1. Get current trainer session
         const { data: { user: authUser } } = await supabase.auth.getUser();
         if (!authUser) return;
+        setCurrentUserId(authUser.id);
 
         // 2. Fetch trainer profile to get the plan
         const { data: profile } = await supabase
@@ -86,26 +88,26 @@ export default function MealsPage() {
           .eq("id", authUser.id)
           .single();
 
-        // 3. Fetch meals with search and range
+        // 3. Fetch ONLY meals belonging to this user
         const { data: mealsData, error: mealsError, count } = await supabase
           .from("meals")
           .select("*", { count: "exact" })
+          .eq("trainer_id", authUser.id) // THIS IS THE FILTERING LINE
           .ilike('name', `%${searchTerm}%`)
           .range(from, to)
           .order('id', { ascending: false });
 
         if (mealsError || !mealsData) throw mealsError;
 
-        // 4. Database Limit Check (Logic from your Trainees table)
+        // 4. Database Limit Check
         if (profile?.selected_plan) {
           const { data: planData } = await supabase
             .from("plans")
-            .select("meal_limit") // Ensure this column exists in your 'plans' table
+            .select("meal_limit")
             .eq("id", profile.selected_plan)
             .single();
 
           if (planData) {
-            // Check if total meals (count) meets or exceeds plan limit
             setIsAtLimit((count || 0) >= planData.meal_limit);
           }
         }
@@ -167,7 +169,6 @@ export default function MealsPage() {
     if (!error) {
       setMeals((prev) => prev.filter((m) => m.id !== id));
       setTotal((prev) => prev - 1);
-      // Re-evaluate limit after deletion
       setIsAtLimit(false); 
     }
     setDropdownOpen(null);
