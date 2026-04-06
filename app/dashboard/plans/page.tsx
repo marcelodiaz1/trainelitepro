@@ -105,15 +105,52 @@ export default function PlansManagementPage() {
     fetchPlans();
   }, [fetchPlans]);
 
-  const handleDelete = async (id: string) => {
-    if (!confirm("Are you sure? This will permanently delete this plan.")) return;
-    const { error } = await supabase.from("plans").delete().eq("id", id);
-    if (!error) {
-      fetchPlans(); // Refresh to recalculate counts and limits
-    }
-    setDropdownOpen(null);
-  };
+ const handleDelete = async (planId: string) => {
+    if (!confirm("Are you sure? This will permanently delete this plan and remove it from your profile.")) return;
 
+    try {
+      // 1. Get the current user
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      // 2. Fetch the current profile to get the existing array
+      const { data: profile } = await supabase
+        .from("users")
+        .select("own_plans")
+        .eq("id", user.id)
+        .single();
+
+      if (profile) {
+        // Filter out the deleted ID from the local array
+        const updatedOwnPlans = (profile.own_plans || []).filter((id: string) => id !== planId);
+
+        // 3. Update the user's own_plans column
+        const { error: userUpdateError } = await supabase
+          .from("users")
+          .update({ own_plans: updatedOwnPlans })
+          .eq("id", user.id);
+
+        if (userUpdateError) throw userUpdateError;
+      }
+
+      // 4. Delete the plan from the plans table
+      const { error: deleteError } = await supabase
+        .from("plans")
+        .delete()
+        .eq("id", planId);
+
+      if (deleteError) throw deleteError;
+
+      // 5. Success: Refresh the UI
+      fetchPlans();
+      
+    } catch (err: any) {
+      console.error("Error during deletion process:", err);
+      alert(`Error: ${err.message}`);
+    } finally {
+      setDropdownOpen(null);
+    }
+  };
   return (
     <main className="bg-[#0b0b0b] text-white min-h-screen flex">
       <div className="p-8 flex-1 max-w-7xl w-full mx-auto">

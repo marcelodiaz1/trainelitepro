@@ -53,59 +53,73 @@ export default function EditMealPlanPage() {
     if (id) fetchInitialData();
   }, [id]);
 
+
   const fetchInitialData = async () => {
     setDataLoading(true);
     
-    // 1. Fetch Trainees
-    const { data: users } = await supabase.from("users").select("id, first_name, last_name");
-    if (users) setTrainees(users);
+    try {
+      // 1. Get current logged-in user (the trainer)
+      const { data: { user: authUser } } = await supabase.auth.getUser();
+      if (!authUser) return;
 
-    // 2. Fetch Meal Library
-    const { data: mealsData } = await supabase
-      .from("meals")
-      .select(`id, name, ingredients`)
-      .order('name', { ascending: true });
+      // 2. Fetch only Trainees where trainer_id matches the current user
+      const { data: users, error: usersError } = await supabase
+        .from("users")
+        .select("id, first_name, last_name")
+        .eq("trainer_id", authUser.id) // This is the critical filter
+        .order("first_name", { ascending: true });
 
-    if (mealsData) {
-      const allIngredientRelIds = Array.from(new Set(mealsData.flatMap((m: any) => m.ingredients || [])));
-      if (allIngredientRelIds.length > 0) {
-        const { data: relData } = await supabase
-          .from("meal_ingredients")
-          .select(`id, amount, ingredients ( field_calories_per_100g_kcal, field_protein_per_100g_g )`)
-          .in("id", allIngredientRelIds);
+      if (usersError) throw usersError;
+      if (users) setTrainees(users);
 
-        const ingredientLookup: Record<number, any> = {};
-        relData?.forEach((item: any) => { ingredientLookup[item.id] = item; });
+      // 3. Fetch Meal Library (Rest of your existing logic...)
+      const { data: mealsData } = await supabase
+        .from("meals")
+        .select(`id, name, ingredients`)
+        .order('name', { ascending: true });
 
-        const processedMeals = mealsData.map((meal: any) => {
-          const meal_ingredients = (meal.ingredients || []).map((id: number) => ingredientLookup[id]).filter(Boolean);
-          const stats = getMealStats(meal_ingredients);
-          return { id: meal.id, title: meal.name, calories: stats.calories, protein: stats.protein };
-        });
-        setAvailableMeals(processedMeals);
+      if (mealsData) {
+        const allIngredientRelIds = Array.from(new Set(mealsData.flatMap((m: any) => m.ingredients || [])));
+        if (allIngredientRelIds.length > 0) {
+          const { data: relData } = await supabase
+            .from("meal_ingredients")
+            .select(`id, amount, ingredients ( field_calories_per_100g_kcal, field_protein_per_100g_g )`)
+            .in("id", allIngredientRelIds);
+
+          const ingredientLookup: Record<number, any> = {};
+          relData?.forEach((item: any) => { ingredientLookup[item.id] = item; });
+
+          const processedMeals = mealsData.map((meal: any) => {
+            const meal_ingredients = (meal.ingredients || []).map((id: number) => ingredientLookup[id]).filter(Boolean);
+            const stats = getMealStats(meal_ingredients);
+            return { id: meal.id, title: meal.name, calories: stats.calories, protein: stats.protein };
+          });
+          setAvailableMeals(processedMeals);
+        }
       }
+
+      // 4. Preload Plan Data
+      const { data: plan } = await supabase.from("meal_plans").select("*").eq("id", id).single();
+
+      if (plan) {
+        const sanitizedSchedule = plan.schedule.map((day: any) => ({
+          ...day,
+          meals: Array.isArray(day.meals) ? day.meals : []
+        }));
+
+        setFormData({
+          title: plan.title,
+          trainee_id: plan.trainee_id,
+          duration: plan.duration || "weekly",
+          schedule: sanitizedSchedule
+        });
+      }
+    } catch (err) {
+      console.error("Error fetching data:", err);
+    } finally {
+      setDataLoading(false);
     }
-
-    // 3. Preload Plan Data
-    const { data: plan } = await supabase.from("meal_plans").select("*").eq("id", id).single();
-
-    if (plan) {
-      // Safety check: Convert legacy object-based schedule to array-based if necessary
-      const sanitizedSchedule = plan.schedule.map((day: any) => ({
-        ...day,
-        meals: Array.isArray(day.meals) ? day.meals : []
-      }));
-
-      setFormData({
-        title: plan.title,
-        trainee_id: plan.trainee_id,
-        duration: plan.duration || "weekly",
-        schedule: sanitizedSchedule
-      });
-    }
-    setDataLoading(false);
   };
-
   const onDragEnd = (result: any) => {
     const { source, destination } = result;
     if (!destination) return;

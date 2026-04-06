@@ -116,14 +116,35 @@ export default function EvaluationsTable() {
 
   const handleDelete = async (id: string) => {
     if (!confirm("Delete this evaluation record?")) return;
-    const { error } = await supabase.from("evaluations").delete().eq("id", id);
-    if (!error) {
-      setEvals((prev) => prev.filter((e) => e.id !== id));
-      setTotal((prev) => prev - 1);
-    }
-    setDropdownOpen(null);
-  };
 
+    try {
+      // 1. Perform the deletion
+      const { error } = await supabase
+        .from("evaluations")
+        .delete()
+        .eq("id", id);
+
+      if (error) {
+        console.error("Delete Error details:", error);
+        alert(`Failed to delete: ${error.message}`);
+        return;
+      }
+
+      // 2. Update local state immediately
+      setEvals((prev) => prev.filter((e) => e.id !== id));
+      
+      // 3. Update total count
+      setTotal((prev) => Math.max(0, prev - 1));
+
+      // 4. Optional: Reset limit status if user was at limit
+      setIsAtLimit(false);
+
+    } catch (err) {
+      console.error("Unexpected error during deletion:", err);
+    } finally {
+      setDropdownOpen(null);
+    }
+  };
   const handleSort = (column: string) => {
     if (sortColumn === column) {
       setSortOrder(sortOrder === "asc" ? "desc" : "asc");
