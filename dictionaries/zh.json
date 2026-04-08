@@ -1,0 +1,576 @@
+{
+  "stats": {
+    "workouts": "已创建的训练计划",
+    "trainers": "活跃教练",
+    "trainees": "学员数量",
+    "satisfaction": "客户满意度"
+  },
+  "features": {
+    "mainTitle": "为健身专业人士打造的强大工具",
+    "cta": "立即开始执教",
+    "items": [
+      { "icon": "<Users size={30} />", "title": "客户管理", "text": "在一个仪表盘中管理您的所有学员。" },
+      { "icon": "<Dumbbell size={30} />", "title": "训练计划生成器", "text": "轻松创建强大的健身课程。" },
+      { "icon": "<Salad size={30} />", "title": "饮食计划", "text": "为您的客户设计个性化的营养方案。" },
+      { "icon": "<ChartNoAxesColumn size={30} />", "title": "进度追踪", "text": "追踪体重、力量和各项性能指标。" }
+    ]
+  },
+  "testimonials": {
+    "title": "教练们都在使用 TrainElitePro",
+    "items": [
+      { "name": "John Carter", "role": "力量教练", "quote": "TrainElitePro 帮我轻松管理 50 多名客户，让我的业务快速增长！" },
+      { "name": "Maria Lopez", "role": "减重专家", "quote": "我可以毫不费力地创建定制计划并跟踪进度。我的客户非常喜欢它！" },
+      { "name": "Alex Chen", "role": "健美教练", "quote": "这是我用过的管理训练计划和无缝支付的最佳工具。" }
+    ]
+  },
+  "finalCta": {
+    "titlePre": "准备好扩大您的",
+    "titleHighlight": "健身业务了吗？",
+    "description": "加入数百名教练的行列，在线扩展客户群，管理训练和饮食计划，并无缝跟踪进度 —— 这一切都在一个强大的平台中完成。",
+    "button": "创建教练账户"
+  },
+  "footer": {
+  "description": "为私人教练量身打造的终极平台，助力轻松管理客户、训练计划与营养方案。",
+    "quickLinks": "快速链接",
+    "account": "账户中心",
+    "links": {
+      "home": "首页",
+      "benefits": "平台优势",
+      "pricing": "价格方案",
+      "trainers": "教练列表",
+      "contact": "联系我们",
+      "trainerSignUp": "教练注册",
+      "traineeSignUp": "学员注册",
+      "login": "登录"
+  },
+  "rights": "保留所有权利。"
+  },
+  "hero": [
+    {
+      "title": "发展您的私人执教业务",
+      "description": "专为现代教练打造的强大平台，助力创建训练计划、饮食方案并轻松管理客户。",
+      "primaryText": "以教练身份开始",
+      "secondaryText": "查看教练优势"
+    },
+    {
+      "title": "寻找完美的私人教练",
+      "description": "浏览专家级教练，在线预约并获取个性化的训练和营养计划。",
+      "primaryText": "寻找教练",
+      "secondaryText": "运作方式"
+    },
+    {
+      "title": "全方位一体化教练平台",
+      "description": "TrainElitePro 助力教练管理整个业务，同时为客户提供卓越的健身效果。",
+      "primaryText": "创建账户",
+      "secondaryText": "查看价格"
+    }
+  ],
+  "navbar": {
+    "links": {
+      "benefits": "平台优势",
+      "pricing": "价格方案",
+      "trainers": "教练列表",
+      "contact": "联系我们"
+    },
+    "actions": {
+      "login": "登录",
+      "getStarted": "立即开始",
+      "settings": "设置",
+      "account": "账户"
+    }
+  },
+  "benefitsPage": {
+    "hero": {
+      "title": "为什么 <span>TrainElitePro</span> 是终极健身平台",
+      "subtitle": "在一个无缝平台中，提供您发展健身业务和帮助客户实现目标所需的一切工具。",
+      "cta": "开始免费试用"
+    },
+    "mainTitle": "深受教练和学员喜爱的强大功能",
+    "ctaButton": "立即开始执教",
+    "finalCta": {
+      "title": "将您的健身业务提升到",
+      "highlight": "新高度",
+      "description": "立即注册，开始无缝管理客户、训练和营养，同时打造您的在线健身品牌。",
+      "button": "创建教练账户"
+    },
+    "items": [
+      { "title": "无缝客户管理", "text": "在直观的仪表盘中管理学员的每一个环节。轻松追踪课程、进度、沟通和出勤情况。" },
+      { "title": "自定义训练计划", "text": "轻松创建个性化的训练方案。使用模板或通过拖拽式构建器从头开始设计。" },
+      { "title": "营养与饮食计划", "text": "为您的客户设计完整的营养方案。追踪热量、宏量营养素和饮食，并提供食谱建议。" },
+      { "title": "进度追踪与分析", "text": "通过详细的图表和报告可视化每位学员的进步。追踪体重、力量和各项性能指标。" },
+      { "title": "快速安全的支付", "text": "设定您的费率，在线接受付款并管理订阅。所有功能均完美集成到您的工作流中。" },
+      { "title": "学员互动", "text": "通过提醒、成就和个性化反馈让客户保持动力，提高他们的坚持度和满意度。" },
+      { "title": "游戏化结果", "text": "将健身变成一种有趣的体验。向客户颁发徽章、里程碑和挑战，吸引他们持续训练。" }
+    ]
+  },
+  "contactPage": {
+    "hero": {
+      "title": "与 TrainElitePro <span class='text-[#ff6b1a]'>取得联系</span>",
+      "subtitle": "有疑问、反馈或需要支持？我们的团队随时为您提供帮助，助力您的健身业务蓬勃发展。"
+    },
+    "info": {
+      "title": "联系信息",
+      "description": "通过电子邮件或电话与我们联系。我们会尽快回复。",
+      "addressLabel": "地址",
+      "addressValue": "澳大利亚，悉尼",
+      "cta": "开始免费试用"
+    },
+    "form": {
+      "title": "给我们留言",
+      "nameLabel": "姓名",
+      "namePlaceholder": "您的姓名",
+      "emailLabel": "邮箱",
+      "emailPlaceholder": "you@example.com",
+      "messageLabel": "留言内容",
+      "messagePlaceholder": "您的留言...",
+      "buttonIdle": "发送消息",
+      "buttonLoading": "发送中...",
+      "buttonSuccess": "消息已发送！",
+      "buttonError": "错误！请重试",
+      "successMsg": "谢谢！我们会尽快给您回复。",
+      "errorMsg": "出错了。请稍后再试。"
+    },
+    "finalCta": {
+      "title": "准备好发展您的 <span class='text-[#ff6b1a]'>健身业务了吗？</span>",
+      "description": "加入数百名教练的行列，无缝管理在线客户、训练计划和营养方案。",
+      "button": "创建教练账户"
+    }
+  },
+  
+  "loginPage": {
+    "title": "欢迎回来",
+    "noAccount": "还没有账号？",
+    "createAccount": "在此注册",
+    "emailPlaceholder": "电子邮箱",
+    "passwordPlaceholder": "密码",
+    "forgotPassword": "忘记密码？",
+    "loginButton": "登录",
+    "loading": "登录中...",
+    "sideTitle": "通过 TrainElitePro 开启智能训练",
+    "benefits": [
+      "发现您身边的认证私人教练",
+      "立即预约课程",
+      "追踪您的训练记录与进度"
+    ]
+  }
+,
+  "forgotPassword": {
+    "title": "重置密码",
+    "subtitle": "输入您的电子邮件，我们将为您发送密码重置链接。",
+    "placeholder": "电子邮件地址",
+    "button": "发送重置链接",
+    "success": "请检查您的电子邮件以获取密码重置链接。",
+    "errorDefault": "发生错误。请再试一次。"
+  },
+  "pricingPage": {
+    "hero": {
+      "title": "选择 <span class='text-[#ff6b1a]'>最适合您的方案</span>",
+      "subtitle": "为不同规模的教练量身定制的灵活订阅方案。免费开始，随业务增长灵活扩展。"
+    },
+    "loading": "加载方案中...",
+    "buttons": {
+      "getStarted": "立即开始",
+      "choosePlan": "选择方案"
+    },
+    "modal": {
+      "title": "完成支付"
+    },
+    "finalCta": {
+      "title": "准备好发展您的 <span class='text-[#ff6b1a]'>健身业务了吗？</span>",
+      "description": "立即开启免费方案，或选择最适合您业务增长的方案。",
+      "button": "创建教练账户"
+    }
+  }
+  ,
+  "registerPage": {
+    "title": "加入 <span class='text-orange-600'>精英行列</span>",
+    "hasAccount": "已经有账号了？",
+    "signIn": "登录",
+    "roles": { "trainee": "学员", "trainer": "教练" },
+    "placeholders": {
+      "firstName": "名字",
+      "lastName": "姓氏",
+      "email": "电子邮箱地址",
+      "password": "创建密码",
+      "searchTrainer": "按姓名搜索...",
+      "specialty": "专业领域 (如：力量训练、普拉提)",
+      "selectPlan": "选择方案"
+    },
+    "labels": {
+      "gender": "性别确认",
+      "findTrainer": "寻找您的教练",
+      "membership": "会员等级"
+    },
+    "genders": ["男", "女"],
+    "status": {
+      "syncing": "同步中...",
+      "start": "开启旅程",
+      "noCoach": "未找到教练",
+      "maxCapacity": "已达最大人数限制"
+    },
+    "marketing": {
+      "hero": "挑战您的<br /><span class='text-orange-600 text-8xl'>极限。</span>",
+      "sub": "集训练、增长与统治力于一体的教练及运动员平台。",
+      "benefits": [
+        { "title": "性能分析", "desc": "精准追踪每一次动作和组数。" },
+        { "title": "无缝结算", "desc": "通过 Stripe 集成实现自动化付款。" },
+        { "title": "教练连结", "desc": "直接获取 1:1 精英训练计划。" }
+      ]
+    }
+  },
+  
+  "trainersPage": {
+    "title": "见见我们的教练",
+    "searchPlaceholder": "按姓名搜索...",
+    "filters": {
+      "allRatings": "所有评分",
+      "stars": "星级",
+      "allLocations": "所有位置"
+    },
+    "status": {
+      "loading": "正在加载教练...",
+      "noResults": "未找到相关教练。"
+    },
+    "pagination": {
+      "prev": "上一页",
+      "next": "下一页",
+      "pageOf": "第 {page} 页，共 {totalPages} 页"
+    }
+  },
+  
+  "trainerCard": {
+    "viewProfile": "查看个人资料",
+    "defaultSpecialty": "健身教练"
+  },
+
+ 
+  "trainerProfile": {
+    "loading": "正在加载个人资料...",
+    "notFound": "未找到教练信息。",
+    "defaultSpecialty": "精英教练",
+    "defaultBio": "这位教练更愿意用结果来证明实力。",
+    "getStarted": "立即开始",
+    "contact": "联系教练",
+    "chooseTier": "选择您的课程级别",
+    "hot": "热门",
+    "selectPlan": "选择计划",
+    "noPlans": "该教练目前没有可用的计划。",
+    "payment": {
+      "title": "支付信息",
+      "beneficiary": "收款人",
+      "bank": "银行名称",
+      "accountNumber": "账号",
+      "idNumber": "证件号码 / RUT",
+      "accountType": "账户类型",
+      "unset": "未设置",
+      "copyInfo": "复制转账信息",
+      "copied": "已复制到剪贴板",
+      "footerNote": "转账完成后请将凭据发送给教练"
+    }
+  },
+  
+  "dashboard": {
+    "loading": "系统同步中",
+    "headers": {
+      "trainer": "教练中心",
+      "admin": "管理控制台",
+      "trainee": "学员入口",
+      "mode": "模式"
+    },
+    "cards": {
+      "activeTrainees": "活跃学员",
+      "routines": "训练计划",
+      "evaluations": "体测评估",
+      "mealPlans": "饮食计划",
+      "individualMeals": "单餐管理",
+      "subTiers": "订阅等级",
+      "totalTrainers": "教练总数",
+      "totalUsers": "用户总数",
+      "myRoutines": "我的训练",
+      "myMealPlans": "我的饮食",
+      "assignedCoach": "分配的教练",
+      "activeAssignments": "当前任务"
+    },
+    "actions": {
+      "addTrainee": "添加学员",
+      "new": "新建",
+      "upgrade": "需要升级",
+      "noTrainer": "尚未分配教练。",
+      "noData": "暂无数据"
+    },
+    "labels": {
+      "tier": "等级",
+      "trainees": "学员",
+      "evals": "评估",
+      "plans": "计划",
+      "meals": "餐食",
+      "slots": "名额",
+      "systemEntry": "系统条目",
+      "details": "活动详情"
+    }
+  },
+   
+  "sidebar": {
+    "dashboard": "仪表板",
+    "trainers": "教练管理",
+    "trainees": "学员管理",
+    "evaluations": "体测评估",
+    "routines": "训练计划",
+    "exercises": "动作库",
+    "mealPlans": "饮食计划",
+    "meals": "餐食管理",
+    "ingredients": "食材库",
+    "plans": "会员方案",
+    "payments": "支付记录",
+    "settings": "系统设置",
+    "logout": "退出登录"
+  },
+  "trainers": {
+    "title": "教练管理",
+    "subtitle": "管理员工凭据和访问状态。",
+    "searchPlaceholder": "搜索教练...",
+    "addTrainer": "添加教练",
+    "verifying": "正在验证权限...",
+    "syncing": "正在同步记录...",
+    "noRecords": "未找到专业人员记录。",
+    "deleteConfirm": "确认删除该教练吗？此操作无法撤销。",
+    "table": {
+      "trainer": "教练姓名",
+      "email": "电子邮件",
+      "plan": "当前方案",
+      "specialty": "专业领域",
+      "rating": "评分",
+      "status": "状态",
+      "expiration": "到期时间",
+      "actions": "操作"
+    },
+    "actions": {
+      "view": "查看详情",
+      "edit": "编辑凭据",
+      "restrict": "禁止登录",
+      "enable": "允许登录",
+      "remove": "移除成员",
+      "noPlan": "暂无方案",
+      "overdue": "逾期未付"
+    } 
+  },
+  
+  "profile": {
+    "back": "返回员工列表",
+    "billing": "账单信息",
+    "edit": "编辑个人资料",
+    "specialty": "专业领域",
+    "rating": "评分",
+    "overview": "职业概况",
+    "staffId": "员工 ID",
+    "joinDate": "入职日期",
+    "role": "职位",
+    "accessLevel": "访问级别",
+    "permissions": "权限设置",
+    "billingDetails": "收款信息",
+    "fullName": "全名",
+    "bank": "银行",
+    "accountNum": "账号",
+    "rutId": "身份证号 / RUT",
+    "type": "账户类型",
+    "copy": "复制所有详情",
+    "copied": "已复制到剪贴板",
+    "unset": "未设置",
+    "generalist": "全能教练",
+    "eliteTrainer": "精英教练",
+    "portal": "教练门户",
+    "permRoutines": "管理训练计划",
+    "permClients": "客户沟通",
+    "permFinancial": "财务数据"
+  },
+  
+  "trainees": {
+    "title": "学员管理",
+    "subtitle": "管理学员凭据和访问状态。",
+    "searchPlaceholder": "搜索学员...",
+    "limitReached": "达到上限",
+    "addTrainee": "添加学员",
+    "syncing": "正在同步记录",
+    "noRecords": "当前没有注册学员。",
+    "table": {
+      "name": "客户姓名",
+      "email": "电子邮件",
+      "status": "账户状态",
+      "actions": "操作"
+    },
+    "actions": {
+      "view": "查看详情",
+      "edit": "编辑凭据",
+      "restrict": "禁止登录",
+      "enable": "允许登录",
+      "delete": "清除记录",
+      "confirmDelete": "您确定要删除这位学员吗？"
+    }
+  },
+  
+  "evaluations": {
+    "title": "评估管理",
+    "subtitle": "分析身体成分和身体进步。",
+    "limitNote": "评估存储已达到上限。",
+    "searchPlaceholder": "搜索结果...",
+    "limitReached": "达到上限",
+    "addEvaluation": "添加评估",
+    "syncing": "正在同步指标",
+    "noRecords": "未发现评估记录。",
+    "table": {
+      "date": "日期",
+      "athlete": "运动员",
+      "weight": "体重",
+      "fat": "脂肪 %",
+      "result": "结果",
+      "actions": "操作"
+    },
+    "actions": {
+      "view": "查看详情",
+      "edit": "编辑记录",
+      "delete": "清除记录",
+      "confirmDelete": "确定要删除此评估记录吗？"
+    }
+  },
+  
+  "routines": {
+    "title": "健身计划",
+    "subtitle": "查看并管理分配的训练计划。",
+    "limitNote": "当前计划的计划存储量已达上限。",
+    "searchPlaceholder": "搜索计划...",
+    "limitReached": "达到上限",
+    "addRoutine": "添加计划",
+    "loading": "正在加载训练计划...",
+    "noRecords": "未发现活跃的健身计划。",
+    "table": {
+      "title": "计划标题",
+      "trainer": "教练",
+      "athlete": "运动员",
+      "date": "分配日期",
+      "actions": "操作"
+    },
+    "actions": {
+      "view": "查看练习",
+      "edit": "编辑计划",
+      "delete": "删除计划",
+      "confirmDelete": "您确定要删除此计划吗？"
+    }
+  },
+  
+  "exercises": {
+    "title": "练习库",
+    "subtitle": "训练动作数据库管理。",
+    "searchPlaceholder": "搜索练习...",
+    "addExercise": "添加练习",
+    "loading": "正在加载目录...",
+    "table": {
+      "name": "练习名称",
+      "zone": "部位",
+      "type": "类型",
+      "preview": "预览",
+      "actions": "操作"
+    },
+    "actions": {
+      "view": "查看详情",
+      "edit": "编辑",
+      "delete": "删除"
+    }
+  },
+  "mealPlans": {
+    "title": "饮食计划",
+    "subtitle": "管理并为学员分配营养计划。",
+    "limitReached": "您已达到当前订阅的饮食计划限制。",
+    "searchPlaceholder": "搜索饮食计划...",
+    "addPlan": "添加计划",
+    "limitLabel": "已达限制",
+    "table": {
+      "title": "计划标题",
+      "trainer": "教练",
+      "trainee": "学员",
+      "duration": "时长",
+      "actions": "操作"
+    },
+    "durations": {
+      "weekly": "每周",
+      "fortnightly": "每两周",
+      "monthly": "每月"
+    },
+    "empty": {
+      "title": "未找到饮食计划",
+      "trainer": "您尚未创建任何营养计划。",
+      "trainee": "目前还没有为您分配饮食计划。"
+    },
+    "deleteConfirm": "您确定要删除此饮食计划吗？",
+    "edit": "编辑",
+    "delete": "删除"
+  },
+  
+  "meals": {
+    "title": "膳食規劃",
+    "subtitle": "計算營養成分並監控飲食限制。",
+    "limitReached": "已達到方案上限。請升級以添加更多食譜。",
+    "searchPlaceholder": "搜尋餐點...",
+    "addMeal": "添加餐點",
+    "upgrade": "升級方案",
+    "syncing": "正在同步餐點庫",
+    "noResults": "未找到匹配的食譜。",
+    "stats": {
+      "calories": "大卡",
+      "protein": "蛋白質",
+      "carbs": "碳水",
+      "fat": "脂肪"
+    },
+    "labels": {
+      "ingredientMix": "食材組合",
+      "fullRecipe": "完整食譜"
+    },
+    "actions": {
+      "view": "查看食譜",
+      "edit": "編輯餐點",
+      "delete": "刪除食譜",
+      "deleteConfirm": "確定要從資料庫中移除此餐點嗎？"
+    }
+  },
+  
+  "settings": {
+    "title": "控制",
+    "titleAccent": "中心",
+    "subtitle": "管理您的專業表現和帳戶偏好。",
+    "editProfile": "編輯個人資料",
+    "tierStandard": "標準方案",
+    "quickStats": "快速統計",
+    "status": "狀態",
+    "statusActive": "啟用",
+    "role": "角色",
+    "roleDefault": "訓練師",
+    "metrics": {
+      "trainees": "學員總數",
+      "workouts": "訓練計畫",
+      "evaluations": "評估報告"
+    },
+    "platform": {
+      "title": "平台配置",
+      "integrations": "外部整合",
+      "integrationsDesc": "連結 Stripe, Zoom 和 Google 日曆。",
+      "security": "數據安全",
+      "securityDesc": "管理雙重身份驗證。",
+      "comingSoon": "即將推出",
+      "enabled": "已啟用"
+    },
+    "upgrade": {
+      "title": "升級至專業版",
+      "desc": "解鎖進階身體分析和 AI 訓練程序。",
+      "button": "查看方案"
+    }
+  }
+
+
+
+
+
+
+
+
+
+
+}

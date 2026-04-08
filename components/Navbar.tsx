@@ -1,20 +1,23 @@
 "use client";
-
-import { useState, useEffect } from "react";
+import { Suspense, useState, useEffect } from "react";
 import Link from "next/link";
-import { Menu, X, Dumbbell, User as UserIcon, LogOut } from "lucide-react";
+import { Menu, X, Dumbbell, User as UserIcon } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { createClient } from "@supabase/supabase-js";
+import LocaleSwitcher from "./LocaleSwitcher";
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 );
 
-export default function Navbar() {
+export default function Navbar({ dict }: { dict: any }) {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [profile, setProfile] = useState<any>(null);
+
+  // Use variables for cleaner code
+  const t = dict.navbar;
 
   useEffect(() => {
     const fetchProfile = async (userId: string) => {
@@ -27,14 +30,12 @@ export default function Navbar() {
       if (!error) setProfile(data);
     };
 
-    // Check initial session
     const checkUser = async () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (user) fetchProfile(user.id);
     };
     checkUser();
 
-    // Listen for auth changes
     const { data: authListener } = supabase.auth.onAuthStateChange((_event, session) => {
       if (session?.user) {
         fetchProfile(session.user.id);
@@ -52,11 +53,12 @@ export default function Navbar() {
     };
   }, []);
 
-  const links = [
-    { name: "Benefits", href: "/benefits" },
-    { name: "Pricing", href: "/pricing" },
-    { name: "Trainers", href: "/trainers" },
-    { name: "Contact", href: "/contact" },
+  // Map links to translation keys
+  const navLinks = [
+    { name: t.links.benefits, href: "/benefits" },
+    { name: t.links.pricing, href: "/pricing" },
+    { name: t.links.trainers, href: "/trainers" },
+    { name: t.links.contact, href: "/contact" },
   ];
 
   return (
@@ -79,12 +81,18 @@ export default function Navbar() {
 
         {/* DESKTOP LINKS */}
         <div className="hidden md:flex gap-10 items-center text-lg font-semibold">
-          {links.map((link) => (
-            <Link key={link.name} href={link.href} className="relative group transition-colors hover:text-[#ff6b1a]">
+          {navLinks.map((link) => (
+            <Link key={link.href} href={link.href} className="relative group transition-colors hover:text-[#ff6b1a]">
               {link.name}
               <span className="absolute left-0 -bottom-1 w-0 h-[2px] bg-[#ff6b1a] transition-all group-hover:w-full" />
             </Link>
           ))}
+        </div>
+
+        <div className="hidden lg:block"> 
+          <Suspense fallback={<div className="w-20 h-8 bg-white/5 animate-pulse rounded-full" />}>
+            <LocaleSwitcher />
+          </Suspense>
         </div>
 
         {/* PROFILE / CTA */}
@@ -102,17 +110,17 @@ export default function Navbar() {
                 )}
               </div>
               <span className="text-sm font-bold group-hover:text-[#ff6b1a] transition">
-                {profile.first_name + ' ' + profile.last_name  || "Account"}
+                {profile.first_name ? `${profile.first_name} ${profile.last_name}` : t.actions.account}
               </span>
             </Link>
           ) : (
             <>
-              <Link href="/login" className="text-gray-300 hover:text-white transition">Login</Link>
+              <Link href="/login" className="text-gray-300 hover:text-white transition">{t.actions.login}</Link>
               <Link
                 href="/register"
                 className="bg-gradient-to-r from-[#ff6b1a] to-orange-400 px-6 py-3 rounded-xl font-bold shadow-lg hover:scale-105 transition"
               >
-                Get Started
+                {t.actions.getStarted}
               </Link>
             </>
           )}
@@ -149,22 +157,26 @@ export default function Navbar() {
                  <div>
                     <p className="text-sm font-black uppercase italic">{profile.first_name}</p>
                     <Link href="/dashboard/settings" onClick={() => setOpen(false)} className="text-[10px] text-orange-500 font-bold uppercase tracking-widest">
-                      Settings
+                      {t.actions.settings}
                     </Link>
                  </div>
               </div>
             )}
 
-            {links.map((link) => (
-              <Link key={link.name} href={link.href} onClick={() => setOpen(false)} className="text-gray-300 hover:text-[#ff6b1a]">
+            {navLinks.map((link) => (
+              <Link key={link.href} href={link.href} onClick={() => setOpen(false)} className="text-gray-300 hover:text-[#ff6b1a]">
                 {link.name}
               </Link>
             ))}
 
             {!profile && (
               <div className="flex flex-col gap-4 mt-4">
-                <Link href="/login" className="border border-[#ff6b1a] px-5 py-3 rounded-lg text-center" onClick={() => setOpen(false)}>Login</Link>
-                <Link href="/register" className="bg-[#ff6b1a] px-5 py-3 rounded-lg text-center font-semibold" onClick={() => setOpen(false)}>Get Started</Link>
+                <Link href="/login" className="border border-[#ff6b1a] px-5 py-3 rounded-lg text-center" onClick={() => setOpen(false)}>
+                  {t.actions.login}
+                </Link>
+                <Link href="/register" className="bg-[#ff6b1a] px-5 py-3 rounded-lg text-center font-semibold" onClick={() => setOpen(false)}>
+                  {t.actions.getStarted}
+                </Link>
               </div>
             )}
           </motion.div>

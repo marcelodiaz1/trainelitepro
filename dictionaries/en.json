@@ -1,0 +1,580 @@
+{
+  "stats": {
+    "workouts": "Workouts Created",
+    "trainers": "Active Trainers",
+    "trainees": "Trainees",
+    "satisfaction": "Client Satisfaction"
+  },
+  "features": {
+    "mainTitle": "Powerful Tools for Fitness Professionals",
+    "cta": "Start Coaching Today",
+    "items":[        
+        { "icon": "<Users size={30} />", "title": "Client Management", "text": "Manage all your trainees in one dashboard." },
+        { "icon": "<Dumbbell size={30} />", "title": "Workout Builder","text": "Create powerful workout programs easily." },
+        { "icon": "<Salad size={30} />", "title": "Meal Planning", "text": "Design custom nutrition plans for your clients." },
+        { "icon": "<ChartNoAxesColumn size={30} />", "title": "Progress Tracking", "text": "Track weight, strength and performance metrics." }
+    ]
+  },
+  "testimonials": {
+    "title": "Trainers Love TrainElitePro",
+    "items": [
+      { "name": "John Carter", "role": "Strength Coach", "quote": "TrainElitePro helped me manage 50+ clients easily and grow my business fast!" },
+      { "name": "Maria Lopez", "role": "Weight Loss Expert", "quote": "I can create custom plans and track progress effortlessly. My clients love it!" },
+      { "name": "Alex Chen", "role": "Bodybuilding Coach", "quote": "The best tool I've used for managing training programs and payments seamlessly." }
+    ]
+  },
+  "finalCta": {
+    "titlePre": "Ready to Scale Your",
+    "titleHighlight": "Fitness Business?",
+    "description": "Join hundreds of trainers already growing their online client base, managing workouts, meal plans, and tracking progress seamlessly — all in one powerful platform.",
+    "button": "Create Trainer Account"
+  },
+  "footer": {
+  "description": "The ultimate platform for personal trainers to manage clients, workouts, and nutrition with ease.",
+  "quickLinks": "Quick Links",
+  "account": "Account",
+  "links": {
+    "home": "Home",
+    "benefits": "Benefits",
+    "pricing": "Pricing",
+    "trainers": "Trainers",
+    "contact": "Contact",
+    "trainerSignUp": "Trainer Sign Up",
+    "traineeSignUp": "Trainee Sign Up",
+    "login": "Login"
+  },
+  "rights": "All rights reserved."
+  },  
+  "hero": [
+    {
+      "title": "Grow Your Personal Training Business",
+      "description": "Create workouts, meal plans and manage clients in one powerful platform built for modern trainers.",
+      "primaryText": "Start as Trainer",
+      "secondaryText": "View Trainer Benefits"
+    },
+    {
+      "title": "Find the Perfect Trainer",
+      "description": "Browse expert coaches, hire them online and receive personalized workouts and nutrition plans.",
+      "primaryText": "Find a Trainer",
+      "secondaryText": "How It Works"
+    },
+    {
+      "title": "All-in-One Coaching Platform",
+      "description": "TrainElitePro helps trainers manage their entire coaching business while delivering elite results for clients.",
+      "primaryText": "Create Account",
+      "secondaryText": "View Pricing"
+    }
+  ],  
+  "navbar": {
+    "links": {
+      "benefits": "Benefits",
+      "pricing": "Pricing",
+      "trainers": "Trainers",
+      "contact": "Contact"
+    },
+    "actions": {
+      "login": "Login",
+      "getStarted": "Get Started",
+      "settings": "Settings",
+      "account": "Account"
+    }
+  },
+  "benefitsPage": {
+    "hero": {
+      "title": "Why <span>TrainElitePro</span> Is The Ultimate Fitness Platform",
+      "subtitle": "Everything you need to grow your fitness business and help your clients reach their goals — in one seamless platform.",
+      "cta": "Start Your Free Trial"
+    },
+    "mainTitle": "Powerful Features That Trainers & Trainees Love",
+    "ctaButton": "Start Coaching Today",
+    "finalCta": {
+      "title": "Take Your Fitness Business to the",
+      "highlight": "Next Level",
+      "description": "Sign up today and start managing clients, workouts, and nutrition seamlessly while growing your online fitness brand.",
+      "button": "Create Trainer Account"
+    },
+    "items": [
+      { "title": "Seamless Client Management", "text": "Manage every aspect of your trainees’ journey in one intuitive dashboard. Track sessions, progress, communication, and attendance effortlessly." },
+      { "title": "Custom Workouts", "text": "Create personalized workout programs with ease. Use templates or design from scratch with our drag-and-drop workout builder." },
+      { "title": "Nutrition & Meal Plans", "text": "Design complete nutrition programs for your clients. Track calories, macros, and meals, and provide recipe suggestions." },
+      { "title": "Progress Tracking & Analytics", "text": "Visualize every trainee’s improvements with detailed charts and reports. Track weight, strength, and performance metrics." },
+      { "title": "Fast & Secure Payments", "text": "Set your own rates, accept payments online, and manage subscriptions seamlessly within your workflow." },
+      { "title": "Trainee Engagement", "text": "Keep clients motivated with reminders, achievements, and personalized feedback to boost satisfaction." },
+      { "title": "Gamified Results", "text": "Turn fitness into a fun experience. Award badges, milestones, and challenges to keep them coming back for more." }
+    ]
+  },
+  "contactPage": {
+    "hero": {
+      "title": "Get in <span class='text-[#ff6b1a]'>Touch</span> with TrainElitePro",
+      "subtitle": "Have questions, feedback, or need support? Our team is here to help you scale your fitness business."
+    },
+    "info": {
+      "title": "Contact Information",
+      "description": "Reach out to us via email or phone. We’ll respond as fast as possible.",
+      "addressLabel": "Address",
+      "addressValue": "Sydney, Australia",
+      "cta": "Start Your Free Trial"
+    },
+    "form": {
+      "title": "Send Us a Message",
+      "nameLabel": "Name",
+      "namePlaceholder": "Your name",
+      "emailLabel": "Email",
+      "emailPlaceholder": "you@example.com",
+      "messageLabel": "Message",
+      "messagePlaceholder": "Your message...",
+      "buttonIdle": "Send Message",
+      "buttonLoading": "Sending...",
+      "buttonSuccess": "Message Sent!",
+      "buttonError": "Error! Try Again",
+      "successMsg": "Thanks! We'll get back to you soon.",
+      "errorMsg": "Something went wrong. Please try again later."
+    },
+    "finalCta": {
+      "title": "Ready to Grow Your <span class='text-[#ff6b1a]'>Fitness Business?</span>",
+      "description": "Join hundreds of trainers already growing their online client base seamlessly.",
+      "button": "Create Trainer Account"
+    }
+  },
+  
+  "forgotPassword": {
+    "title": "Reset Password",
+    "subtitle": "Enter your email and we'll send you a password reset link.",
+    "placeholder": "Email address",
+    "button": "Send Reset Link",
+    "success": "Check your email for the password reset link.",
+    "errorDefault": "An error occurred. Please try again."
+  },
+  "loginPage": {
+    "title": "Welcome Back",
+    "noAccount": "Don't have an account?",
+    "createAccount": "Create one here",
+    "emailPlaceholder": "Email",
+    "passwordPlaceholder": "Password",
+    "forgotPassword": "Forgot password?",
+    "loginButton": "Login",
+    "loading": "Logging in...",
+    "sideTitle": "Train Smarter with TrainElitePro",
+    "benefits": [
+      "Find verified personal trainers near you",
+      "Book sessions instantly",
+      "Track your workouts and progress"
+    ]
+  },
+  "pricingPage": {
+    "hero": {
+      "title": "Choose the <span class='text-[#ff6b1a]'>Perfect Plan</span>",
+      "subtitle": "Flexible subscription plans designed for trainers of all sizes. Start free or scale as your client base grows."
+    },
+    "loading": "Loading plans...",
+    "buttons": {
+      "getStarted": "Get Started",
+      "choosePlan": "Choose Plan"
+    },
+    "modal": {
+      "title": "Complete Your Payment"
+    },
+    "finalCta": {
+      "title": "Ready to Grow Your <span class='text-[#ff6b1a]'>Fitness Business?</span>",
+      "description": "Start your free plan today or pick the plan that fits your growing client base.",
+      "button": "Create Trainer Account"
+    }
+  },
+  "registerPage": {
+    "title": "Join the <span class='text-orange-600'>Elite</span>",
+    "hasAccount": "Already have an account?",
+    "signIn": "Sign in",
+    "roles": { "trainee": "Trainee", "trainer": "Trainer" },
+    "placeholders": {
+      "firstName": "First Name",
+      "lastName": "Last Name",
+      "email": "Email Address",
+      "password": "Create Password",
+      "searchTrainer": "Search by name...",
+      "specialty": "Specialty (e.g. Strength, Pilates)",
+      "selectPlan": "Select Plan"
+    },
+    "labels": {
+      "gender": "Gender Identification",
+      "findTrainer": "Find your Trainer",
+      "membership": "Membership Level"
+    },
+    "genders": ["Male", "Female"],
+    "status": {
+      "syncing": "Syncing...",
+      "start": "Start Journey",
+      "noCoach": "Coach not found",
+      "maxCapacity": "Maximum Capacity Reached"
+    },
+    "marketing": {
+      "hero": "Push your<br /><span class='text-orange-600 text-8xl'>Limits.</span>",
+      "sub": "The all-in-one platform for trainers and athletes to track, grow, and dominate.",
+      "benefits": [
+        { "title": "Performance Analytics", "desc": "Track every rep and set with precision." },
+        { "title": "Seamless Billing", "desc": "Automated payments through Stripe integration." },
+        { "title": "Coach Connectivity", "desc": "Direct 1:1 access to elite training plans." }
+      ]
+    }
+  },
+  
+  "trainersPage": {
+    "title": "Meet Our Trainers",
+    "searchPlaceholder": "Search by name...",
+    "filters": {
+      "allRatings": "All Ratings",
+      "stars": "Stars",
+      "allLocations": "All Locations"
+    },
+    "status": {
+      "loading": "Loading trainers...",
+      "noResults": "No trainers found."
+    },
+    "pagination": {
+      "prev": "Previous",
+      "next": "Next",
+      "pageOf": "Page {page} of {totalPages}"
+    }
+  },
+  
+  "trainerCard": {
+    "viewProfile": "View Profile",
+    "defaultSpecialty": "Fitness Coach"
+  },
+  
+  "trainerProfile": {
+    "loading": "Loading Profile...",
+    "notFound": "Trainer not found.",
+    "defaultSpecialty": "Elite Coach",
+    "defaultBio": "This coach prefers to let their results do the talking.",
+    "getStarted": "Get Started",
+    "contact": "Contact",
+    "chooseTier": "Choose your Tier",
+    "hot": "Hot",
+    "selectPlan": "Select Plan",
+    "noPlans": "No plans available for this trainer.",
+    "payment": {
+      "title": "Payment",
+      "beneficiary": "Beneficiary",
+      "bank": "Bank",
+      "accountNumber": "Account Number",
+      "idNumber": "RUT / ID",
+      "accountType": "Account Type",
+      "unset": "Not set",
+      "copyInfo": "Copy Transfer Info",
+      "copied": "Copied to Clipboard",
+      "footerNote": "Send your receipt to the coach after transfer"
+    }
+  },
+  
+  "dashboard": {
+    "loading": "Syncing Systems",
+    "headers": {
+      "trainer": "Coach Hub",
+      "admin": "Admin Command",
+      "trainee": "Trainee Portal",
+      "mode": "Mode"
+    },
+    "cards": {
+      "activeTrainees": "Active Trainees",
+      "routines": "Routines",
+      "evaluations": "Evaluations",
+      "mealPlans": "Meal Plans",
+      "individualMeals": "Individual Meals",
+      "subTiers": "Subscription Tiers",
+      "totalTrainers": "Total Trainers",
+      "totalUsers": "Total Users",
+      "myRoutines": "My Routines",
+      "myMealPlans": "My Meal Plans",
+      "assignedCoach": "Assigned Coach",
+      "activeAssignments": "Active Assignments"
+    },
+    "actions": {
+      "addTrainee": "Add Trainee",
+      "new": "New",
+      "upgrade": "Upgrade Required",
+      "noTrainer": "No trainer assigned yet.",
+      "noData": "No Data Available"
+    },
+    "labels": {
+      "tier": "Tier",
+      "trainees": "Trainees",
+      "evals": "Evals",
+      "plans": "Plans",
+      "meals": "Meals",
+      "slots": "Slots",
+      "systemEntry": "System Entry",
+      "details": "Activity Details"
+    }
+  },
+  
+  "sidebar": {
+    "dashboard": "Dashboard",
+    "trainers": "Trainers",
+    "trainees": "Trainees",
+    "evaluations": "Evaluations",
+    "routines": "Routines",
+    "exercises": "Exercises",
+    "mealPlans": "Meal Plans",
+    "meals": "Meals",
+    "ingredients": "Ingredients",
+    "plans": "Plans",
+    "payments": "Payments",
+    "settings": "Settings",
+    "logout": "Logout"
+  },
+  
+  "trainers": {
+    "title": "Trainers",
+    "subtitle": "Manage staff credentials and access status.",
+    "searchPlaceholder": "Search trainers...",
+    "addTrainer": "Add Trainer",
+    "verifying": "Verifying Permissions...",
+    "syncing": "Synchronizing Records...",
+    "noRecords": "No professional staff records found.",
+    "deleteConfirm": "Remove this trainer? This cannot be undone.",
+    "table": {
+      "trainer": "Trainer",
+      "email": "Email Address",
+      "plan": "Active Plan",
+      "specialty": "Specialty",
+      "rating": "Rating",
+      "status": "Status",
+      "expiration": "Expiration",
+      "actions": "Actions"
+    },
+    "actions": {
+      "view": "View Profile",
+      "edit": "Edit Credentials",
+      "restrict": "Restrict Login",
+      "enable": "Enable Login",
+      "remove": "Remove Member",
+      "noPlan": "No Plan",
+      "overdue": "Payment Overdue"
+    }
+  },
+  
+  "profile": {
+    "back": "Back to Staff",
+    "billing": "Billing Info",
+    "edit": "Edit Profile",
+    "specialty": "Specialty",
+    "rating": "Rating",
+    "overview": "Professional Overview",
+    "staffId": "Staff ID",
+    "joinDate": "Join Date",
+    "role": "Role",
+    "accessLevel": "Access Level",
+    "permissions": "Permissions",
+    "billingDetails": "Billing Details",
+    "fullName": "Full Name",
+    "bank": "Bank",
+    "accountNum": "Account #",
+    "rutId": "RUT / ID",
+    "type": "Type",
+    "copy": "Copy All Details",
+    "copied": "Copied to Clipboard",
+    "unset": "Unset",
+    "generalist": "Generalist",
+    "eliteTrainer": "Elite Trainer",
+    "portal": "Trainer Portal",
+    "permRoutines": "Manage Routines",
+    "permClients": "Client Communication",
+    "permFinancial": "Financial Data"
+  },
+  
+  "trainees": {
+    "title": "Trainees",
+    "subtitle": "Manage professional credentials and access status.",
+    "searchPlaceholder": "Search trainees...",
+    "limitReached": "Limit Reached",
+    "addTrainee": "Add Trainee",
+    "syncing": "SYNCING RECORDS",
+    "noRecords": "No trainees currently registered.",
+    "table": {
+      "name": "Client Name",
+      "email": "Email Address",
+      "status": "Account Status",
+      "actions": "Actions"
+    },
+    "actions": {
+      "view": "View Profile",
+      "edit": "Edit Credentials",
+      "restrict": "Restrict Login",
+      "enable": "Enable Login",
+      "delete": "Purge Records",
+      "confirmDelete": "Are you sure you want to delete this trainee?"
+    }
+  },
+  
+  "evaluations": {
+    "title": "Evaluations",
+    "subtitle": "Analyze body composition and physical progress.",
+    "limitNote": "Evaluation storage limit reached.",
+    "searchPlaceholder": "Search results...",
+    "limitReached": "Limit Reached",
+    "addEvaluation": "Add Evaluation",
+    "syncing": "SYNCING METRICS",
+    "noRecords": "No evaluation records found.",
+    "table": {
+      "date": "Date",
+      "athlete": "Athlete",
+      "weight": "Weight",
+      "fat": "Fat %",
+      "result": "Result",
+      "actions": "Actions"
+    },
+    "actions": {
+      "view": "View Details",
+      "edit": "Edit Record",
+      "delete": "Purge Record",
+      "confirmDelete": "Delete this evaluation record?"
+    }
+  },
+  
+  "routines": {
+    "title": "Workout Routine",
+    "subtitle": "Review and manage assigned training routines.",
+    "limitNote": "Routine limit reached for your current plan.",
+    "searchPlaceholder": "Search routines...",
+    "limitReached": "Limit Reached",
+    "addRoutine": "Add Routine",
+    "loading": "Loading training Routine...",
+    "noRecords": "No active workout routines found.",
+    "table": {
+      "title": "Routine Title",
+      "trainer": "Trainer",
+      "athlete": "Athlete",
+      "date": "Assigned Date",
+      "actions": "Actions"
+    },
+    "actions": {
+      "view": "View Exercises",
+      "edit": "Edit Routine",
+      "delete": "Delete Routine",
+      "confirmDelete": "Are you sure you want to delete this routine?"
+    }
+  },
+  
+  "exercises": {
+    "title": "Exercises",
+    "subtitle": "Database management for workout movements.",
+    "searchPlaceholder": "Search exercises...",
+    "addExercise": "Add Exercise",
+    "loading": "Loading catalog...",
+    "table": {
+      "name": "Exercise Name",
+      "zone": "Zone",
+      "type": "Type",
+      "preview": "Preview",
+      "actions": "Actions"
+    },
+    "actions": {
+      "view": "View Details",
+      "edit": "Edit",
+      "delete": "Delete"
+    }
+  },
+  
+  "mealPlans": {
+    "title": "Meal Plans",
+    "subtitle": "Manage and assign nutritional schedules to trainees.",
+    "limitReached": "You have reached the meal plan limit for your current subscription.",
+    "searchPlaceholder": "Search meal plans...",
+    "addPlan": "Add Meal Plan",
+    "limitLabel": "Limit Reached",
+    "table": {
+      "title": "Plan Title",
+      "trainer": "Trainer",
+      "trainee": "Trainee",
+      "duration": "Duration",
+      "actions": "Actions"
+    },
+    "durations": {
+      "weekly": "Weekly",
+      "fortnightly": "Fortnightly",
+      "monthly": "Monthly"
+    },
+    "empty": {
+      "title": "No meal plans found",
+      "trainer": "You haven't created any nutrition schedules yet.",
+      "trainee": "No meal plans have been assigned to you yet."
+    },
+    "deleteConfirm": "Are you sure you want to delete this meal plan?",
+    "edit": "Edit",
+    "delete": "Delete"
+  },
+  
+  "meals": {
+    "title": "Meal Planner",
+    "subtitle": "Calculated nutrition and restriction monitoring.",
+    "limitReached": "Plan limit reached. Upgrade to add more recipes.",
+    "searchPlaceholder": "Search meals...",
+    "addMeal": "Add Meal",
+    "upgrade": "Upgrade Plan",
+    "syncing": "Syncing Meal Library",
+    "noResults": "No matching recipes found.",
+    "stats": {
+      "calories": "kcal",
+      "protein": "Pro",
+      "carbs": "Carbs",
+      "fat": "Fat"
+    },
+    "labels": {
+      "ingredientMix": "Ingredient Mix",
+      "fullRecipe": "Full Recipe"
+    },
+    "actions": {
+      "view": "View Recipe",
+      "edit": "Edit Meal",
+      "delete": "Delete Recipe",
+      "deleteConfirm": "Remove this meal from the database?"
+    }
+  },
+  
+  "settings": {
+    "title": "Control",
+    "titleAccent": "Center",
+    "subtitle": "Manage your professional performance and account preferences.",
+    "editProfile": "Edit Profile",
+    "tierStandard": "Standard Tier",
+    "quickStats": "Quick Stats",
+    "status": "Status",
+    "statusActive": "Active",
+    "role": "Role",
+    "roleDefault": "Trainer",
+    "metrics": {
+      "trainees": "Total Trainees",
+      "workouts": "Workouts",
+      "evaluations": "Evaluations"
+    },
+    "platform": {
+      "title": "Platform Configuration",
+      "integrations": "Integrations",
+      "integrationsDesc": "Connect Stripe, Zoom, and Google Calendar.",
+      "security": "Data Security",
+      "securityDesc": "Manage two-factor authentication.",
+      "comingSoon": "Coming Soon",
+      "enabled": "Enabled"
+    },
+    "upgrade": {
+      "title": "Upgrade to Pro",
+      "desc": "Unlock advanced body analytics and AI routines.",
+      "button": "View Plans"
+    }
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+}

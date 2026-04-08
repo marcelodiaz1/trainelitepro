@@ -6,75 +6,49 @@ import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { Dumbbell, Users } from "lucide-react";
 
-const slides = [
+// Icons and links stay in the code, text comes from dict
+const slideMeta = [
   {
     image: "/hero/hero1.jpg",
-    title: "Grow Your Personal Training Business",
-    description:
-      "Create workouts, meal plans and manage clients in one powerful platform built for modern trainers.",
-    primary: {
-      text: "Start as Trainer",
-      link: "/register",
-      icon: <Dumbbell size={20} />,
-    },
-    secondary: {
-      text: "View Trainer Benefits",
-      link: "/benefits",
-    },
+    primaryLink: "/register",
+    secondaryLink: "/benefits",
+    icon: <Dumbbell size={20} />,
   },
   {
     image: "/hero/hero2.jpg",
-    title: "Find the Perfect Trainer",
-    description:
-      "Browse expert coaches, hire them online and receive personalized workouts and nutrition plans.",
-    primary: {
-      text: "Find a Trainer",
-      link: "/trainers",
-      icon: <Users size={20} />,
-    },
-    secondary: {
-      text: "How It Works",
-      link: "/benefits",
-    },
+    primaryLink: "/trainers",
+    secondaryLink: "/benefits",
+    icon: <Users size={20} />,
   },
   {
     image: "/hero/hero3.jpg",
-    title: "All-in-One Coaching Platform",
-    description:
-      "TrainElitePro helps trainers manage their entire coaching business while delivering elite results for clients.",
-    primary: {
-      text: "Create Account",
-      link: "/register",
-      icon: <Dumbbell size={20} />,
-    },
-    secondary: {
-      text: "View Pricing",
-      link: "/pricing",
-    },
+    primaryLink: "/register",
+    secondaryLink: "/pricing",
+    icon: <Dumbbell size={20} />,
   },
 ];
 
-export default function HeroSlider() {
+export default function HeroSlider({ dict }: { dict: any }) {
   const [index, setIndex] = useState(0);
+  const heroDict = dict.hero; // Array of 3 items from JSON
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setIndex((prev) => (prev + 1) % slides.length);
+      setIndex((prev) => (prev + 1) % slideMeta.length);
     }, 6000);
-
     return () => clearInterval(interval);
   }, []);
 
-  const slide = slides[index];
+  // Merge the static metadata (images/links) with the translated text
+  const currentMeta = slideMeta[index];
+  const currentText = heroDict[index];
 
   return (
     <section className="relative h-[90vh] flex items-center justify-center overflow-hidden">
-
       {/* IMAGE */}
-
       <AnimatePresence mode="wait">
         <motion.div
-          key={slide.image}
+          key={currentMeta.image}
           initial={{ opacity: 0, scale: 1.1 }}
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0 }}
@@ -82,85 +56,69 @@ export default function HeroSlider() {
           className="absolute inset-0"
         >
           <Image
-            src={slide.image}
+            src={currentMeta.image}
             alt="fitness"
             fill
             className="object-cover"
+            priority
           />
         </motion.div>
       </AnimatePresence>
 
-      {/* DARK OVERLAY */}
-
+      {/* OVERLAYS */}
       <div className="absolute inset-0 bg-black/60" />
-
-      {/* GRADIENT LIGHT */}
-
       <div className="absolute w-[600px] h-[600px] bg-[#ff6b1a] blur-[200px] opacity-30 rounded-full" />
 
       {/* CONTENT */}
-
       <div className="relative z-10 max-w-4xl text-center px-6">
-
         <AnimatePresence mode="wait">
-
           <motion.div
-            key={slide.title}
+            key={currentText.title}
             initial={{ opacity: 0, y: 60 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -40 }}
             transition={{ duration: 0.7 }}
           >
-
             <h1 className="text-5xl md:text-7xl font-extrabold mb-6 leading-tight">
-              {slide.title}
+              {currentText.title}
             </h1>
 
             <p className="text-xl text-gray-200 mb-10">
-              {slide.description}
+              {currentText.description}
             </p>
 
             <div className="flex flex-wrap justify-center gap-6">
-
               <Link
-                href={slide.primary.link}
+                href={currentMeta.primaryLink}
                 className="flex items-center gap-2 bg-[#ff6b1a] px-10 py-4 rounded-xl text-lg font-bold hover:scale-105 transition"
               >
-                {slide.primary.icon}
-                {slide.primary.text}
+                {currentMeta.icon}
+                {currentText.primaryText}
               </Link>
 
               <Link
-                href={slide.secondary.link}
+                href={currentMeta.secondaryLink}
                 className="border border-white px-10 py-4 rounded-xl hover:bg-white hover:text-black transition"
               >
-                {slide.secondary.text}
+                {currentText.secondaryText}
               </Link>
-
             </div>
-
           </motion.div>
-
         </AnimatePresence>
-
       </div>
 
       {/* DOT INDICATORS */}
-
       <div className="absolute bottom-10 flex gap-3">
-
-        {slides.map((_, i) => (
+        {slideMeta.map((_, i) => (
           <button
             key={i}
             onClick={() => setIndex(i)}
-            className={`w-3 h-3 rounded-full ${
+            className={`w-3 h-3 rounded-full transition-colors ${
               index === i ? "bg-[#ff6b1a]" : "bg-gray-500"
             }`}
           />
         ))}
-
       </div>
-
     </section>
   );
 }

@@ -1,0 +1,585 @@
+{
+  "stats": {
+    "workouts": "Entrenamientos Creados",
+    "trainers": "Entrenadores Activos",
+    "trainees": "Alumnos",
+    "satisfaction": "Satisfacción del Cliente"
+  },
+  "features": {
+    "mainTitle": "Herramientas Potentes para Profesionales del Fitness",
+    "cta": "Empieza a Entrenar Hoy",
+    "items": [
+      { "icon": "<Users size={30} />", "title": "Gestión de Clientes", "text": "Administra a todos tus alumnos desde un solo panel." },
+      { "icon": "<Dumbbell size={30} />", "title": "Creador de Rutinas", "text": "Crea programas de entrenamiento potentes con facilidad." },
+      { "icon": "<Salad size={30} />", "title": "Planes de Alimentación", "text": "Diseña planes de nutrición personalizados para tus clientes." },
+      { "icon": "<ChartNoAxesColumn size={30} />", "title": "Seguimiento de Progreso", "text": "Monitorea peso, fuerza y métricas de rendimiento." }
+    ]
+  },
+  "testimonials": {
+    "title": "A los Entrenadores les encanta TrainElitePro",
+    "items": [
+      { "name": "John Carter", "role": "Entrenador de Fuerza", "quote": "¡TrainElitePro me ayudó a gestionar más de 50 clientes fácilmente y a hacer crecer mi negocio rápido!" },
+      { "name": "Maria Lopez", "role": "Experta en Pérdida de Peso", "quote": "Puedo crear planes personalizados y seguir el progreso sin esfuerzo. ¡A mis clientes les encanta!" },
+      { "name": "Alex Chen", "role": "Entrenador de Culturismo", "quote": "La mejor herramienta que he usado para gestionar programas de entrenamiento y pagos sin interrupciones." }
+    ]
+  },
+  "finalCta": {
+    "titlePre": "¿Listo para Escalar tu",
+    "titleHighlight": "Negocio de Fitness?",
+    "description": "Únete a cientos de entrenadores que ya están expandiendo su base de clientes en línea, gestionando entrenamientos, planes de comidas y siguiendo el progreso sin problemas, todo en una plataforma potente.",
+    "button": "Crear Cuenta de Entrenador"
+  },
+  "footer": {
+  "description": "La plataforma definitiva para que los entrenadores personales gestionen clientes, entrenamientos y nutrición con facilidad.",
+  "quickLinks": "Enlaces Rápidos",
+  "account": "Cuenta",
+  "links": {
+    "home": "Inicio",
+    "benefits": "Beneficios",
+    "pricing": "Precios",
+    "trainers": "Entrenadores",
+    "contact": "Contacto",
+    "trainerSignUp": "Registro de Entrenador",
+    "traineeSignUp": "Registro de Alumno",
+    "login": "Iniciar Sesión"
+  },
+  "rights": "Todos los derechos reservados."
+  },
+  "hero": [
+    {
+      "title": "Haz Crecer tu Negocio de Entrenamiento Personal",
+      "description": "Crea rutinas, planes de comidas y gestiona clientes en una plataforma potente para entrenadores modernos.",
+      "primaryText": "Empezar como Entrenador",
+      "secondaryText": "Ver Beneficios"
+    },
+    {
+      "title": "Encuentra al Entrenador Perfecto",
+      "description": "Explora coaches expertos, contrátalos en línea y recibe entrenamientos y planes de nutrición personalizados.",
+      "primaryText": "Buscar Entrenador",
+      "secondaryText": "Cómo Funciona"
+    },
+    {
+      "title": "Plataforma de Coaching Todo en Uno",
+      "description": "TrainElitePro ayuda a los entrenadores a gestionar todo su negocio mientras logran resultados de élite.",
+      "primaryText": "Crear Cuenta",
+      "secondaryText": "Ver Precios"
+    }
+  ],  
+  "navbar": {
+    "links": {
+      "benefits": "Beneficios",
+      "pricing": "Precios",
+      "trainers": "Entrenadores",
+      "contact": "Contacto"
+    },
+    "actions": {
+      "login": "Iniciar Sesión",
+      "getStarted": "Empezar",
+      "settings": "Configuración",
+      "account": "Cuenta"
+    }
+  },
+  "benefitsPage": {
+    "hero": {
+      "title": "Por qué <span>TrainElitePro</span> es la plataforma definitiva",
+      "subtitle": "Todo lo que necesitas para hacer crecer tu negocio y ayudar a tus clientes a alcanzar sus metas en una sola plataforma.",
+      "cta": "Comienza tu prueba gratuita"
+    },
+    "mainTitle": "Funciones potentes que a entrenadores y alumnos les encantan",
+    "ctaButton": "Empieza a entrenar hoy",
+    "finalCta": {
+      "title": "Lleva tu negocio de fitness al",
+      "highlight": "siguiente nivel",
+      "description": "Regístrate hoy y comienza a gestionar clientes, entrenamientos y nutrición sin problemas mientras haces crecer tu marca.",
+      "button": "Crear cuenta de entrenador"
+    },
+    "items": [
+      { "title": "Gestión de clientes fluida", "text": "Gestiona cada aspecto del viaje de tus alumnos en un panel intuitivo. Realiza un seguimiento de sesiones, progreso y comunicación." },
+      { "title": "Entrenamientos personalizados", "text": "Crea programas personalizados con facilidad. Usa plantillas o diseña desde cero con nuestro constructor de arrastrar y soltar." },
+      { "title": "Nutrición y planes de comidas", "text": "Diseña programas de nutrición completos. Realiza un seguimiento de calorías, macros y comidas con sugerencias de recetas." },
+      { "title": "Seguimiento y analíticas", "text": "Visualiza las mejoras de cada alumno con gráficos detallados. Controla el peso, la fuerza y las métricas de rendimiento." },
+      { "title": "Pagos rápidos y seguros", "text": "Establece tus propias tarifas, acepta pagos en línea y gestiona suscripciones de forma integrada en tu flujo de trabajo." },
+      { "title": "Compromiso del alumno", "text": "Mantén a los clientes motivados con recordatorios, logros y comentarios personalizados para aumentar la satisfacción." },
+      { "title": "Resultados gamificados", "text": "Convierte el fitness en una experiencia divertida. Otorga insignias, hitos y desafíos para que sigan regresando por más." }
+    ]
+  },
+  "contactPage": {
+    "hero": {
+      "title": "Ponte en <span class='text-[#ff6b1a]'>Contacto</span> con TrainElitePro",
+      "subtitle": "¿Tienes preguntas, comentarios o necesitas soporte? Nuestro equipo está aquí para ayudarte a escalar tu negocio fitness."
+    },
+    "info": {
+      "title": "Información de Contacto",
+      "description": "Contáctanos por correo o teléfono. Responderemos lo antes posible.",
+      "addressLabel": "Dirección",
+      "addressValue": "Sydney, Australia",
+      "cta": "Comienza tu Prueba Gratuita"
+    },
+    "form": {
+      "title": "Envíanos un Mensaje",
+      "nameLabel": "Nombre",
+      "namePlaceholder": "Tu nombre",
+      "emailLabel": "Correo",
+      "emailPlaceholder": "tu@ejemplo.com",
+      "messageLabel": "Mensaje",
+      "messagePlaceholder": "Tu mensaje...",
+      "buttonIdle": "Enviar Mensaje",
+      "buttonLoading": "Enviando...",
+      "buttonSuccess": "¡Enviado!",
+      "buttonError": "¡Error! Reintenta",
+      "successMsg": "¡Gracias! Te contactaremos pronto.",
+      "errorMsg": "Algo salió mal. Por favor intenta más tarde."
+    },
+    "finalCta": {
+      "title": "¿Listo para hacer crecer tu <span class='text-[#ff6b1a]'>Negocio Fitness?</span>",
+      "description": "Únete a cientos de entrenadores que ya están creciendo su base de clientes en línea sin problemas.",
+      "button": "Crear Cuenta de Entrenador"
+    }
+  },
+  
+  "forgotPassword": {
+    "title": "Restablecer contraseña",
+    "subtitle": "Introduce tu correo y te enviaremos un enlace para restablecer tu contraseña.",
+    "placeholder": "Correo electrónico",
+    "button": "Enviar enlace",
+    "success": "Revisa tu correo para el enlace de restablecimiento.",
+    "errorDefault": "Ocurrió un error. Por favor, inténtalo de nuevo."
+  },
+  
+  "loginPage": {
+    "title": "Bienvenido de nuevo",
+    "noAccount": "¿No tienes una cuenta?",
+    "createAccount": "Crea una aquí",
+    "emailPlaceholder": "Correo electrónico",
+    "passwordPlaceholder": "Contraseña",
+    "forgotPassword": "¿Olvidaste tu contraseña?",
+    "loginButton": "Iniciar sesión",
+    "loading": "Iniciando sesión...",
+    "sideTitle": "Entrena mejor con TrainElitePro",
+    "benefits": [
+      "Encuentra entrenadores verificados cerca de ti",
+      "Reserva sesiones al instante",
+      "Sigue tus entrenamientos y progreso"
+    ]
+  },
+  "pricingPage": {
+    "hero": {
+      "title": "Elige el <span class='text-[#ff6b1a]'>Plan Perfecto</span>",
+      "subtitle": "Planes de suscripción flexibles diseñados para entrenadores de todos los niveles. Comienza gratis o escala según crezca tu clientela."
+    },
+    "loading": "Cargando planes...",
+    "buttons": {
+      "getStarted": "Empezar",
+      "choosePlan": "Elegir Plan"
+    },
+    "modal": {
+      "title": "Completa tu Pago"
+    },
+    "finalCta": {
+      "title": "¿Listo para hacer crecer tu <span class='text-[#ff6b1a]'>Negocio Fitness?</span>",
+      "description": "Comienza tu plan gratuito hoy o elige el plan que mejor se adapte a tu crecimiento.",
+      "button": "Crear Cuenta de Entrenador"
+    }
+  },
+
+  "registerPage": {
+    "title": "Únete a la <span class='text-orange-600'>Élite</span>",
+    "hasAccount": "¿Ya tienes una cuenta?",
+    "signIn": "Inicia sesión",
+    "roles": { "trainee": "Alumno", "trainer": "Entrenador" },
+    "placeholders": {
+      "firstName": "Nombre",
+      "lastName": "Apellido",
+      "email": "Correo electrónico",
+      "password": "Crear contraseña",
+      "searchTrainer": "Buscar por nombre...",
+      "specialty": "Especialidad (ej. Fuerza, Pilates)",
+      "selectPlan": "Seleccionar plan"
+    },
+    "labels": {
+      "gender": "Identificación de género",
+      "findTrainer": "Encuentra a tu Entrenador",
+      "membership": "Nivel de membresía"
+    },
+    "genders": ["Hombre", "Mujer"],
+    "status": {
+      "syncing": "Sincronizando...",
+      "start": "Comenzar Trayecto",
+      "noCoach": "Entrenador no encontrado",
+      "maxCapacity": "Capacidad máxima alcanzada"
+    },
+    "marketing": {
+      "hero": "Supera tus<br /><span class='text-orange-600 text-8xl'>Límites.</span>",
+      "sub": "La plataforma todo en uno para que entrenadores y atletas sigan, crezcan y dominen.",
+      "benefits": [
+        { "title": "Análisis de Rendimiento", "desc": "Sigue cada repetición y serie con precisión." },
+        { "title": "Facturación Fluida", "desc": "Pagos automatizados mediante la integración con Stripe." },
+        { "title": "Conectividad con Coaches", "desc": "Acceso directo 1:1 a planes de entrenamiento de élite." }
+      ]
+    }
+  },
+  
+  "trainersPage": {
+    "title": "Conoce a nuestros Entrenadores",
+    "searchPlaceholder": "Buscar por nombre...",
+    "filters": {
+      "allRatings": "Todas las calificaciones",
+      "stars": "Estrellas",
+      "allLocations": "Todas las ubicaciones"
+    },
+    "status": {
+      "loading": "Cargando entrenadores...",
+      "noResults": "No se encontraron entrenadores."
+    },
+    "pagination": {
+      "prev": "Anterior",
+      "next": "Siguiente",
+      "pageOf": "Página {page} de {totalPages}"
+    }
+  },
+  
+  "trainerCard": {
+    "viewProfile": "Ver Perfil",
+    "defaultSpecialty": "Entrenador de Fitness"
+  },
+  
+  "trainerProfile": {
+    "loading": "Cargando Perfil...",
+    "notFound": "Entrenador no encontrado.",
+    "defaultSpecialty": "Coach de Élite",
+    "defaultBio": "Este coach prefiere dejar que sus resultados hablen por él.",
+    "getStarted": "Comenzar",
+    "contact": "Contacto",
+    "chooseTier": "Elige tu Nivel",
+    "hot": "Popular",
+    "selectPlan": "Seleccionar Plan",
+    "noPlans": "No hay planes disponibles para este entrenador.",
+    "payment": {
+      "title": "Pago",
+      "beneficiary": "Beneficiario",
+      "bank": "Banco",
+      "accountNumber": "Número de Cuenta",
+      "idNumber": "RUT / ID",
+      "accountType": "Tipo de Cuenta",
+      "unset": "No definido",
+      "copyInfo": "Copiar Datos de Transferencia",
+      "copied": "¡Copiado!",
+      "footerNote": "Envía tu comprobante al coach después de transferir"
+    }
+  },
+  "dashboard": {
+    "loading": "Sincronizando Sistemas",
+    "headers": {
+      "trainer": "Centro del Coach",
+      "admin": "Comando Admin",
+      "trainee": "Portal del Alumno",
+      "mode": "Modo"
+    },
+    "cards": {
+      "activeTrainees": "Alumnos Activos",
+      "routines": "Rutinas",
+      "evaluations": "Evaluaciones",
+      "mealPlans": "Planes de Comida",
+      "individualMeals": "Comidas Individuales",
+      "subTiers": "Niveles de Suscripción",
+      "totalTrainers": "Total Entrenadores",
+      "totalUsers": "Total Usuarios",
+      "myRoutines": "Mis Rutinas",
+      "myMealPlans": "Mis Planes de Comida",
+      "assignedCoach": "Entrenador Asignado",
+      "activeAssignments": "Asignaciones Activas"
+    },
+    "actions": {
+      "addTrainee": "Añadir Alumno",
+      "new": "Nuevo",
+      "upgrade": "Requiere Mejora",
+      "noTrainer": "Sin entrenador asignado.",
+      "noData": "No hay datos disponibles"
+    },
+    "labels": {
+      "tier": "Nivel",
+      "trainees": "Alumnos",
+      "evals": "Evals",
+      "plans": "Planes",
+      "meals": "Comidas",
+      "slots": "Cupos",
+      "systemEntry": "Entrada del Sistema",
+      "details": "Detalles de Actividad"
+    }
+  },
+  
+  "sidebar": {
+    "dashboard": "Panel",
+    "trainers": "Entrenadores",
+    "trainees": "Alumnos",
+    "evaluations": "Evaluaciones",
+    "routines": "Rutinas",
+    "exercises": "Ejercicios",
+    "mealPlans": "Planes Dieta",
+    "meals": "Comidas",
+    "ingredients": "Ingredientes",
+    "plans": "Planes",
+    "payments": "Pagos",
+    "settings": "Ajustes",
+    "logout": "Cerrar Sesión"
+  },
+  "trainers": {
+    "title": "Entrenadores",
+    "subtitle": "Gestione credenciales del personal y estados de acceso.",
+    "searchPlaceholder": "Buscar entrenadores...",
+    "addTrainer": "Agregar Entrenador",
+    "verifying": "Verificando Permisos...",
+    "syncing": "Sincronizando Registros...",
+    "noRecords": "No se encontraron registros de personal profesional.",
+    "deleteConfirm": "¿Eliminar este entrenador? Esta acción no se puede deshacer.",
+    "table": {
+      "trainer": "Entrenador",
+      "email": "Correo Electrónico",
+      "plan": "Plan Activo",
+      "specialty": "Especialidad",
+      "rating": "Calificación",
+      "status": "Estado",
+      "expiration": "Vencimiento",
+      "actions": "Acciones"
+    },
+    "actions": {
+      "view": "Ver Perfil",
+      "edit": "Editar Credenciales",
+      "restrict": "Restringir Acceso",
+      "enable": "Habilitar Acceso",
+      "remove": "Eliminar Miembro",
+      "noPlan": "Sin Plan",
+      "overdue": "Pago Atrasado"
+    }
+  },
+  
+  "profile": {
+    "back": "Volver al Personal",
+    "billing": "Info Facturación",
+    "edit": "Editar Perfil",
+    "specialty": "Especialidad",
+    "rating": "Calificación",
+    "overview": "Resumen Profesional",
+    "staffId": "ID de Personal",
+    "joinDate": "Fecha de Ingreso",
+    "role": "Rol",
+    "accessLevel": "Nivel de Acceso",
+    "permissions": "Permisos",
+    "billingDetails": "Detalles de Cobro",
+    "fullName": "Nombre Completo",
+    "bank": "Banco",
+    "accountNum": "Nº de Cuenta",
+    "rutId": "RUT / ID",
+    "type": "Tipo",
+    "copy": "Copiar Detalles",
+    "copied": "Copiado al Portapapeles",
+    "unset": "No definido",
+    "generalist": "Generalista",
+    "eliteTrainer": "Entrenador Elite",
+    "portal": "Portal de Entrenador",
+    "permRoutines": "Gestionar Rutinas",
+    "permClients": "Comunicación Clientes",
+    "permFinancial": "Datos Financieros"
+  },
+  
+  "trainees": {
+    "title": "Alumnos",
+    "subtitle": "Gestione credenciales y estados de acceso.",
+    "searchPlaceholder": "Buscar alumnos...",
+    "limitReached": "Límite Alcanzado",
+    "addTrainee": "Agregar Alumno",
+    "syncing": "SINCRONIZANDO...",
+    "noRecords": "No hay alumnos registrados actualmente.",
+    "table": {
+      "name": "Nombre del Cliente",
+      "email": "Correo Electrónico",
+      "status": "Estado de Cuenta",
+      "actions": "Acciones"
+    },
+    "actions": {
+      "view": "Ver Perfil",
+      "edit": "Editar Credenciales",
+      "restrict": "Restringir Acceso",
+      "enable": "Habilitar Acceso",
+      "delete": "Eliminar Registros",
+      "confirmDelete": "¿Estás seguro de que quieres eliminar a este alumno?"
+    }
+  },
+  
+  "evaluations": {
+    "title": "Evaluaciones",
+    "subtitle": "Analiza la composición corporal y el progreso físico.",
+    "limitNote": "Límite de almacenamiento de evaluaciones alcanzado.",
+    "searchPlaceholder": "Buscar resultados...",
+    "limitReached": "Límite Alcanzado",
+    "addEvaluation": "Nueva Evaluación",
+    "syncing": "SINCRONIZANDO MÉTRICAS",
+    "noRecords": "No se encontraron registros de evaluación.",
+    "table": {
+      "date": "Fecha",
+      "athlete": "Atleta",
+      "weight": "Peso",
+      "fat": "% Grasa",
+      "result": "Resultado",
+      "actions": "Acciones"
+    },
+    "actions": {
+      "view": "Ver Detalles",
+      "edit": "Editar Registro",
+      "delete": "Eliminar Registro",
+      "confirmDelete": "¿Eliminar este registro de evaluación?"
+    }
+  },
+  
+  "routines": {
+    "title": "Rutinas de Entrenamiento",
+    "subtitle": "Revisa y gestiona las rutinas de entrenamiento asignadas.",
+    "limitNote": "Límite de rutinas alcanzado para tu plan actual.",
+    "searchPlaceholder": "Buscar rutinas...",
+    "limitReached": "Límite Alcanzado",
+    "addRoutine": "Nueva Rutina",
+    "loading": "Cargando rutina de entrenamiento...",
+    "noRecords": "No se encontraron rutinas activas.",
+    "table": {
+      "title": "Título de la Rutina",
+      "trainer": "Entrenador",
+      "athlete": "Atleta",
+      "date": "Fecha Asignada",
+      "actions": "Acciones"
+    },
+    "actions": {
+      "view": "Ver Ejercicios",
+      "edit": "Editar Rutina",
+      "delete": "Eliminar Rutina",
+      "confirmDelete": "¿Estás seguro de que quieres eliminar esta rutina?"
+    }
+  },
+  
+  "exercises": {
+    "title": "Ejercicios",
+    "subtitle": "Gestión de la base de datos de movimientos de entrenamiento.",
+    "searchPlaceholder": "Buscar ejercicios...",
+    "addExercise": "Añadir Ejercicio",
+    "loading": "Cargando catálogo...",
+    "table": {
+      "name": "Nombre del Ejercicio",
+      "zone": "Zona",
+      "type": "Tipo",
+      "preview": "Vista Previa",
+      "actions": "Acciones"
+    },
+    "actions": {
+      "view": "Ver Detalles",
+      "edit": "Editar",
+      "delete": "Eliminar"
+    }
+  },
+  
+  "mealPlans": {
+    "title": "Planes de Comida",
+    "subtitle": "Gestiona y asigna horarios nutricionales a los alumnos.",
+    "limitReached": "Has alcanzado el límite de planes de comida para tu suscripción actual.",
+    "searchPlaceholder": "Buscar planes...",
+    "addPlan": "Añadir Plan",
+    "limitLabel": "Límite Alcanzado",
+    "table": {
+      "title": "Título del Plan",
+      "trainer": "Entrenador",
+      "trainee": "Alumno",
+      "duration": "Duración",
+      "actions": "Acciones"
+    },
+    "durations": {
+      "weekly": "Semanal",
+      "fortnightly": "Quincenal",
+      "monthly": "Mensual"
+    },
+    "empty": {
+      "title": "No se encontraron planes",
+      "trainer": "Aún no has creado ningún horario de nutrición.",
+      "trainee": "Aún no se te ha asignado ningún plan de comidas."
+    },
+    "deleteConfirm": "¿Estás seguro de que deseas eliminar este plan de comidas?",
+    "edit": "Editar",
+    "delete": "Eliminar"
+  },
+  
+  "meals": {
+    "title": "Planificador de Comidas",
+    "subtitle": "Nutrición calculada y monitoreo de restricciones.",
+    "limitReached": "Límite del plan alcanzado. Mejora tu plan para añadir más recetas.",
+    "searchPlaceholder": "Buscar comidas...",
+    "addMeal": "Añadir Comida",
+    "upgrade": "Mejorar Plan",
+    "syncing": "Sincronizando Biblioteca",
+    "noResults": "No se encontraron recetas que coincidan.",
+    "stats": {
+      "calories": "kcal",
+      "protein": "Prot",
+      "carbs": "Carbo",
+      "fat": "Grasas"
+    },
+    "labels": {
+      "ingredientMix": "Mezcla de Ingredientes",
+      "fullRecipe": "Receta Completa"
+    },
+    "actions": {
+      "view": "Ver Receta",
+      "edit": "Editar Comida",
+      "delete": "Eliminar Receta",
+      "deleteConfirm": "¿Eliminar esta comida de la base de datos?"
+    }
+  },
+  
+  "settings": {
+    "title": "Centro de",
+    "titleAccent": "Control",
+    "subtitle": "Gestiona tu rendimiento profesional y preferencias de cuenta.",
+    "editProfile": "Editar Perfil",
+    "tierStandard": "Nivel Estándar",
+    "quickStats": "Estadísticas",
+    "status": "Estado",
+    "statusActive": "Activo",
+    "role": "Rol",
+    "roleDefault": "Entrenador",
+    "metrics": {
+      "trainees": "Total Alumnos",
+      "workouts": "Entrenamientos",
+      "evaluations": "Evaluaciones"
+    },
+    "platform": {
+      "title": "Configuración de Plataforma",
+      "integrations": "Integraciones",
+      "integrationsDesc": "Conecta Stripe, Zoom y Google Calendar.",
+      "security": "Seguridad de Datos",
+      "securityDesc": "Gestionar autenticación de dos factores.",
+      "comingSoon": "Próximamente",
+      "enabled": "Activado"
+    },
+    "upgrade": {
+      "title": "Mejorar a Pro",
+      "desc": "Desbloquea análisis corporales avanzados y rutinas de IA.",
+      "button": "Ver Planes"
+    }
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+}

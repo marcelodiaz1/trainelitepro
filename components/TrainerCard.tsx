@@ -1,5 +1,6 @@
+"use client";
+
 import { motion } from "framer-motion";
-import Image from "next/image";
 import Link from "next/link";
 import { Star } from "lucide-react";
 
@@ -8,10 +9,20 @@ interface TrainerCardProps {
   specialty: string;
   image: string;
   profileLink: string;
-  rating?: number
+  rating?: number;
+  dict: any; // Added dict prop
 }
 
-export default function TrainerCard({ name, specialty, image, profileLink, rating = 0 }: TrainerCardProps) {
+export default function TrainerCard({ 
+  name, 
+  specialty, 
+  image, 
+  profileLink, 
+  rating = 0,
+  dict 
+}: TrainerCardProps) {
+  const t = dict?.trainerCard;
+
   return (
     <motion.div
       whileHover={{ scale: 1.05 }}
@@ -19,13 +30,15 @@ export default function TrainerCard({ name, specialty, image, profileLink, ratin
     >
       {/* Profile Image */}
       <div className="h-52 w-full relative">
-        <img src={image} className="w-full h-full object-cover" />
+        <img src={image} className="w-full h-full object-cover" alt={name} />
       </div>
 
       {/* Info */}
       <div className="p-6 flex flex-col flex-1">
         <h3 className="text-xl md:text-2xl font-semibold">{name}</h3>
-        <p className="text-gray-400 mb-3">{specialty}</p>
+        <p className="text-gray-400 mb-3">
+          {specialty || t?.defaultSpecialty}
+        </p>
 
         {/* Star Rating */}
         <div className="flex items-center gap-1 text-yellow-400 mb-4">          
@@ -48,7 +61,7 @@ export default function TrainerCard({ name, specialty, image, profileLink, ratin
           href={profileLink}
           className="mt-4 bg-[#ff6b1a] text-black font-bold py-2 px-4 rounded-xl text-center hover:scale-105 transition"
         >
-          View Profile
+          {t?.viewProfile || "View Profile"}
         </Link>
       </div>
     </motion.div>
