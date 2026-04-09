@@ -6,10 +6,11 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { 
   CheckCircle, User, Zap, ShieldCheck, 
-  Search, Users, ChevronRight, AlertCircle, Lock 
+  Search, Users, ChevronRight, AlertCircle, MapPin 
 } from "lucide-react";
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
+import { LOCATIONS_DATA, COUNTRIES, CountryName } from "@/lib/locations";
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -24,6 +25,11 @@ export default function RegisterClient({ dict }: { dict: any }) {
   const [gender, setGender] = useState(t?.genders[0] || "Male");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  
+  // Location States
+  const [selectedCountry, setSelectedCountry] = useState<CountryName | "">("");
+  const [selectedRegion, setSelectedRegion] = useState("");
+
   const [availablePlans, setAvailablePlans] = useState<any[]>([]);
   const [allTrainers, setAllTrainers] = useState<any[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
@@ -31,7 +37,7 @@ export default function RegisterClient({ dict }: { dict: any }) {
 
   const [form, setForm] = useState({
     first_name: "", last_name: "", email: "", password: "",
-    phone: "", address: "", specialty: "", bio: "",
+    phone: "", specialty: "", bio: "",
     selected_plan: "", trainer_id: "", 
   });
 
@@ -39,6 +45,7 @@ export default function RegisterClient({ dict }: { dict: any }) {
 
   useEffect(() => {
     const fetchData = async () => {
+      // Fetching available plans
       const { data: userData } = await supabase
         .from("users")
         .select("own_plans")
@@ -57,6 +64,7 @@ export default function RegisterClient({ dict }: { dict: any }) {
         }
       }
 
+      // Fetching active trainers
       const { data: trainersData } = await supabase
         .from("users")
         .select(`id, first_name, last_name, specialty, selected_plan, trainees:users!trainer_id(count)`)
@@ -82,6 +90,12 @@ export default function RegisterClient({ dict }: { dict: any }) {
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
+
+    if (!selectedCountry || !selectedRegion) {
+      setError("Please select your country and region.");
+      return;
+    }
+
     setLoading(true);
 
     if (role === "trainee" && form.trainer_id) {
@@ -98,9 +112,11 @@ export default function RegisterClient({ dict }: { dict: any }) {
       password: form.password,
       options: {
         data: {
-          role, gender,
+          role, 
+          gender,
           first_name: form.first_name,
           last_name: form.last_name,
+          address: `${selectedRegion}, ${selectedCountry}`, // Saved format: "Metropolitana, Chile"
           specialty: role === "trainer" ? form.specialty : null,
           selected_plan: role === "trainer" ? form.selected_plan : null,
           trainer_id: role === "trainee" ? form.trainer_id : null,
@@ -152,6 +168,37 @@ export default function RegisterClient({ dict }: { dict: any }) {
                 <input name="last_name" placeholder={t.placeholders.lastName} required onChange={handleChange} className="input-field" />
               </div>
 
+              {/* LOCATION SELECTORS */}
+              <div className="space-y-2">
+                <label className="text-[10px] uppercase font-black text-slate-600 tracking-widest ml-1 flex items-center gap-1">
+                  <MapPin size={10}/> Location
+                </label>
+                <div className="grid grid-cols-2 gap-3">
+                  <select 
+                    value={selectedCountry} 
+                    onChange={(e) => { setSelectedCountry(e.target.value as CountryName); setSelectedRegion(""); }}
+                    required 
+                    className="input-field appearance-none"
+                  >
+                    <option value="">Country</option>
+                    {COUNTRIES.map(c => <option key={c} value={c}>{c}</option>)}
+                  </select>
+
+                  <select 
+                    value={selectedRegion} 
+                    onChange={(e) => setSelectedRegion(e.target.value)}
+                    required 
+                    disabled={!selectedCountry}
+                    className={`input-field appearance-none ${!selectedCountry ? 'opacity-30' : ''}`}
+                  >
+                    <option value="">{selectedCountry ? (selectedCountry === "Australia" ? "State" : "Region") : "Select Country First"}</option>
+                    {selectedCountry && LOCATIONS_DATA[selectedCountry].map(r => (
+                      <option key={r} value={r}>{r}</option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+
               <div className="space-y-2">
                 <label className="text-[10px] uppercase font-black text-slate-600 tracking-widest ml-1">{t.labels.gender}</label>
                 <div className="grid grid-cols-2 gap-2">
@@ -167,6 +214,7 @@ export default function RegisterClient({ dict }: { dict: any }) {
               <input type="email" name="email" placeholder={t.placeholders.email} required onChange={handleChange} className="input-field w-full" />
               <input type="password" name="password" placeholder={t.placeholders.password} required onChange={handleChange} className="input-field w-full" />
 
+              {/* Rest of the form (Trainer search / Plans) */}
               {role === "trainee" && (
                 <div className="space-y-1 relative">
                   <label className="text-[10px] uppercase font-black text-slate-500 tracking-widest ml-1 flex items-center gap-2">
@@ -234,13 +282,14 @@ export default function RegisterClient({ dict }: { dict: any }) {
       </section>
 
       <style jsx>{`
-        .input-field { background: #161616; border: 1px solid #262626; border-radius: 16px; padding: 14px 18px; font-size: 14px; font-weight: 600; color: white; outline: none; transition: all 0.3s; }
+        .input-field { background: #161616; border: 1px solid #262626; border-radius: 16px; padding: 14px 18px; font-size: 14px; font-weight: 600; color: white; outline: none; transition: all 0.3s; width: 100%; }
         .input-field:focus { border-color: #ff6b1a; box-shadow: 0 0 0 4px rgba(255, 107, 26, 0.1); }
       `}</style>
       <Footer dict={dict} />
     </main>
   );
 }
+ 
 
 function RoleButton({ active, onClick, icon, label }: any) {
   return (

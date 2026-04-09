@@ -5,6 +5,8 @@ import { createClient } from "@supabase/supabase-js";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import TrainerCard from "@/components/TrainerCard";
+// Import the location constants
+import { LOCATIONS_DATA, COUNTRIES, CountryName } from "@/lib/locations";
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
@@ -18,7 +20,7 @@ interface Trainer {
   profile_picture?: string | null;
   bio?: string | null;
   rating?: number;
-  address?: string | null;
+  address?: string | null; 
 }
 
 export default function TrainersPage({ dict }: { dict: any }) {
@@ -28,7 +30,11 @@ export default function TrainersPage({ dict }: { dict: any }) {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [minRating, setMinRating] = useState<number>(0);
-  const [location, setLocation] = useState<string>("All");
+  
+  // New Location Filter States
+  const [selectedCountry, setSelectedCountry] = useState<CountryName | "All">("All");
+  const [selectedRegion, setSelectedRegion] = useState<string>("All");
+
   const [page, setPage] = useState(1);
   const pageSize = 6;
 
@@ -60,27 +66,40 @@ export default function TrainersPage({ dict }: { dict: any }) {
     fetchTrainers();
   }, []);
 
+  // Filter Logic
   useEffect(() => {
     let filteredList = [...trainers];
+
+    // 1. Search Filter
     if (search.trim()) {
       const s = search.toLowerCase();
       filteredList = filteredList.filter((tr) =>
         `${tr.first_name ?? ""} ${tr.last_name ?? ""}`.toLowerCase().includes(s)
       );
     }
+
+    // 2. Rating Filter
     if (minRating > 0) {
       filteredList = filteredList.filter((tr) => (tr.rating ?? 0) >= minRating);
     }
-    if (location !== "All") {
-      filteredList = filteredList.filter((tr) => tr.address?.includes(location) ?? false);
+
+    // 3. Country Filter
+    if (selectedCountry !== "All") {
+      filteredList = filteredList.filter((tr) => 
+        tr.address?.includes(selectedCountry)
+      );
     }
+
+    // 4. Region Filter
+    if (selectedRegion !== "All") {
+      filteredList = filteredList.filter((tr) => 
+        tr.address?.includes(selectedRegion)
+      );
+    }
+
     setFiltered(filteredList);
     setPage(1);
-  }, [search, minRating, location, trainers]);
-
-  const locations = Array.from(
-    new Set(trainers.map((tr) => tr.address?.split(",")[0] || "").filter(Boolean))
-  );
+  }, [search, minRating, selectedCountry, selectedRegion, trainers]);
 
   const totalPages = Math.ceil(filtered.length / pageSize);
   const paginated = filtered.slice((page - 1) * pageSize, page * pageSize);
@@ -91,17 +110,20 @@ export default function TrainersPage({ dict }: { dict: any }) {
       <section className="py-28 px-6">
         <h1 className="text-4xl md:text-5xl font-bold text-center mb-16">{t.title}</h1>
 
-        {/* Filters */}
-        <div className="flex flex-col md:flex-row gap-4 md:gap-6 mb-8 justify-center items-center">
+        {/* Filters Grid */}
+        <div className="flex flex-col md:flex-row gap-4 mb-12 justify-center items-center flex-wrap max-w-6xl mx-auto">
+          {/* Name Search */}
           <input
             type="text"
             placeholder={t.searchPlaceholder}
-            className="px-4 py-2 rounded-lg bg-[#161616] text-white border border-gray-700 focus:outline-none"
+            className="w-full md:w-auto px-4 py-2.5 rounded-xl bg-[#161616] text-white border border-gray-800 focus:border-orange-500 focus:outline-none transition"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
+
+          {/* Rating Select */}
           <select
-            className="px-4 py-2 rounded-lg bg-[#161616] text-white border border-gray-700 focus:outline-none"
+            className="w-full md:w-auto px-4 py-2.5 rounded-xl bg-[#161616] text-white border border-gray-800 focus:outline-none"
             value={minRating}
             onChange={(e) => setMinRating(Number(e.target.value))}
           >
@@ -110,14 +132,32 @@ export default function TrainersPage({ dict }: { dict: any }) {
               <option key={r} value={r}>{r}+ {t.filters.stars}</option>
             ))}
           </select>
+
+          {/* Country Select */}
           <select
-            className="px-4 py-2 rounded-lg bg-[#161616] text-white border border-gray-700 focus:outline-none"
-            value={location}
-            onChange={(e) => setLocation(e.target.value)}
+            className="w-full md:w-auto px-4 py-2.5 rounded-xl bg-[#161616] text-white border border-gray-800 focus:outline-none"
+            value={selectedCountry}
+            onChange={(e) => {
+              setSelectedCountry(e.target.value as CountryName | "All");
+              setSelectedRegion("All"); // Reset region when country changes
+            }}
           >
-            <option value="All">{t.filters.allLocations}</option>
-            {locations.map((loc) => (
-              <option key={loc} value={loc}>{loc}</option>
+            <option value="All">All Countries</option>
+            {COUNTRIES.map((country) => (
+              <option key={country} value={country}>{country}</option>
+            ))}
+          </select>
+
+          {/* Region Select (Dynamic) */}
+          <select
+            disabled={selectedCountry === "All"}
+            className="w-full md:w-auto px-4 py-2.5 rounded-xl bg-[#161616] text-white border border-gray-800 focus:outline-none disabled:opacity-30 transition"
+            value={selectedRegion}
+            onChange={(e) => setSelectedRegion(e.target.value)}
+          >
+            <option value="All">All Regions</option>
+            {selectedCountry !== "All" && LOCATIONS_DATA[selectedCountry].map((reg) => (
+              <option key={reg} value={reg}>{reg}</option>
             ))}
           </select>
         </div>
@@ -131,13 +171,13 @@ export default function TrainersPage({ dict }: { dict: any }) {
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-10 max-w-6xl mx-auto">
               {paginated.map((trainer) => ( 
                 <TrainerCard
-                key={trainer.id}
-                rating={trainer.rating}
-                name={`${trainer.first_name ?? ""} ${trainer.last_name ?? ""}`.trim()}
-                specialty={trainer.specialty}
-                image={getImageUrl(trainer.profile_picture)}
-                profileLink={`/trainers/${trainer.id}`}
-                dict={dict}  
+                  key={trainer.id}
+                  rating={trainer.rating}
+                  name={`${trainer.first_name ?? ""} ${trainer.last_name ?? ""}`.trim()}
+                  specialty={trainer.specialty}
+                  image={getImageUrl(trainer.profile_picture)}
+                  profileLink={`/trainers/${trainer.id}`}
+                  dict={dict}  
                 />
               ))}
             </div>
@@ -152,7 +192,7 @@ export default function TrainersPage({ dict }: { dict: any }) {
                 >
                   {t.pagination.prev}
                 </button>
-                <span className="text-gray-400">
+                <span className="text-gray-400 font-medium">
                   {t.pagination.pageOf.replace("{page}", page.toString()).replace("{totalPages}", totalPages.toString())}
                 </span>
                 <button
