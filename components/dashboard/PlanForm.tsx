@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Plus, Trash2, Save, X, CreditCard, HelpCircle, Loader2 } from "lucide-react";
+import { Plus, Trash2, Save, X, HelpCircle, Loader2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { createClient } from "@supabase/supabase-js";
 
@@ -15,9 +15,11 @@ interface PlanFormProps {
   onSave: (data: any) => void;
   onCancel: () => void;
   loading: boolean;
+  dict: any; // Add dict to props
 }
 
-export default function PlanForm({ initialData, onSave, onCancel, loading }: PlanFormProps) {
+export default function PlanForm({ initialData, onSave, onCancel, loading, dict }: PlanFormProps) {
+  const t = dict.planForm;
   const [showVideo, setShowVideo] = useState(false);
   const [userRole, setUserRole] = useState<string | null>(null);
   const [fetchingRole, setFetchingRole] = useState(true);
@@ -26,7 +28,7 @@ export default function PlanForm({ initialData, onSave, onCancel, loading }: Pla
     title: "",
     price: "",
     paypal_button_id: "",
-    trainee_limit: 1, // Default value
+    trainee_limit: 1,
     cta: "",
     features: [""]
   });
@@ -36,7 +38,7 @@ export default function PlanForm({ initialData, onSave, onCancel, loading }: Pla
       try {
         const { data: { user } } = await supabase.auth.getUser();
         if (user) {
-          const { data, error } = await supabase
+          const { data } = await supabase
             .from("users")
             .select("role")
             .eq("id", user.id)
@@ -84,7 +86,7 @@ export default function PlanForm({ initialData, onSave, onCancel, loading }: Pla
   );
 
   return (
-    <div >
+    <div>
       <AnimatePresence>
         {showVideo && (
           <motion.div 
@@ -99,38 +101,35 @@ export default function PlanForm({ initialData, onSave, onCancel, loading }: Pla
         )}
       </AnimatePresence>
 
-    
-
-      <div className="space-y-6">
-        <div className="grid grid-cols-2 gap-4">
+      <div className="space-y-6 text-left">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="space-y-2">
-            <label className="text-[10px] font-black uppercase text-slate-500 ml-1">Plan Title</label>
-            <input className="w-full bg-[#0b0b0b] border border-slate-800 rounded-xl px-4 py-3 text-sm focus:border-[#ff6b1a] outline-none transition" placeholder="e.g. Starter" value={formData.title} onChange={(e) => setFormData({ ...formData, title: e.target.value })} />
+            <label className="text-[10px] font-black uppercase text-slate-500 ml-1">{t.planTitle}</label>
+            <input className="w-full bg-[#0b0b0b] border border-slate-800 rounded-xl px-4 py-3 text-sm focus:border-[#ff6b1a] outline-none transition" placeholder={t.planTitlePlaceholder} value={formData.title} onChange={(e) => setFormData({ ...formData, title: e.target.value })} />
           </div>
           <div className="space-y-2">
-            <label className="text-[10px] font-black uppercase text-slate-500 ml-1">Price Label</label>
-            <input className="w-full bg-[#0b0b0b] border border-slate-800 rounded-xl px-4 py-3 text-sm focus:border-[#ff6b1a] outline-none transition" placeholder="e.g. $19/mo" value={formData.price} onChange={(e) => setFormData({ ...formData, price: e.target.value })} />
+            <label className="text-[10px] font-black uppercase text-slate-500 ml-1">{t.priceLabel}</label>
+            <input className="w-full bg-[#0b0b0b] border border-slate-800 rounded-xl px-4 py-3 text-sm focus:border-[#ff6b1a] outline-none transition" placeholder={t.pricePlaceholder} value={formData.price} onChange={(e) => setFormData({ ...formData, price: e.target.value })} />
           </div>
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="space-y-2">
             <div className="flex justify-between items-center">
-              <label className="text-[10px] font-black uppercase text-slate-500 ml-1">PayPal Button ID</label>
-              <button type="button" onClick={() => setShowVideo(true)} className="text-[9px] text-[#ff6b1a] hover:underline flex items-center gap-1 font-bold italic"><HelpCircle size={10} /> Guide</button>
+              <label className="text-[10px] font-black uppercase text-slate-500 ml-1">{t.paypalId}</label>
+              <button type="button" onClick={() => setShowVideo(true)} className="text-[9px] text-[#ff6b1a] hover:underline flex items-center gap-1 font-bold italic"><HelpCircle size={10} /> {t.guide}</button>
             </div>
-            <input className="w-full bg-[#0b0b0b] border border-slate-800 rounded-xl px-4 py-3 text-sm focus:border-blue-500 outline-none transition" placeholder="ID here..." value={formData.paypal_button_id} onChange={(e) => setFormData({ ...formData, paypal_button_id: e.target.value })} />
+            <input className="w-full bg-[#0b0b0b] border border-slate-800 rounded-xl px-4 py-3 text-sm focus:border-blue-500 outline-none transition" placeholder={t.paypalPlaceholder} value={formData.paypal_button_id} onChange={(e) => setFormData({ ...formData, paypal_button_id: e.target.value })} />
           </div>
           <div className="space-y-2">
-            <label className="text-[10px] font-black uppercase text-slate-500 ml-1">CTA URL (Optional)</label>
+            <label className="text-[10px] font-black uppercase text-slate-500 ml-1">{t.ctaUrl}</label>
             <input className="w-full bg-[#0b0b0b] border border-slate-800 rounded-xl px-4 py-3 text-sm focus:border-blue-500 outline-none transition" placeholder="/register" value={formData.cta} onChange={(e) => setFormData({ ...formData, cta: e.target.value })} />
           </div>
         </div>
 
-        {/* ADMIN ONLY: Trainee Limit */}
         {userRole === 'admin' && (
-          <div className="space-y-2 p-4 bg-orange-500/5 border border-orange-500/10 rounded-xl animate-in fade-in slide-in-from-top-2">
-            <label className="text-[10px] font-black uppercase text-orange-500 ml-1">Trainee Limit (Admin Only)</label>
+          <div className="space-y-2 p-4 bg-orange-500/5 border border-orange-500/10 rounded-xl">
+            <label className="text-[10px] font-black uppercase text-orange-500 ml-1">{t.traineeLimit}</label>
             <input 
               type="number" 
               className="w-full bg-[#0b0b0b] border border-slate-800 rounded-xl px-4 py-3 text-sm focus:border-[#ff6b1a] outline-none transition" 
@@ -141,20 +140,27 @@ export default function PlanForm({ initialData, onSave, onCancel, loading }: Pla
         )}
 
         <div className="space-y-3">
-          <label className="text-[10px] font-black uppercase text-slate-500 ml-1 flex justify-between">Features List <button onClick={addFeature} className="text-[#ff6b1a] hover:text-white transition flex items-center gap-1"><Plus size={12} /> Add Line</button></label>
+          <label className="text-[10px] font-black uppercase text-slate-500 ml-1 flex justify-between">
+            {t.featuresList} 
+            <button onClick={addFeature} className="text-[#ff6b1a] hover:text-white transition flex items-center gap-1">
+              <Plus size={12} /> {t.addLine}
+            </button>
+          </label>
           {formData.features.map((feature, index) => (
             <motion.div initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} key={index} className="flex gap-2">
-              <input className="flex-1 bg-[#0b0b0b] border border-slate-800 rounded-xl px-4 py-2 text-xs focus:border-[#ff6b1a] outline-none transition" placeholder={`Feature #${index + 1}`} value={feature} onChange={(e) => handleFeatureChange(index, e.target.value)} />
+              <input className="flex-1 bg-[#0b0b0b] border border-slate-800 rounded-xl px-4 py-2 text-xs focus:border-[#ff6b1a] outline-none transition" placeholder={`${t.featurePlaceholder}${index + 1}`} value={feature} onChange={(e) => handleFeatureChange(index, e.target.value)} />
               <button onClick={() => removeFeature(index)} className="p-2 text-slate-600 hover:text-red-500 transition"><Trash2 size={16} /></button>
             </motion.div>
           ))}
         </div>
 
-        <div className="pt-6 flex gap-3">
-          <button disabled={loading} onClick={() => onSave(formData)} className="flex-1 bg-[#ff6b1a] hover:bg-orange-500 disabled:opacity-50 text-black font-black uppercase tracking-widest py-4 rounded-xl transition-all active:scale-95 flex items-center justify-center gap-2 shadow-lg shadow-orange-500/20">
-            {loading ? <Loader2 className="animate-spin" size={18} /> : <><Save size={18} /> Save Plan</>}
+        <div className="pt-6 flex flex-col md:flex-row gap-3">
+          <button disabled={loading} onClick={() => onSave(formData)} className="flex-[2] bg-[#ff6b1a] hover:bg-orange-500 disabled:opacity-50 text-black font-black uppercase tracking-widest py-4 rounded-xl transition-all active:scale-95 flex items-center justify-center gap-2 shadow-lg shadow-orange-500/20">
+            {loading ? <Loader2 className="animate-spin" size={18} /> : <><Save size={18} /> {t.savePlan}</>}
           </button>
-          <button onClick={onCancel} className="px-6 bg-slate-800 hover:bg-slate-700 text-white font-bold rounded-xl transition">Cancel</button>
+          <button onClick={onCancel} className="flex-1 px-6 bg-slate-800 hover:bg-slate-700 text-white font-bold rounded-xl transition py-4 md:py-0">
+            {t.cancel}
+          </button>
         </div>
       </div>
     </div>

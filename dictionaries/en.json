@@ -561,7 +561,491 @@
       "desc": "Unlock advanced body analytics and AI routines.",
       "button": "View Plans"
     }
+  },
+  
+  "onboard": {
+    "cancel": "Cancel & Return",
+    "title": "Onboard Trainee",
+    "subtitle": "Create a new profile for your trainee.",
+    "verifying": "Verifying Subscription...",
+    "fields": {
+      "firstName": "First Name",
+      "lastName": "Last Name",
+      "email": "Email Address",
+      "gender": "Gender",
+      "genderSelect": "Select Gender",
+      "male": "Male",
+      "female": "Female",
+      "dob": "Date of Birth",
+      "specialty": "Specialty / Focus",
+      "specialtyPlaceholder": "Strength, HIIT, etc."
+    },
+    "footer": {
+      "assigning": "Assigning to:",
+      "account": "Your Account",
+      "submit": "Create Profile"
+    }
+  },
+  
+  "evaluationDetail": {
+    "back": "Back to History",
+    "reportType": "Final Report",
+    "status": "Status",
+    "edit": "Edit Record",
+    "coreMetrics": "Core Metrics",
+    "foldAnalysis": "Fold Analysis",
+    "calculatedImc": "Calculated BMI",
+    "metrics": {
+      "weight": "Weight",
+      "fatPercentage": "Fat Percentage",
+      "leanMass": "Lean Mass",
+      "fatMass": "Fat Mass"
+    },
+    "anatomy": {
+      "shoulderBlade": "Shoulder Blade",
+      "armBiceps": "Arm / Biceps",
+      "torsoChest": "Torso / Chest",
+      "waist": "Waist",
+      "suprailiac": "Suprailiac",
+      "hip": "Hip",
+      "legThigh": "Leg / Thigh",
+      "shinWrist": "Shin / Wrist"
+    },
+    "folds": {
+      "triceps": "Triceps",
+      "biceps": "Biceps",
+      "subscapular": "Subscapular",
+      "suprailiac": "Suprailiac",
+      "torso": "Torso",
+      "addition": "Total Addition"
+    }
+  },
+  
+  "traineeprofile": {
+    "back": "Back to Trainees",
+    "editProfile": "Edit Profile",
+    "specialty": "Specialty",
+    "rating": "Rating",
+    "overview": "Professional Overview",
+    "permissions": "Permissions",
+    "fields": {
+      "staffId": "Staff ID",
+      "joinDate": "Join Date",
+      "role": "Role",
+      "accessLevel": "Access Level",
+      "eliteTrainee": "Elite Trainee",
+      "portal": "Trainee Portal"
+    },
+    "status": {
+      "active": "Active",
+      "inactive": "Inactive"
+    },
+    "perms": {
+      "routines": "Manage Routines",
+      "chat": "Client Communication",
+      "finance": "Financial Data"
+    }
+  },
+  
+  "editTrainee": {
+    "discard": "Discard Changes",
+    "title": "Edit Trainee",
+    "subtitle": "Modify profile details and trainer assignment.",
+    "save": "Update Profile",
+    "saving": "Updating...",
+    "errors": {
+      "load": "Error loading data.",
+      "update": "Failed to update profile."
+    },
+    "labels": {
+      "firstName": "First Name",
+      "lastName": "Last Name",
+      "gender": "Gender",
+      "dob": "Date of Birth",
+      "email": "Email Address",
+      "status": "Account Status",
+      "trainer": "Assigned Trainer",
+      "specialty": "Specialty / Goal"
+    },
+    "placeholders": {
+      "selectGender": "Select Gender",
+      "unassigned": "Unassigned",
+      "male": "Male",
+      "female": "Female",
+      "active": "Active",
+      "pending": "Pending",
+      "blocked": "Blocked"
+    }
+  },
+  
+  "newEvaluation": {
+    "cancel": "Cancel & Return",
+    "title": "Biometric Scan",
+    "subtitle": "Protocol: Durnin-Womersley 4-Fold Method.",
+    "verifying": "Verifying Subscription...",
+    "finalize": "Finalize Scan",
+    "saving": "Saving Scan...",
+    "errorAuth": "You must be logged in to save an evaluation.",
+    "sections": {
+      "subject": "Subject Data",
+      "formula": "Formula Inputs",
+      "perimeters": "Perimeters",
+      "summary": "Metrics Summary"
+    },
+    "labels": {
+      "trainee": "Trainee",
+      "selectTrainee": "Select Trainee...",
+      "weight": "Weight",
+      "height": "Height",
+      "biceps": "Biceps",
+      "triceps": "Triceps",
+      "subscap": "Subscap",
+      "suprailiac": "Suprailiac",
+      "fatPercent": "Fat %",
+      "leanMass": "Lean Mass",
+      "fatMass": "Fat Mass",
+      "bmi": "BMI",
+      "classification": "Classification",
+      "waist": "Waist",
+      "arm": "Arm",
+      "torso": "Chest/Torso",
+      "hip": "Hip",
+      "leg": "Thigh/Leg",
+      "shin": "Calf/Shin",
+      "wrist": "Wrist"
+
+    },
+    "results": {
+      "obese": "Obese",
+      "overweight": "Overweight",
+      "average": "Average",
+      "ideal": "Ideal",
+      "highFat": "High Fat",
+      "normal": "Normal",
+      "lean": "Lean"
+    }
+  },
+  
+  "editEvaluation": {
+    "discard": "Discard Changes",
+    "title": "Update Evaluation",
+    "editingRecord": "Currently editing record ID:",
+    "updateButton": "Update Record",
+    "successMessage": "Record updated successfully! Redirecting...",
+    "errorNotFound": "Evaluation not found.",
+    "errorConnection": "Connection error. Please try again.",
+    "saved": "Saved!",
+    "liveAnalysis": "Live Analysis",
+    "status": "Status"
+  },
+  
+  "newRoutine": {
+    "title": "New Workout Routine",
+    "createButton": "Create Routine",
+    "processing": "Processing...",
+    "verifying": "Verifying Access...",
+    "labels": {
+      "routineTitle": "Title",
+      "routinePlaceholder": "Routine Name...",
+      "assignTrainee": "Assign Trainee",
+      "selectTrainee": "Select Trainee",
+      "sequence": "Workout Sequence",
+      "emptySequence": "Select movements from the library to begin sequence",
+      "filterMovements": "Filter Movements...",
+      "movement": "Movement",
+      "selectFromLibrary": "Select from library",
+      "sets": "Sets",
+      "reps": "Reps",
+      "weight": "Weight",
+      "allZones": "All"
+    },
+    "errors": {
+      "noSession": "User session not found.",
+      "noAthlete": "Please select an athlete.",
+      "noExercises": "Please add at least one exercise.",
+      "profileNotFound": "Profile not found."
+    }
+  },
+  
+  "routineDetail": {
+    "loading": "Loading routine details...",
+    "back": "Back to Routines",
+    "edit": "Edit Routine",
+    "noDescription": "No description provided.",
+    "client": "Client",
+    "estTime": "45-60m",
+    "stats": {
+      "exercises": "Exercises",
+      "totalSets": "Total Sets",
+      "focusArea": "Focus Area",
+      "time": "Est. Time"
+    },
+    "table": {
+      "image": "Image",
+      "exercise": "Exercise",
+      "weight": "Weight",
+      "volume": "Volume",
+      "rest": "Rest",
+      "unknown": "Unknown Exercise"
+    }
+  },
+  
+  "routineEdit": {
+    "loading": "Loading Data...",
+    "editRoutine": "Edit Routine",
+    "saving": "Saving Changes...",
+    "update": "Update Routine",
+    "title": "Title",
+    "assignAthlete": "Assign Athlete",
+    "movementSequence": "Movement Sequence",
+    "filterMovements": "Filter Movements...",
+    "labels": {
+      "movement": "Movement",
+      "sets": "Sets",
+      "reps": "Reps",
+      "weight": "Weight",
+      "loadingMovement": "Loading movement..."
+    }
+  },
+  
+  "mealPlanCreate": {
+    "verifying": "Verifying Access...",
+    "title": "Create Meal Plan",
+    "savePlan": "Save Plan",
+    "saving": "Saving...",
+    "searchPlaceholder": "Search recipes...",
+    "library": "Recipe Library",
+    "planTitleLabel": "Plan Title",
+    "planTitlePlaceholder": "e.g. Summer Shredding 2026",
+    "assignTrainee": "Assign Trainee",
+    "selectTrainee": "Select a trainee",
+    "dropHere": "Drop recipes here",
+    "total": "Total",
+    "days": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+  },
+  
+  "mealPlanDetail": {
+    "notFound": "Meal Plan Not Found",
+    "back": "Back to Dashboard",
+    "activeTag": "Active Meal Plan",
+    "dayView": "Day View",
+    "statusLabel": "Status: Optimized",
+    "coach": "Coach",
+    "athlete": "Athlete",
+    "sectionTitle": "Deployment Meal Plan",
+    "noMeals": "No meals assigned",
+    "total": "Total"
+  },
+  "days": {
+    "Monday": "Monday",
+    "Tuesday": "Tuesday",
+    "Wednesday": "Wednesday",
+    "Thursday": "Thursday",
+    "Friday": "Friday",
+    "Saturday": "Saturday",
+    "Sunday": "Sunday"
+  },
+    "mealPlanEdit": {
+    "title": "Edit Meal Plan",
+    "updateButton": "Update Meal Plan",
+    "updating": "Updating...",
+    "searchPlaceholder": "Search recipes...",
+    "planTitleLabel": "Plan Title",
+    "assignTrainee": "Assign Trainee",
+    "total": "Total"
+  },
+  "newMeal": {
+    "title": "New Recipe",
+    "saveButton": "Save Recipe",
+    "saving": "Saving...",
+    "verifying": "Verifying Subscription...",
+    "basicDetails": "Basic Details",
+    "nameLabel": "Meal Name",
+    "namePlaceholder": "e.g. Steak & Greens",
+    "imageLabel": "Upload Meal Preview",
+    "imageSelect": "Select Image",
+    "recipeLabel": "Recipe / Preparation",
+    "recipePlaceholder": "Step by step instructions...",
+    "ingredientTitle": "Ingredient Mix",
+    "ingredientPlaceholder": "Add ingredient...",
+    "noIngredients": "No ingredients selected",
+    "macroSummary": "Macro Summary",
+    "calories": "Calories",
+    "protein": "Protein",
+    "carbs": "Carbs",
+    "fat": "Fat",
+    "validationError": "Please provide a name and ingredients."
+  },
+  "mealDetail": {
+    "notFound": "Meal not found",
+    "returnButton": "Return to Base",
+    "calories": "Calories",
+    "protein": "Protein",
+    "carbs": "Carbs",
+    "fat": "Fats",
+    "preparation": "Preparation Recipe",
+    "noInstructions": "Strategic instructions not provided for this unit.",
+    "ingredientsTitle": "Ingredients",
+    "unidentifiedResource": "Unidentified Resource",
+    "noData": "Scan returned no data."
+  },
+  "editMeal": {
+  "header": "Edit meal",
+  "updateButton": "Update meal",
+  "updating": "Updating...",
+  "visualReference": "Meal Visual Reference",
+  "unnamed": "Unnamed",
+  "basicDetails": "Basic Details",
+  "mealNameLabel": "Meal Name",
+  "changeImage": "Change Image",
+  "selectImage": "Select New Image",
+  "recipeLabel": "Recipe / Preparation",
+  "ingredientMix": "Ingredient Mix",
+  "addIngredientPlaceholder": "Add ingredient...",
+  "mealSummary": "Meal Summary",
+  "missingData": "Missing data.",
+  "calories": "Calories",
+  "protein": "Protein",
+  "carbs": "Carbs",
+  "fat": "Fat"
+},
+"plans": {
+  "title": "Subscription Plans",
+  "limitReachedMsg": "Limit reached ({current}/{total}). Upgrade to create more.",
+  "manageSubtitle": "Manage tiers, pricing, and payment methods.",
+  "searchPlaceholder": "Search plans...",
+  "limitReachedBtn": "Limit Reached",
+  "createPlan": "Create Plan",
+  "syncing": "Syncing Plans",
+  "noPlans": "No plans configured yet.",
+  "bankTransfer": "Bank Transfer",
+  "viewPlan": "See Plan",
+  "editPlan": "Edit Plan",
+  "deletePlan": "Delete Plan",
+  "created": "Created",
+  "deleteConfirm": "Are you sure? This will permanently delete this plan and remove it from your profile."
+},
+"newplans": {
+  "backToPlans": "Back to Plans",
+  "createNewTier": "Create New Tier",
+  "createNewSubtitle": "Add a new subscription level for your clients.",
+  "verifyingSubscription": "Verifying Subscription...",
+  "unauthorized": "Unauthorized",
+  "saveError": "Error saving plan: "
+},
+"planForm": {
+  "planTitle": "Plan Title",
+  "planTitlePlaceholder": "e.g. Starter",
+  "priceLabel": "Price Label",
+  "pricePlaceholder": "e.g. $19/mo",
+  "paypalId": "PayPal Button ID",
+  "guide": "Guide",
+  "paypalPlaceholder": "ID here...",
+  "ctaUrl": "CTA URL (Optional)",
+  "traineeLimit": "Trainee Limit (Admin Only)",
+  "featuresList": "Features List",
+  "addLine": "Add Line",
+  "featurePlaceholder": "Feature #",
+  "savePlan": "Save Plan",
+  "saving": "Saving...",
+  "cancel": "Cancel"
+},
+"plansDetail": {
+  "backToManagement": "Back to Management",
+  "details": "Details",
+  "editConfiguration": "Edit Configuration",
+  "coreConfiguration": "Core configuration",
+  "displayPrice": "Display Price",
+  "createdOn": "Created On",
+  "featureSetPreview": "Feature Set Preview",
+  "integration": "Integration",
+  "paypalButtonId": "PayPal Button ID",
+  "notConfigured": "NOT_CONFIGURED",
+  "internalCtaPath": "Internal CTA Path",
+  "noManualCta": "No manual CTA set",
+  "databaseId": "Database ID",
+  "publicPreview": "Public Preview",
+  "publicPreviewDesc": "This is how the plan appears to potential customers on your landing page. Ensure the price string matches your PayPal Hosted Button configuration to avoid billing discrepancies."
+},
+"plansEdit": {
+  "cancelEditing": "Cancel Editing",
+  "editTier": "Edit Tier",
+  "updateError": "Error updating plan: "
+},
+"settingsEdit": {
+  "backToSettings": "Back to Settings",
+  "editProfile": "Edit Profile",
+  "tabs": {
+    "general": "General",
+    "bank": "Bank Details",
+    "professional": "Professional",
+    "security": "Security",
+    "account": "Account Status"
+  },
+  "sections": {
+    "personal": "Personal Details",
+    "personalDesc": "Manage your basic account identity.",
+    "bank": "Transfer Information",
+    "security": "Security Management",
+    "professional": "Trainer Profile",
+    "system": "System Status"
+  },
+  "labels": {
+    "firstName": "First Name",
+    "lastName": "Last Name",
+    "gender": "Gender",
+    "male": "Male",
+    "female": "Female",
+    "assignedTrainer": "Assigned Trainer",
+    "noTrainer": "No Trainer Assigned",
+    "username": "Username",
+    "phone": "Phone Number",
+    "dob": "Date of Birth",
+    "email": "Email (Read-only)",
+    "address": "Home Address",
+    "holderName": "Account Holder Name",
+    "rut": "ID Number (RUT)",
+    "bankName": "Bank Name",
+    "accountType": "Account Type",
+    "accountNumber": "Account Number",
+    "newPassword": "New Password",
+    "confirmPassword": "Confirm New Password",
+    "specialty": "Professional Specialty",
+    "specialtyPlaceholder": "e.g. Yoga, Crossfit",
+    "bio": "Professional Biography",
+    "bioPlaceholder": "Write about your coaching experience...",
+    "role": "Current Role",
+    "status": "Account Status",
+    "activePlan": "Active Plan",
+    "expiration": "Plan Expiration",
+    "none": "None",
+    "na": "N/A"
+  },
+  "buttons": {
+    "saveChanges": "Save Changes",
+    "saveBank": "Save Bank Details",
+    "updatePassword": "Update Password",
+    "saveProfessional": "Save Professional Info"
+  },
+  "messages": {
+    "updateSuccess": "Profile updated successfully!",
+    "updateError": "Update failed: ",
+    "picUpdated": "Profile picture updated!",
+    "passMismatch": "Passwords do not match",
+    "passSuccess": "Password updated successfully!"
   }
+}
+
+
+
+
+
+
+
+
+
+
+
 
 
 

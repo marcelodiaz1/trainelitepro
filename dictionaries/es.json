@@ -561,7 +561,491 @@
       "desc": "Desbloquea análisis corporales avanzados y rutinas de IA.",
       "button": "Ver Planes"
     }
+  },
+  
+  "onboard": {
+    "cancel": "Cancelar y Volver",
+    "title": "Registrar Alumno",
+    "subtitle": "Crea un nuevo perfil para tu alumno.",
+    "verifying": "Verificando Suscripción...",
+    "fields": {
+      "firstName": "Nombre",
+      "lastName": "Apellido",
+      "email": "Correo Electrónico",
+      "gender": "Género",
+      "genderSelect": "Seleccionar Género",
+      "male": "Masculino",
+      "female": "Femenino",
+      "dob": "Fecha de Nacimiento",
+      "specialty": "Especialidad / Enfoque",
+      "specialtyPlaceholder": "Fuerza, HIIT, etc."
+    },
+    "footer": {
+      "assigning": "Asignando a:",
+      "account": "Tu Cuenta",
+      "submit": "Crear Perfil"
+    }
+  },
+  
+  "evaluationDetail": {
+    "back": "Volver al Historial",
+    "reportType": "Informe Final",
+    "status": "Estado",
+    "edit": "Editar Registro",
+    "coreMetrics": "Métricas Base",
+    "foldAnalysis": "Análisis de Pliegues",
+    "calculatedImc": "IMC Calculado",
+    "metrics": {
+      "weight": "Peso",
+      "fatPercentage": "Porcentaje Grasa",
+      "leanMass": "Masa Magra",
+      "fatMass": "Masa Grasa"
+    },
+    "anatomy": {
+      "shoulderBlade": "Escápula",
+      "armBiceps": "Brazo / Bíceps",
+      "torsoChest": "Torso / Pecho",
+      "waist": "Cintura",
+      "suprailiac": "Suprailiaco",
+      "hip": "Cadera",
+      "legThigh": "Pierna / Muslo",
+      "shinWrist": "Canela / Muñeca"
+    },
+    "folds": {
+      "triceps": "Tríceps",
+      "biceps": "Bíceps",
+      "subscapular": "Subescapular",
+      "suprailiac": "Suprailiaco",
+      "torso": "Torso",
+      "addition": "Suma Total"
+    }
+  },
+  
+  "traineeprofile": {
+    "back": "Volver a Alumnos",
+    "editProfile": "Editar Perfil",
+    "specialty": "Especialidad",
+    "rating": "Calificación",
+    "overview": "Resumen Profesional",
+    "permissions": "Permisos",
+    "fields": {
+      "staffId": "ID de Staff",
+      "joinDate": "Fecha de Inicio",
+      "role": "Rol",
+      "accessLevel": "Nivel de Acceso",
+      "eliteTrainee": "Alumno Élite",
+      "portal": "Portal de Alumno"
+    },
+    "status": {
+      "active": "Activo",
+      "inactive": "Inactivo"
+    },
+    "perms": {
+      "routines": "Gestionar Rutinas",
+      "chat": "Comunicación Clientes",
+      "finance": "Datos Financieros"
+    }
+  },
+  
+  "editTrainee": {
+    "discard": "Descartar Cambios",
+    "title": "Editar Alumno",
+    "subtitle": "Modifica los detalles del perfil y la asignación del entrenador.",
+    "save": "Actualizar Perfil",
+    "saving": "Actualizando...",
+    "errors": {
+      "load": "Error al cargar los datos.",
+      "update": "Error al actualizar el perfil."
+    },
+    "labels": {
+      "firstName": "Nombre",
+      "lastName": "Apellido",
+      "gender": "Género",
+      "dob": "Fecha de Nacimiento",
+      "email": "Correo Electrónico",
+      "status": "Estado de la Cuenta",
+      "trainer": "Entrenador Asignado",
+      "specialty": "Especialidad / Meta"
+    },
+    "placeholders": {
+      "selectGender": "Seleccionar Género",
+      "unassigned": "Sin asignar",
+      "male": "Masculino",
+      "female": "Femenino",
+      "active": "Activo",
+      "pending": "Pendiente",
+      "blocked": "Bloqueado"
+    }
+  },
+  
+  "newEvaluation": {
+    "cancel": "Cancelar y Volver",
+    "title": "Escaneo Biométrico",
+    "subtitle": "Protocolo: Método de 4 pliegues Durnin-Womersley.",
+    "verifying": "Verificando Suscripción...",
+    "finalize": "Finalizar Escaneo",
+    "saving": "Guardando...",
+    "errorAuth": "Debes iniciar sesión para guardar una evaluación.",
+    "sections": {
+      "subject": "Datos del Sujeto",
+      "formula": "Entradas de Fórmula",
+      "perimeters": "Perímetros",
+      "summary": "Resumen de Métricas"
+    },
+    "labels": {
+      "trainee": "Alumno",
+      "selectTrainee": "Seleccionar Alumno...",
+      "weight": "Peso",
+      "height": "Altura",
+      "biceps": "Bíceps",
+      "triceps": "Tríceps",
+      "subscap": "Subescapular",
+      "suprailiac": "Suprailiaco",
+      "fatPercent": "% Grasa",
+      "leanMass": "Masa Magra",
+      "fatMass": "Masa Grasa",
+      "bmi": "IMC",
+      "classification": "Clasificación",
+      "waist": "Cintura",
+      "arm": "Brazo",
+      "torso": "Torso",
+      "hip": "Cadera",
+      "leg": "Pierna",
+      "shin": "Pantorrilla",
+      "wrist": "Muñeca"
+    
+    },
+    "results": {
+      "obese": "Obeso",
+      "overweight": "Sobrepeso",
+      "average": "Promedio",
+      "ideal": "Ideal",
+      "highFat": "Grasa Alta",
+      "normal": "Normal",
+      "lean": "Delgado"
+    }
+  },
+  
+  "editEvaluation": {
+    "discard": "Descartar Cambios",
+    "title": "Actualizar Evaluación",
+    "editingRecord": "Editando registro ID:",
+    "updateButton": "Actualizar Registro",
+    "successMessage": "¡Registro actualizado con éxito! Redirigiendo...",
+    "errorNotFound": "Evaluación no encontrada.",
+    "errorConnection": "Error de conexión. Inténtalo de nuevo.",
+    "saved": "¡Guardado!",
+    "liveAnalysis": "Análisis en Vivo",
+    "status": "Estado"
+  },
+  
+  "newRoutine": {
+    "title": "Nueva Rutina de Entrenamiento",
+    "createButton": "Crear Rutina",
+    "processing": "Procesando...",
+    "verifying": "Verificando Acceso...",
+    "labels": {
+      "routineTitle": "Título",
+      "routinePlaceholder": "Nombre de la rutina...",
+      "assignTrainee": "Asignar Atleta",
+      "selectTrainee": "Seleccionar Atleta",
+      "sequence": "Secuencia de Entrenamiento",
+      "emptySequence": "Selecciona movimientos de la biblioteca para comenzar",
+      "filterMovements": "Filtrar Movimientos...",
+      "movement": "Movimiento",
+      "selectFromLibrary": "Seleccionar de la biblioteca",
+      "sets": "Series",
+      "reps": "Reps",
+      "weight": "Peso",
+      "allZones": "Todos"
+    },
+    "errors": {
+      "noSession": "Sesión no encontrada.",
+      "noAthlete": "Por favor selecciona un atleta.",
+      "noExercises": "Agrega al menos un ejercicio.",
+      "profileNotFound": "Perfil no encontrado."
+    }
+  },
+  
+  "routineDetail": {
+    "loading": "Cargando detalles de la rutina...",
+    "back": "Volver a Rutinas",
+    "edit": "Editar Rutina",
+    "noDescription": "Sin descripción proporcionada.",
+    "client": "Cliente",
+    "estTime": "45-60m",
+    "stats": {
+      "exercises": "Ejercicios",
+      "totalSets": "Series Totales",
+      "focusArea": "Área de Enfoque",
+      "time": "Tiempo Est."
+    },
+    "table": {
+      "image": "Imagen",
+      "exercise": "Ejercicio",
+      "weight": "Peso",
+      "volume": "Volumen",
+      "rest": "Descanso",
+      "unknown": "Ejercicio Desconocido"
+    }
+  },
+  
+  "routineEdit": {
+    "loading": "Cargando Datos...",
+    "editRoutine": "Editar Rutina",
+    "saving": "Guardando Cambios...",
+    "update": "Actualizar Rutina",
+    "title": "Título",
+    "assignAthlete": "Asignar Atleta",
+    "movementSequence": "Secuencia de Movimientos",
+    "filterMovements": "Filtrar Movimientos...",
+    "labels": {
+      "movement": "Movimiento",
+      "sets": "Series",
+      "reps": "Reps",
+      "weight": "Peso",
+      "loadingMovement": "Cargando movimiento..."
+    }
+  },
+  
+  "mealPlanCreate": {
+    "verifying": "Verificando Acceso...",
+    "title": "Crear Plan de Comidas",
+    "savePlan": "Guardar Plan",
+    "saving": "Guardando...",
+    "searchPlaceholder": "Buscar recetas...",
+    "library": "Biblioteca de Recetas",
+    "planTitleLabel": "Título del Plan",
+    "planTitlePlaceholder": "ej. Definición Verano 2026",
+    "assignTrainee": "Asignar Atleta",
+    "selectTrainee": "Seleccionar un atleta",
+    "dropHere": "Arrastra recetas aquí",
+    "total": "Total",
+    "days": ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"]
+  },
+  
+  "mealPlanDetail": {
+    "notFound": "Plan de Comidas No Encontrado",
+    "back": "Volver al Panel",
+    "activeTag": "Plan de Comidas Activo",
+    "dayView": "Vista de Días",
+    "statusLabel": "Estado: Optimizado",
+    "coach": "Entrenador",
+    "athlete": "Atleta",
+    "sectionTitle": "Despliegue del Plan",
+    "noMeals": "Sin comidas asignadas",
+    "total": "Total"
+  },
+  "days": {
+    "Monday": "Lunes",
+    "Tuesday": "Martes",
+    "Wednesday": "Miércoles",
+    "Thursday": "Jueves",
+    "Friday": "Viernes",
+    "Saturday": "Sábado",
+    "Sunday": "Domingo"
+  },
+  "mealPlanEdit": {
+  "title": "Editar Plan de Comidas",
+  "updateButton": "Actualizar Plan",
+  "updating": "Actualizando...",
+  "searchPlaceholder": "Buscar recetas...",
+  "planTitleLabel": "Título del Plan",
+  "assignTrainee": "Asignar Atleta",
+  "total": "Total"
+  },
+  "newMeal": {
+    "title": "Nueva Receta",
+    "saveButton": "Guardar Receta",
+    "saving": "Guardando...",
+    "verifying": "Verificando Suscripción...",
+    "basicDetails": "Detalles Básicos",
+    "nameLabel": "Nombre de la Comida",
+    "namePlaceholder": "ej. Filete con Verduras",
+    "imageLabel": "Subir Vista Previa",
+    "imageSelect": "Seleccionar Imagen",
+    "recipeLabel": "Receta / Preparación",
+    "recipePlaceholder": "Instrucciones paso a paso...",
+    "ingredientTitle": "Mezcla de Ingredientes",
+    "ingredientPlaceholder": "Añadir ingrediente...",
+    "noIngredients": "Sin ingredientes seleccionados",
+    "macroSummary": "Resumen de Macros",
+    "calories": "Calorías",
+    "protein": "Proteína",
+    "carbs": "Carbohidratos",
+    "fat": "Grasas",
+    "validationError": "Por favor proporcione un nombre e ingredientes."
+  },
+  "mealDetail": {
+    "notFound": "Comida no encontrada",
+    "returnButton": "Volver a la Base",
+    "calories": "Calorías",
+    "protein": "Proteína",
+    "carbs": "Carbohidratos",
+    "fat": "Grasas",
+    "preparation": "Receta de Preparación",
+    "noInstructions": "Instrucciones estratégicas no proporcionadas para esta unidad.",
+    "ingredientsTitle": "Ingredientes",
+    "unidentifiedResource": "Recurso No Identificado",
+    "noData": "El escaneo no arrojó datos."
+  },
+  "editMeal": {
+  "header": "Editar comida",
+  "updateButton": "Actualizar comida",
+  "updating": "Actualizando...",
+  "visualReference": "Referencia Visual del Plato",
+  "unnamed": "Sin nombre",
+  "basicDetails": "Detalles Básicos",
+  "mealNameLabel": "Nombre del Plato",
+  "changeImage": "Cambiar Imagen",
+  "selectImage": "Seleccionar Nueva Imagen",
+  "recipeLabel": "Receta / Preparación",
+  "ingredientMix": "Mezcla de Ingredientes",
+  "addIngredientPlaceholder": "Agregar ingrediente...",
+  "mealSummary": "Resumen Nutricional",
+  "missingData": "Faltan datos.",
+  "calories": "Calorías",
+  "protein": "Proteína",
+  "carbs": "Carbohidratos",
+  "fat": "Grasas"
+},
+"plans": {
+  "title": "Planes de Suscripción",
+  "limitReachedMsg": "Límite alcanzado ({current}/{total}). Mejora tu plan para crear más.",
+  "manageSubtitle": "Gestiona niveles, precios y métodos de pago.",
+  "searchPlaceholder": "Buscar planes...",
+  "limitReachedBtn": "Límite Alcanzado",
+  "createPlan": "Crear Plan",
+  "syncing": "Sincronizando Planes",
+  "noPlans": "Aún no hay planes configurados.",
+  "bankTransfer": "Transferencia Bancaria",  
+  "viewPlan": "Ver Plan",
+  "editPlan": "Editar Plan",
+  "deletePlan": "Eliminar Plan",
+  "created": "Creado",
+  "deleteConfirm": "¿Estás seguro? Esto eliminará permanentemente este plan y lo quitará de tu perfil."
+},
+"newplans": {
+  "backToPlans": "Volver a Planes",
+  "createNewTier": "Crear Nuevo Nivel",
+  "createNewSubtitle": "Añade un nuevo nivel de suscripción para tus clientes.",
+  "verifyingSubscription": "Verificando Suscripción...",
+  "unauthorized": "No autorizado",
+  "saveError": "Error al guardar el plan: "
+},
+"planForm": {
+  "planTitle": "Título del Plan",
+  "planTitlePlaceholder": "ej. Principiante",
+  "priceLabel": "Etiqueta de Precio",
+  "pricePlaceholder": "ej. $19/mes",
+  "paypalId": "ID de Botón de PayPal",
+  "guide": "Guía",
+  "paypalPlaceholder": "ID aquí...",
+  "ctaUrl": "URL de CTA (Opcional)",
+  "traineeLimit": "Límite de Alumnos (Solo Admin)",
+  "featuresList": "Lista de Características",
+  "addLine": "Añadir Línea",
+  "featurePlaceholder": "Característica #",
+  "savePlan": "Guardar Plan",
+  "saving": "Guardando...",
+  "cancel": "Cancelar"
+},
+"plansDetail": {
+  "backToManagement": "Volver a Gestión",
+  "details": "Detalles",
+  "editConfiguration": "Editar Configuración",
+  "coreConfiguration": "Configuración principal",
+  "displayPrice": "Precio visible",
+  "createdOn": "Creado el",
+  "featureSetPreview": "Vista previa de funciones",
+  "integration": "Integración",
+  "paypalButtonId": "ID de Botón de PayPal",
+  "notConfigured": "NO_CONFIGURADO",
+  "internalCtaPath": "Ruta de CTA interna",
+  "noManualCta": "Sin CTA manual",
+  "databaseId": "ID de Base de Datos",
+  "publicPreview": "Vista previa pública",
+  "publicPreviewDesc": "Así es como aparece el plan a los clientes en tu página. Asegúrate de que el precio coincida con tu configuración de PayPal para evitar discrepancias."
+},
+"plansEdit": {
+  "cancelEditing": "Cancelar Edición",
+  "editTier": "Editar Nivel",
+  "updateError": "Error al actualizar el plan: "
+},
+"settingsEdit": {
+  "backToSettings": "Volver a Ajustes",
+  "editProfile": "Editar Perfil",
+  "tabs": {
+    "general": "General",
+    "bank": "Datos Bancarios",
+    "professional": "Profesional",
+    "security": "Seguridad",
+    "account": "Estado de Cuenta"
+  },
+  "sections": {
+    "personal": "Datos Personales",
+    "personalDesc": "Gestiona tu identidad básica de cuenta.",
+    "bank": "Información de Transferencia",
+    "security": "Gestión de Seguridad",
+    "professional": "Perfil de Entrenador",
+    "system": "Estado del Sistema"
+  },
+  "labels": {
+    "firstName": "Nombre",
+    "lastName": "Apellido",
+    "gender": "Género",
+    "male": "Masculino",
+    "female": "Femenino",
+    "assignedTrainer": "Entrenador Asignado",
+    "noTrainer": "Sin Entrenador Asignado",
+    "username": "Nombre de usuario",
+    "phone": "Teléfono",
+    "dob": "Fecha de Nacimiento",
+    "email": "Email (Solo lectura)",
+    "address": "Dirección",
+    "holderName": "Nombre del Titular",
+    "rut": "RUT",
+    "bankName": "Nombre del Banco",
+    "accountType": "Tipo de Cuenta",
+    "accountNumber": "Número de Cuenta",
+    "newPassword": "Nueva Contraseña",
+    "confirmPassword": "Confirmar Nueva Contraseña",
+    "specialty": "Especialidad Profesional",
+    "specialtyPlaceholder": "ej. Yoga, Crossfit",
+    "bio": "Biografía Profesional",
+    "bioPlaceholder": "Escribe sobre tu experiencia...",
+    "role": "Rol Actual",
+    "status": "Estado de Cuenta",
+    "activePlan": "Plan Activo",
+    "expiration": "Vencimiento del Plan",
+    "none": "Ninguno",
+    "na": "N/A"
+  },
+  "buttons": {
+    "saveChanges": "Guardar Cambios",
+    "saveBank": "Guardar Datos Bancarios",
+    "updatePassword": "Actualizar Contraseña",
+    "saveProfessional": "Guardar Info Profesional"
+  },
+  "messages": {
+    "updateSuccess": "¡Perfil actualizado con éxito!",
+    "updateError": "Error al actualizar: ",
+    "picUpdated": "¡Foto de perfil actualizada!",
+    "passMismatch": "Las contraseñas no coinciden",
+    "passSuccess": "¡Contraseña actualizada con éxito!"
   }
+}
+
+
+
+
+
+
+
+
+
+
+
 
 
 

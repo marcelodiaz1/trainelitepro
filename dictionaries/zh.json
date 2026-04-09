@@ -562,7 +562,489 @@
       "desc": "解鎖進階身體分析和 AI 訓練程序。",
       "button": "查看方案"
     }
+  },
+  
+  "onboard": {
+    "cancel": "取消並返回",
+    "title": "學員註冊",
+    "subtitle": "為您的學員創建新個人資料。",
+    "verifying": "正在驗證訂閱狀態...",
+    "fields": {
+      "firstName": "名字",
+      "lastName": "姓氏",
+      "email": "電子郵件地址",
+      "gender": "性別",
+      "genderSelect": "選擇性別",
+      "male": "男性",
+      "female": "女性",
+      "dob": "出生日期",
+      "specialty": "專業 / 重點",
+      "specialtyPlaceholder": "力量訓練、HIIT 等"
+    },
+    "footer": {
+      "assigning": "分配至：",
+      "account": "您的帳戶",
+      "submit": "創建個人資料"
+    }
+  },
+  
+  "evaluationDetail": {
+    "back": "返回歷史記錄",
+    "reportType": "最終報告",
+    "status": "狀態",
+    "edit": "編輯記錄",
+    "coreMetrics": "核心指標",
+    "foldAnalysis": "皮褶分析",
+    "calculatedImc": "計算 BMI",
+    "metrics": {
+      "weight": "體重",
+      "fatPercentage": "體脂率",
+      "leanMass": "瘦體重",
+      "fatMass": "脂肪重"
+    },
+    "anatomy": {
+      "shoulderBlade": "肩胛骨",
+      "armBiceps": "手臂 / 二頭肌",
+      "torsoChest": "軀幹 / 胸部",
+      "waist": "腰圍",
+      "suprailiac": "髂上肌",
+      "hip": "臀圍",
+      "legThigh": "腿部 / 大腿",
+      "shinWrist": "小腿 / 手腕"
+    },
+    "folds": {
+      "triceps": "三頭肌",
+      "biceps": "二頭肌",
+      "subscapular": "肩胛下",
+      "suprailiac": "髂上",
+      "torso": "軀幹",
+      "addition": "總和"
+    }
+  },
+  
+  "traineeprofile": {
+    "back": "返回學員列表",
+    "editProfile": "編輯個人資料",
+    "specialty": "專業領域",
+    "rating": "評分",
+    "overview": "專業概況",
+    "permissions": "權限設定",
+    "fields": {
+      "staffId": "員工 ID",
+      "joinDate": "加入日期",
+      "role": "角色",
+      "accessLevel": "訪問層級",
+      "eliteTrainee": "精英學員",
+      "portal": "學員門戶"
+    },
+    "status": {
+      "active": "啟用",
+      "inactive": "停用"
+    },
+    "perms": {
+      "routines": "管理訓練計畫",
+      "chat": "客戶溝通",
+      "finance": "財務數據"
+    }
+  },
+  
+  "editTrainee": {
+    "discard": "放棄變更",
+    "title": "編輯學員",
+    "subtitle": "修改個人資料詳情與教練分配。",
+    "save": "更新個人資料",
+    "saving": "更新中...",
+    "errors": {
+      "load": "載入數據時出錯。",
+      "update": "更新個人資料失敗。"
+    },
+    "labels": {
+      "firstName": "名字",
+      "lastName": "姓氏",
+      "gender": "性別",
+      "dob": "出生日期",
+      "email": "電子郵件地址",
+      "status": "帳戶狀態",
+      "trainer": "分配教練",
+      "specialty": "專業 / 目標"
+    },
+    "placeholders": {
+      "selectGender": "選擇性別",
+      "unassigned": "未分配",
+      "male": "男",
+      "female": "女",
+      "active": "啟用",
+      "pending": "待定",
+      "blocked": "已封鎖"
+    }
+  },
+  
+  "newEvaluation": {
+    "cancel": "取消並返回",
+    "title": "生物識別掃描",
+    "subtitle": "方案：Durnin-Womersley 四皮褶法。",
+    "verifying": "正在驗證訂閱狀態...",
+    "finalize": "完成掃描",
+    "saving": "正在儲存...",
+    "errorAuth": "您必須登入才能儲存評估。",
+    "sections": {
+      "subject": "受測者數據",
+      "formula": "公式輸入",
+      "perimeters": "圍度測量",
+      "summary": "指標摘要"
+    },
+    "labels": {
+      "trainee": "學員",
+      "selectTrainee": "選擇學員...",
+      "weight": "體重",
+      "height": "身高",
+      "biceps": "二頭肌",
+      "triceps": "三頭肌",
+      "subscap": "肩胛下",
+      "suprailiac": "髂上",
+      "fatPercent": "體脂率 %",
+      "leanMass": "瘦體重",
+      "fatMass": "脂肪重",
+      "bmi": "BMI",
+      "classification": "分級",
+      "waist": "腰圍",
+      "arm": "手臂",
+      "torso": "軀幹",
+      "hip": "臀圍",
+      "leg": "大腿",
+      "shin": "小腿",
+      "wrist": "手腕"
+
+    },
+    "results": {
+      "obese": "肥胖",
+      "overweight": "超重",
+      "average": "普通",
+      "ideal": "理想",
+      "highFat": "脂肪偏高",
+      "normal": "正常",
+      "lean": "精瘦"
+    }
+  },
+  
+  "editEvaluation": {
+    "discard": "放棄更改",
+    "title": "更新評估數據",
+    "editingRecord": "目前正在編輯紀錄 ID：",
+    "updateButton": "更新紀錄",
+    "successMessage": "紀錄已成功更新！正在跳轉...",
+    "errorNotFound": "找不到該評估紀錄。",
+    "errorConnection": "連線錯誤，請稍後再試。",
+    "saved": "已儲存！",
+    "liveAnalysis": "即時數據分析",
+    "status": "當前狀態"
+  },
+  
+  "newRoutine": {
+    "title": "新建訓練計畫",
+    "createButton": "創建計畫",
+    "processing": "處理中...",
+    "verifying": "正在驗證權限...",
+    "labels": {
+      "routineTitle": "標題",
+      "routinePlaceholder": "計畫名稱...",
+      "assignTrainee": "指派學員",
+      "selectTrainee": "選擇學員",
+      "sequence": "訓練順序",
+      "emptySequence": "從庫中選擇動作以開始排序",
+      "filterMovements": "篩選動作...",
+      "movement": "動作",
+      "selectFromLibrary": "從庫中選擇",
+      "sets": "組數",
+      "reps": "次數",
+      "weight": "重量",
+      "allZones": "全部"
+    },
+    "errors": {
+      "noSession": "找不到用戶會話。",
+      "noAthlete": "請選擇一名學員。",
+      "noExercises": "請至少添加一個動作。",
+      "profileNotFound": "找不到個人資料。"
+    }
+  },
+  
+  "routineDetail": {
+    "loading": "正在載入計畫詳情...",
+    "back": "返回計畫列表",
+    "edit": "編輯計畫",
+    "noDescription": "未提供描述。",
+    "client": "學員",
+    "estTime": "45-60 分鐘",
+    "stats": {
+      "exercises": "動作總數",
+      "totalSets": "總組數",
+      "focusArea": "訓練重點",
+      "time": "預計時間"
+    },
+    "table": {
+      "image": "圖示",
+      "exercise": "動作名稱",
+      "weight": "重量",
+      "volume": "訓練量",
+      "rest": "休息",
+      "unknown": "未知動作"
+    }
+  },
+  
+  "routineEdit": {
+    "loading": "數據載入中...",
+    "editRoutine": "編輯訓練計畫",
+    "saving": "正在儲存...",
+    "update": "更新計畫",
+    "title": "標題",
+    "assignAthlete": "指定學員",
+    "movementSequence": "動作順序",
+    "filterMovements": "搜尋動作...",
+    "labels": {
+      "movement": "動作",
+      "sets": "組數",
+      "reps": "次數",
+      "weight": "重量",
+      "loadingMovement": "載入中..."
+    }
+  },
+  
+  "mealPlanCreate": {
+    "verifying": "正在驗證權限...",
+    "title": "創建飲食計畫",
+    "savePlan": "儲存計畫",
+    "saving": "正在儲存...",
+    "searchPlaceholder": "搜尋食譜...",
+    "library": "食譜庫",
+    "planTitleLabel": "計畫標題",
+    "planTitlePlaceholder": "例如：2026 夏季減脂",
+    "assignTrainee": "指定學員",
+    "selectTrainee": "選擇一位學員",
+    "dropHere": "將食譜拖放至此",
+    "total": "總計",
+    "days": ["週一", "週二", "週三", "週四", "週五", "週六", "週日"]
+  },
+  
+  "mealPlanDetail": {
+    "notFound": "未找到饮食计划",
+    "back": "返回控制面板",
+    "activeTag": "进行中的饮食计划",
+    "dayView": "天视图",
+    "statusLabel": "状态：已优化",
+    "coach": "教练",
+    "athlete": "运动员",
+    "sectionTitle": "饮食计划部署",
+    "noMeals": "未分配餐食",
+    "total": "总计"
+  },
+  "days": {
+    "Monday": "星期一",
+    "Tuesday": "星期二",
+    "Wednesday": "星期三",
+    "Thursday": "星期四",
+    "Friday": "星期五",
+    "Saturday": "星期六",
+    "Sunday": "星期日"
+  },
+  "mealPlanEdit": {
+  "title": "编辑饮食计划",
+  "updateButton": "更新计划",
+  "updating": "更新中...",
+  "searchPlaceholder": "搜索食谱...",
+  "planTitleLabel": "计划标题",
+  "assignTrainee": "分配运动员",
+  "total": "总计"
+ },
+  "newMeal": {
+    "title": "新食谱",
+    "saveButton": "保存食谱",
+    "saving": "保存中...",
+    "verifying": "验证订阅中...",
+    "basicDetails": "基本详情",
+    "nameLabel": "餐食名称",
+    "namePlaceholder": "例如：牛排与蔬菜",
+    "imageLabel": "上传预览图",
+    "imageSelect": "选择图片",
+    "recipeLabel": "食谱 / 烹饪步骤",
+    "recipePlaceholder": "分步说明...",
+    "ingredientTitle": "配料组合",
+    "ingredientPlaceholder": "添加配料...",
+    "noIngredients": "未选择配料",
+    "macroSummary": "营养概览",
+    "calories": "卡路里",
+    "protein": "蛋白质",
+    "carbs": "碳水",
+    "fat": "脂肪",
+    "validationError": "请提供名称和配料。"
+  },
+    "mealDetail": {
+    "notFound": "未找到餐食",
+    "returnButton": "返回基地",
+    "calories": "卡路里",
+    "protein": "蛋白质",
+    "carbs": "碳水",
+    "fat": "脂肪",
+    "preparation": "烹饪步骤",
+    "noInstructions": "该单元未提供战略说明。",
+    "ingredientsTitle": "配料",
+    "unidentifiedResource": "未知资源",
+    "noData": "扫描未返回数据。"
+  },
+  "editMeal": {
+  "header": "编辑餐食",
+  "updateButton": "更新餐食",
+  "updating": "更新中...",
+  "visualReference": "餐食视觉参考",
+  "unnamed": "未命名",
+  "basicDetails": "基础详情",
+  "mealNameLabel": "餐食名称",
+  "changeImage": "更改图片",
+  "selectImage": "选择新图片",
+  "recipeLabel": "做法 / 准备步骤",
+  "ingredientMix": "配料组合",
+  "addIngredientPlaceholder": "添加配料...",
+  "mealSummary": "营养总结",
+  "missingData": "缺少必要数据。",
+  "calories": "卡路里",
+  "protein": "蛋白质",
+  "carbs": "碳水",
+  "fat": "脂肪"
+},
+"plans": {
+  "title": "订阅方案",
+  "limitReachedMsg": "已达到上限 ({current}/{total})。请升级以创建更多方案。",
+  "manageSubtitle": "管理层级、价格和付款方式。",
+  "searchPlaceholder": "搜索方案...",
+  "limitReachedBtn": "已达上限",
+  "createPlan": "创建方案",
+  "syncing": "正在同步方案",
+  "noPlans": "尚未配置任何方案。",
+  "bankTransfer": "银行转账",  
+  "viewPlan": "查看计划",
+  "editPlan": "编辑方案",
+  "deletePlan": "删除方案",
+  "created": "创建于",
+  "deleteConfirm": "你确定吗？这将永久删除此方案并将其从你的个人资料中移除。"
+},
+"newplans": {
+  "backToPlans": "返回方案列表",
+  "createNewTier": "创建新层级",
+  "createNewSubtitle": "为您的客户添加新的订阅级别。",
+  "verifyingSubscription": "正在验证订阅...",
+  "unauthorized": "未授权",
+  "saveError": "保存方案时出错："
+},
+"planForm": {
+  "planTitle": "方案标题",
+  "planTitlePlaceholder": "例如：基础版",
+  "priceLabel": "价格标签",
+  "pricePlaceholder": "例如：$19/月",
+  "paypalId": "PayPal 按钮 ID",
+  "guide": "指南",
+  "paypalPlaceholder": "在此输入 ID...",
+  "ctaUrl": "CTA 链接 (选填)",
+  "traineeLimit": "学员人数限制 (仅限管理员)",
+  "featuresList": "功能列表",
+  "addLine": "添加行",
+  "featurePlaceholder": "功能 #",
+  "savePlan": "保存方案",
+  "saving": "保存中...",
+  "cancel": "取消"
+},
+"plansDetail": {
+  "backToManagement": "返回管理页面",
+  "details": "详情",
+  "editConfiguration": "编辑配置",
+  "coreConfiguration": "核心配置",
+  "displayPrice": "显示价格",
+  "createdOn": "创建日期",
+  "featureSetPreview": "功能集合预览",
+  "integration": "集成设置",
+  "paypalButtonId": "PayPal 按钮 ID",
+  "notConfigured": "未配置",
+  "internalCtaPath": "内部 CTA 路径",
+  "noManualCta": "未设置手动 CTA",
+  "databaseId": "数据库 ID",
+  "publicPreview": "公开预览",
+  "publicPreviewDesc": "这是方案在您的着陆页上向潜在客户显示的方式。请确保价格字符串与您的 PayPal 按钮配置一致，以避免账单差异。"
+},
+"plansEdit": {
+  "cancelEditing": "取消编辑",
+  "editTier": "编辑层级",
+  "updateError": "更新方案时出错："
+},
+"settingsEdit": {
+  "backToSettings": "返回设置",
+  "editProfile": "编辑个人资料",
+  "tabs": {
+    "general": "常规设置",
+    "bank": "银行详情",
+    "professional": "职业信息",
+    "security": "安全设置",
+    "account": "账户状态"
+  },
+  "sections": {
+    "personal": "个人详情",
+    "personalDesc": "管理您的基本账户身份信息。",
+    "bank": "转账信息",
+    "security": "安全管理",
+    "professional": "教练资料",
+    "system": "系统状态"
+  },
+  "labels": {
+    "firstName": "名",
+    "lastName": "姓",
+    "gender": "性别",
+    "male": "男",
+    "female": "女",
+    "assignedTrainer": "指定的教练",
+    "noTrainer": "未指定教练",
+    "username": "用户名",
+    "phone": "电话号码",
+    "dob": "出生日期",
+    "email": "电子邮件（只读）",
+    "address": "家庭住址",
+    "holderName": "账户持有人姓名",
+    "rut": "身份证号码 (RUT)",
+    "bankName": "银行名称",
+    "accountType": "账户类型",
+    "accountNumber": "账号",
+    "newPassword": "新密码",
+    "confirmPassword": "确认新密码",
+    "specialty": "专业领域",
+    "specialtyPlaceholder": "例如：瑜伽、跨境健身、高强度间歇训练",
+    "bio": "职业简介",
+    "bioPlaceholder": "写下您的执教经验...",
+    "role": "当前角色",
+    "status": "账户状态",
+    "activePlan": "当前方案",
+    "expiration": "方案到期时间",
+    "none": "无",
+    "na": "不适用"
+  },
+  "buttons": {
+    "saveChanges": "保存更改",
+    "saveBank": "保存银行详情",
+    "updatePassword": "更新密码",
+    "saveProfessional": "保存职业信息"
+  },
+  "messages": {
+    "updateSuccess": "个人资料更新成功！",
+    "updateError": "更新失败：",
+    "picUpdated": "个人头像已更新！",
+    "passMismatch": "两次输入的密码不一致",
+    "passSuccess": "密码更新成功！"
   }
+}
+
+
+
+
+
+
+
+
+
 
 
 

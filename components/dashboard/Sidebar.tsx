@@ -107,9 +107,10 @@ export default function Sidebar({ dict }: { dict: any }) {
           ) : (
             filteredMenu.map((item) => {
               const Icon = item.icon;
-              // Check if pathname starts with the item href to keep parent active
-              const active = pathname === item.href;
-
+              // Check if pathname starts with the item href to keep parent active 
+              const isActive = item.href.endsWith('/dashboard') 
+                          ? pathname === item.href 
+                          : pathname.startsWith(item.href);
               return (
                 <Link
                   key={item.name}
@@ -117,12 +118,12 @@ export default function Sidebar({ dict }: { dict: any }) {
                   onClick={() => setOpen(false)}
                   className={`flex items-center gap-3 p-3 rounded-xl text-[10px] font-black uppercase tracking-[0.15em] transition-all
                   ${
-                    active
+                    isActive
                       ? "bg-[#ff6b1a] text-black shadow-lg shadow-orange-600/10"
                       : "hover:bg-white/5 text-gray-500 hover:text-white"
                   }`}
                 >
-                  <Icon size={16} strokeWidth={active ? 3 : 2} />
+                  <Icon size={16} strokeWidth={isActive ? 3 : 2} />
                   {item.name}
                 </Link>
               );
