@@ -6,17 +6,25 @@ export default function LocaleSwitcher() {
   const pathname = usePathname()
   const router = useRouter()
 
-  // Protección: si pathname es null, no renderizamos nada o usamos un valor seguro
   if (!pathname) return null;
 
-  const segments = pathname.split('/')
-  const currentLocale = segments[1] // El idioma es el primer segmento después de la barra
-
   const switchLanguage = (newLocale: string) => {
-    const newSegments = [...segments]
-    newSegments[1] = newLocale
-    router.push(newSegments.join('/'))
+    // 1. Split the path into segments
+    const segments = pathname.split('/')
+    
+    // 2. The locale is always at index 1 because the path starts with /
+    // Example: /en/pricing -> ["", "en", "pricing"]
+    segments[1] = newLocale
+    
+    // 3. Join them back together
+    const newPath = segments.join('/')
+    
+    // 4. Use router.push to navigate to the clean absolute path
+    router.push(newPath)
   }
+
+  // To highlight the active button, we find the locale from the URL
+  const currentLocale = pathname.split('/')[1]
 
   return (
     <div className="flex bg-white/5 border border-white/10 p-1 rounded-xl">
@@ -24,13 +32,13 @@ export default function LocaleSwitcher() {
         <button
           key={lang}
           onClick={() => switchLanguage(lang)}
-          className={`px-3 py-1 text-xs font-bold rounded-lg transition-all ${
+          className={`px-3 py-1 text-xs font-bold rounded-lg uppercase transition-all ${
             currentLocale === lang 
               ? "bg-[#ff6b1a] text-white" 
               : "text-gray-400 hover:text-white"
           }`}
         >
-          {lang.toUpperCase()}
+          {lang}
         </button>
       ))}
     </div>

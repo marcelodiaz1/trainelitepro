@@ -8,7 +8,7 @@ import { StrictModeDroppable } from "@/components/dashboard/StrictModeDroppable"
 import { 
   ChevronLeft, Save, GripVertical, Trash2, Search, Flame, Dna, Loader2 
 } from "lucide-react";
-import Link from "next/link";
+import LocalizedLink from "@/components/LocalizedLink";
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,

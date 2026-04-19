@@ -8,7 +8,7 @@ import {
   ArrowLeft, Edit2, CreditCard, CheckCircle2, 
   Calendar, Hash, ExternalLink, ShieldCheck 
 } from "lucide-react";
-import Link from "next/link";
+import LocalizedLink from "@/components/LocalizedLink";
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -53,22 +53,22 @@ export default function PlanDetailClient({ dict, lang }: { dict: any, lang: stri
       <div className="p-8 flex-1 w-full max-w-5xl mx-auto">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-12 text-left">
           <div>
-            <Link 
+            <LocalizedLink 
               href={`/${lang}/dashboard/plans`} 
               className="text-slate-500 hover:text-[#ff6b1a] flex items-center gap-2 text-xs font-bold uppercase tracking-widest transition-colors mb-4"
             >
               <ArrowLeft size={16} /> {t.backToManagement}
-            </Link>
+            </LocalizedLink>
             <h1 className="text-5xl font-extrabold italic uppercase tracking-tighter">
               {plan.title} <span className="text-[#ff6b1a]">{t.details}</span>
             </h1>
           </div>
           
-          <Link href={`/${lang}/dashboard/plans/${plan.id}/edit`}>
+          <LocalizedLink href={`/${lang}/dashboard/plans/${plan.id}/edit`}>
             <button className="bg-white text-black px-8 py-4 rounded-2xl font-black uppercase text-xs tracking-widest hover:bg-[#ff6b1a] transition-all flex items-center gap-2 active:scale-95">
               <Edit2 size={16} /> {t.editConfiguration}
             </button>
-          </Link>
+          </LocalizedLink>
         </div>
 
         <div className="grid lg:grid-cols-3 gap-8 text-left">
@@ -127,9 +127,9 @@ export default function PlanDetailClient({ dict, lang }: { dict: any, lang: stri
                 <div>
                   <label className="text-[9px] font-bold text-slate-600 uppercase block mb-2">{t.internalCtaPath}</label>
                   {plan.cta ? (
-                    <Link href={plan.cta} className="text-blue-400 text-xs flex items-center gap-1 hover:underline">
+                    <LocalizedLink href={plan.cta} className="text-blue-400 text-xs flex items-center gap-1 hover:underline">
                       {plan.cta} <ExternalLink size={12} />
-                    </Link>
+                    </LocalizedLink>
                   ) : (
                     <span className="text-slate-700 text-xs italic">{t.noManualCta}</span>
                   )}

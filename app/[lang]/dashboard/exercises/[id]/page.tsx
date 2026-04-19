@@ -13,7 +13,7 @@ import {
   Trash2,
   Edit2
 } from "lucide-react";
-import Link from "next/link";
+import LocalizedLink from "@/components/LocalizedLink";
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -69,20 +69,20 @@ export default function ExerciseDetailPage() {
         {/* Header */}
         <header className="p-6 border-b border-slate-800 flex justify-between items-center bg-[#0b0b0b]">
           <div className="flex items-center gap-4">
-            <Link href="/dashboard/exercises">
+            <LocalizedLink href="/dashboard/exercises">
               <ChevronLeft className="text-slate-500 hover:text-white transition-colors" />
-            </Link>
+            </LocalizedLink>
             <h1 className="text-xl font-black italic uppercase tracking-tighter text-white">
               Movement Details
             </h1>
           </div>
           <div className="flex gap-3">
             {/* Standardized Edit Link */}
-            <Link href={`/dashboard/exercises/${exercise.id}/edit`}>
+            <LocalizedLink href={`/dashboard/exercises/${exercise.id}/edit`}>
               <button className="flex items-center gap-2 px-6 py-2 bg-slate-800 hover:bg-slate-700 text-white rounded-xl text-xs font-bold uppercase transition-all border border-slate-700">
                 <Edit2 size={14} className="text-orange-500" /> Edit  
               </button>
-            </Link>
+            </LocalizedLink>
             <button className="bg-red-900/20 hover:bg-red-900/40 text-red-500 px-4 py-2 rounded-xl text-xs font-bold uppercase transition-all flex items-center gap-2 border border-red-500/20">
               <Trash2 size={14} /> Delete
             </button>

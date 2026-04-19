@@ -13,7 +13,7 @@ import {
   UserCheck,
   Edit2
 } from "lucide-react";
-import Link from "next/link";
+import LocalizedLink from "@/components/LocalizedLink";
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -66,9 +66,9 @@ export default function TraineeProfileClient({ dict, lang }: { dict: any; lang: 
   return (
     <main className="bg-[#050505] text-slate-200 min-h-screen flex font-sans">
       <div className="p-8 flex-1 max-w-5xl mx-auto w-full">
-        <Link href={`/${lang}/dashboard/trainees`} className="flex items-center gap-2 text-slate-500 hover:text-white transition-colors mb-8 text-xs font-bold uppercase tracking-widest">
+        <LocalizedLink href={`/${lang}/dashboard/trainees`} className="flex items-center gap-2 text-slate-500 hover:text-white transition-colors mb-8 text-xs font-bold uppercase tracking-widest">
           <ChevronLeft size={16} /> {t.back}
-        </Link>
+        </LocalizedLink>
 
         <div className="bg-[#111] border border-slate-800 rounded-3xl p-8 mb-8 relative overflow-hidden">
           <div className="absolute top-0 right-0 p-8 opacity-10 pointer-events-none">
@@ -99,11 +99,11 @@ export default function TraineeProfileClient({ dict, lang }: { dict: any; lang: 
                 </div>
 
                 <div className="flex justify-center md:justify-end gap-3">
-                  <Link href={`/${lang}/dashboard/trainees/${trainee?.id}/edit`}>
+                  <LocalizedLink href={`/${lang}/dashboard/trainees/${trainee?.id}/edit`}>
                     <button className="flex items-center gap-2 px-5 py-2.5 rounded-xl border border-slate-700 bg-slate-800/50 hover:bg-slate-800 hover:border-blue-500/50 text-xs font-bold uppercase tracking-widest text-slate-300 transition-all active:scale-95 shadow-lg">
                       <Edit2 size={14} className="text-blue-400" /> {t.editProfile}
                     </button>
-                  </Link>
+                  </LocalizedLink>
                 </div>
               </div>
               

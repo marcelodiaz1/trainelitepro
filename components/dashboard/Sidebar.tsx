@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Link from "next/link";
+import LocalizedLink from "@/components/LocalizedLink";
 import { usePathname, useRouter, useParams } from "next/navigation";
 import { createClient } from "@supabase/supabase-js";
 
@@ -90,12 +90,12 @@ export default function Sidebar({ dict }: { dict: any }) {
           ${open ? "translate-x-0" : "-translate-x-full md:translate-x-0"}
         `}
       >
-        <Link href={`/${lang}`} className="flex items-center gap-2 text-xl font-extrabold mb-8">
+        <LocalizedLink href={`/${lang}`} className="flex items-center gap-2 text-xl font-extrabold mb-8">
           <Dumbbell size={28} className="text-[#ff6b1a] drop-shadow-[0_0_8px_rgba(255,107,26,0.4)]" />
           <span className="bg-gradient-to-r from-[#ff6b1a] to-orange-400 bg-clip-text text-transparent italic tracking-tighter">
             TrainElitePro
           </span>
-        </Link>
+        </LocalizedLink>
 
         <nav className="space-y-1.5 flex-1">
           {loading ? (
@@ -112,7 +112,7 @@ export default function Sidebar({ dict }: { dict: any }) {
                           ? pathname === item.href 
                           : pathname.startsWith(item.href);
               return (
-                <Link
+                <LocalizedLink
                   key={item.name}
                   href={item.href}
                   onClick={() => setOpen(false)}
@@ -125,7 +125,7 @@ export default function Sidebar({ dict }: { dict: any }) {
                 >
                   <Icon size={16} strokeWidth={isActive ? 3 : 2} />
                   {item.name}
-                </Link>
+                </LocalizedLink>
               );
             })
           )}

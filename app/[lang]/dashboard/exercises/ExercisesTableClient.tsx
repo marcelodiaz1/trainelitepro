@@ -12,7 +12,7 @@ import {
 } from "lucide-react";
 import SortableHeader from "@/components/dashboard/SortableHeader";
 import Pagination from "@/components/dashboard/Pagination";
-import Link from "next/link";
+import LocalizedLink from "@/components/LocalizedLink";
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -106,11 +106,11 @@ export default function ExercisesTableClient({ dict, lang }: { dict: any; lang: 
               />
             </div>
              
-            <Link href={`/${lang}/dashboard/exercises/new`}>
+            <LocalizedLink href={`/${lang}/dashboard/exercises/new`}>
               <button className="bg-orange-600 hover:bg-orange-500 text-white px-5 py-2.5 rounded-lg text-xs font-black uppercase tracking-widest flex items-center gap-2 transition-all active:scale-95 shadow-lg shadow-orange-600/20">
                 <Activity size={16} /> {t.addExercise}
               </button>
-            </Link>
+            </LocalizedLink>
           </div>
         </div>
 
@@ -137,9 +137,9 @@ export default function ExercisesTableClient({ dict, lang }: { dict: any; lang: 
                   {exercises.map((exercise) => (
                     <tr key={exercise.id} className="hover:bg-white/[0.02] transition-colors group">
                       <td className="px-6 py-4 font-semibold text-white transition-colors">
-                        <Link href={`/${lang}/dashboard/exercises/${exercise.id}`} className="hover:text-orange-500 transition-colors cursor-pointer">
+                        <LocalizedLink href={`/${lang}/dashboard/exercises/${exercise.id}`} className="hover:text-orange-500 transition-colors cursor-pointer">
                           {exercise.title}
-                        </Link>
+                        </LocalizedLink>
                       </td>
                       <td className="px-6 py-4 text-sm">
                         <span className="px-2 py-1 rounded bg-slate-800 border border-slate-700 text-[10px] font-black uppercase text-slate-300"> 
@@ -172,15 +172,15 @@ export default function ExercisesTableClient({ dict, lang }: { dict: any; lang: 
                           <>
                             <div className="fixed inset-0 z-10" onClick={() => setOpenDropdownId(null)} />
                             <div className="absolute right-6 mt-2 w-40 bg-[#1a1a1a] border border-slate-700 rounded-xl shadow-2xl z-20 overflow-hidden text-left">
-                              <Link href={`/${lang}/dashboard/exercises/${exercise.id}`} className="w-full flex items-center gap-3 px-4 py-3 text-xs font-medium hover:bg-slate-800 transition-colors text-slate-300 border-b border-slate-800">
+                              <LocalizedLink href={`/${lang}/dashboard/exercises/${exercise.id}`} className="w-full flex items-center gap-3 px-4 py-3 text-xs font-medium hover:bg-slate-800 transition-colors text-slate-300 border-b border-slate-800">
                                 <ExternalLink size={14} className="text-orange-500" /> {t.actions?.view}
-                              </Link>
+                              </LocalizedLink>
                               
-                              <Link href={`/${lang}/dashboard/exercises/${exercise.id}/edit`}>
+                              <LocalizedLink href={`/${lang}/dashboard/exercises/${exercise.id}/edit`}>
                                 <button className="flex items-center gap-3 w-full px-4 py-3 text-[11px] font-bold uppercase tracking-tight hover:bg-slate-800 transition-colors text-slate-300 border-t border-slate-800/50">
                                   <Edit2 size={14} className="text-slate-400" /> {t.actions?.edit}
                                 </button>
-                              </Link>
+                              </LocalizedLink>
 
                               <button className="w-full flex items-center gap-3 px-4 py-3 text-xs font-medium hover:bg-red-500/10 transition-colors text-red-400 border-t border-slate-800">
                                 <Trash2 size={14} /> {t.actions?.delete}

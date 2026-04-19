@@ -8,7 +8,7 @@ import { StrictModeDroppable } from "@/components/dashboard/StrictModeDroppable"
 import { 
   ChevronLeft, Save, GripVertical, Trash2, Search, Flame, Dna, Loader2 
 } from "lucide-react";
-import Link from "next/link";
+import LocalizedLink from "@/components/LocalizedLink";
 
 // --- Interfaces for Type Safety ---
 interface Meal {
@@ -244,7 +244,7 @@ export default function NewMealPlanClient({ dict, lang }: { dict: any, lang: str
       <div className="flex-1 flex flex-col overflow-hidden">
         <header className="p-6 border-b border-slate-800 flex justify-between items-center bg-[#0b0b0b]">
           <div className="flex items-center gap-4">
-            <Link href={`/${lang}/dashboard/meal-plans`}><ChevronLeft className="text-slate-500 hover:text-white transition-colors" /></Link>
+            <LocalizedLink href={`/${lang}/dashboard/meal-plans`}><ChevronLeft className="text-slate-500 hover:text-white transition-colors" /></LocalizedLink>
             <h1 className="text-xl font-black uppercase italic tracking-tighter">{t.title}</h1>
           </div>
           <button 

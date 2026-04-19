@@ -1035,8 +1035,73 @@
     "passMismatch": "两次输入的密码不一致",
     "passSuccess": "密码更新成功！"
   }
+},
+"privacyPage": {
+  "title": "隐私政策",
+  "lastUpdated": "最后更新",
+  "sections": [
+    {
+      "heading": "数据收集",
+      "content": "我们收集您直接提供给我们的信息，例如当您创建账户、更新健身档案或与我们的专业教练沟通时。"
+    },
+    {
+      "heading": "健身数据",
+      "content": "您的运动指标和进度仅用于定制您的精英训练体验。我们不会将您的健康数据出售给第三方广告商。"
+    },
+    {
+      "heading": "安全保障",
+      "content": "TrainElitePro 使用行业标准加密技术来保护您的个人信息和付款详情。您的安全是我们的首要任务。"
+    }
+  ],
+  "contact": {
+    "title": "有疑问吗？",
+    "description": "如果您对您的数据有任何疑问，请联系我们的法律团队。"
+  }
+},
+"termsPage": {
+  "title": "服务条款",
+  "effectiveDate": "2026年4月起生效",
+  "sections": [
+    {
+      "heading": "接受条款",
+      "content": "访问 TrainElitePro 即表示您同意受这些条款的约束。如果您不同意所有条款，则禁止使用此训练平台。"
+    },
+    {
+      "heading": "会员与账单",
+      "content": "订阅按月或按年计费。您可以随时取消，但对于不足一个月的服务不予退款。"
+    },
+    {
+      "heading": "用户行为",
+      "content": "用户必须提供准确的身体数据。虚报身份或身体状况可能导致账户立即终止。"
+    }
+  ],
+  "disclaimer": {
+    "title": "医疗免责声明",
+    "content": "TrainElitePro 不是医疗机构。在开始任何高强度训练计划之前，请咨询医生。您参与训练的风险自担。"
+  }
+},
+"cookiesPage": {
+  "title": "Cookie 政策",
+  "intro": "我们使用 Cookie 来优化您的表现追踪，并提供无缝的精英训练体验。",
+  "types": [
+    {
+      "title": "必要型",
+      "description": "对于安全登录和账户功能至关重要。这些无法禁用。"
+    },
+    {
+      "title": "分析型",
+      "description": "帮助我们了解您如何使用平台，以改进我们的训练算法。"
+    },
+    {
+      "title": "营销型",
+      "description": "用于根据您的兴趣提供相关的健身内容和优惠。"
+    }
+  ],
+  "howToManage": {
+    "title": "管理 Cookie",
+    "content": "您可以通过浏览器设置控制或重置 Cookie。请注意，禁用必要 Cookie 可能会影响仪表板的使用效果。"
+  }
 }
-
 
 
 

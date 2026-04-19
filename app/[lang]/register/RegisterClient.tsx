@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { createClient } from "@supabase/supabase-js";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
+import LocalizedLink from "@/components/LocalizedLink";
 import { 
   CheckCircle, User, Zap, ShieldCheck, 
   Search, Users, ChevronRight, AlertCircle, MapPin 
@@ -138,7 +138,7 @@ export default function RegisterClient({ dict }: { dict: any }) {
 
   return (
     <main className="bg-[#0b0b0b] text-white min-h-screen flex flex-col font-sans">
-      <Navbar dict={dict} />
+      
       <section className="flex-1 flex items-center justify-center py-16 px-6">
         <div className="max-w-6xl w-full grid md:grid-cols-2 gap-16 items-center">
           
@@ -147,7 +147,7 @@ export default function RegisterClient({ dict }: { dict: any }) {
               <h2 className="text-4xl font-black italic uppercase tracking-tighter leading-none mb-2" 
                   dangerouslySetInnerHTML={{ __html: t.title }} />
               <p className="text-slate-500 text-sm font-medium">
-                {t.hasAccount} <Link href="/login" className="text-orange-500 hover:underline font-bold">{t.signIn}</Link>
+                {t.hasAccount} <LocalizedLink href="/login" className="text-orange-500 hover:underline font-bold">{t.signIn}</LocalizedLink>
               </p>
             </div>
 

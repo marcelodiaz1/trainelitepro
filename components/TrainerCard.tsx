@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import Link from "next/link";
+import LocalizedLink from "@/components/LocalizedLink";
 import { Star } from "lucide-react";
 
 interface TrainerCardProps {
@@ -57,12 +57,12 @@ export default function TrainerCard({
         <div className="flex-1" />
 
         {/* View Profile Button */}
-        <Link
+        <LocalizedLink
           href={profileLink}
           className="mt-4 bg-[#ff6b1a] text-black font-bold py-2 px-4 rounded-xl text-center hover:scale-105 transition"
         >
           {t?.viewProfile || "View Profile"}
-        </Link>
+        </LocalizedLink>
       </div>
     </motion.div>
   );

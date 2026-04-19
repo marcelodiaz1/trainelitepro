@@ -11,7 +11,7 @@ import {
   CheckCircle2,
   AlertCircle
 } from "lucide-react";
-import Link from "next/link";
+import LocalizedLink from "@/components/LocalizedLink";
 
 export default function NewTrainerPage() {
   const router = useRouter();
@@ -75,9 +75,9 @@ export default function NewTrainerPage() {
     <main className="bg-[#050505] text-slate-200 min-h-screen flex font-sans">
       <div className="p-8 flex-1 max-w-3xl mx-auto w-full">
         {/* Header */}
-        <Link href="/dashboard/trainers" className="flex items-center gap-2 text-slate-500 hover:text-white transition-colors mb-8 text-xs font-bold uppercase tracking-widest">
+        <LocalizedLink href="/dashboard/trainers" className="flex items-center gap-2 text-slate-500 hover:text-white transition-colors mb-8 text-xs font-bold uppercase tracking-widest">
           <ChevronLeft size={16} /> Cancel & Return
-        </Link>
+        </LocalizedLink>
 
         <div className="mb-10">
           <h1 className="text-4xl font-extrabold tracking-tight text-white mb-2 uppercase italic">Onboard Trainer</h1>

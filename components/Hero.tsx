@@ -2,7 +2,7 @@
 
 import { useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
-import Link from "next/link";
+import LocalizedLink from "@/components/LocalizedLink";
 
 interface HeroProps {
   title: string;
@@ -50,7 +50,7 @@ export default function Hero({ title, subtitle, ctaText, ctaLink, className }: H
         className="relative z-20 text-center px-6 max-w-5xl mx-auto mt-20"
       >
         <motion.h1
-          className="text-6xl md:text-8xl font-black mb-8 tracking-tighter uppercase italic leading-[0.9] text-white"
+          className="text-4xl md:text-8xl font-black mb-8 tracking-tighter uppercase italic leading-[0.9] text-white"
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
@@ -79,12 +79,12 @@ export default function Hero({ title, subtitle, ctaText, ctaLink, className }: H
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.5, delay: 0.4 }}
         >
-          <Link
+          <LocalizedLink
             href={ctaLink}
             className="inline-block bg-[#ff6b1a] text-black px-14 py-5 text-xl md:text-2xl rounded-2xl font-black uppercase tracking-widest transition-all hover:scale-105 active:scale-95 shadow-[0_0_30px_rgba(255,107,26,0.4)]"
           >
             {ctaText}
-          </Link>
+          </LocalizedLink>
         </motion.div>
       </motion.div>
     </section>

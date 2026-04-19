@@ -1034,6 +1034,72 @@
     "passMismatch": "Las contraseñas no coinciden",
     "passSuccess": "¡Contraseña actualizada con éxito!"
   }
+},
+"privacyPage": {
+  "title": "Política de Privacidad",
+  "lastUpdated": "Última Actualización",
+  "sections": [
+    {
+      "heading": "Recopilación de Datos",
+      "content": "Recopilamos la información que nos proporciona directamente, como cuando crea una cuenta, actualiza su perfil de fitness o se comunica con nuestros entrenadores."
+    },
+    {
+      "heading": "Datos de Fitness",
+      "content": "Sus métricas de entrenamiento y progreso se utilizan estrictamente para personalizar su experiencia de entrenamiento de élite. No vendemos sus datos de salud."
+    },
+    {
+      "heading": "Seguridad",
+      "content": "TrainElitePro utiliza cifrado estándar de la industria para proteger su información personal y detalles de pago. Su seguridad es nuestra prioridad."
+    }
+  ],
+  "contact": {
+    "title": "¿Preguntas?",
+    "description": "Si tiene alguna pregunta sobre sus datos, contacte a nuestro equipo legal."
+  }
+},
+"termsPage": {
+  "title": "Términos de Servicio",
+  "effectiveDate": "Efectivo a partir de abril de 2026",
+  "sections": [
+    {
+      "heading": "Aceptación de Términos",
+      "content": "Al acceder a TrainElitePro, acepta estar sujeto a estos términos. Si no está de acuerdo con todos los términos, se le prohíbe utilizar esta plataforma."
+    },
+    {
+      "heading": "Membresía y Facturación",
+      "content": "Las suscripciones se facturan mensual o anualmente. Puede cancelar en cualquier momento, pero no se emitirán reembolsos por meses parciales."
+    },
+    {
+      "heading": "Conducta del Usuario",
+      "content": "Los usuarios deben proporcionar datos físicos precisos. La falsificación de identidad o condición física puede resultar en la cancelación de la cuenta."
+    }
+  ],
+  "disclaimer": {
+    "title": "Aviso Médico",
+    "content": "TrainElitePro no es una organización médica. Consulte a un médico antes de comenzar cualquier programa de entrenamiento. Participa bajo su propio riesgo."
+  }
+},
+"cookiesPage": {
+  "title": "Cookies Policy",
+  "intro": "We use cookies to optimize your performance tracking and provide a seamless elite training experience.",
+  "types": [
+    {
+      "title": "Essential",
+      "description": "Necessary for secure login and account functionality. These cannot be disabled."
+    },
+    {
+      "title": "Analytics",
+      "description": "Helps us understand how you use the platform to improve our training algorithms."
+    },
+    {
+      "title": "Marketing",
+      "description": "Used to deliver relevant fitness content and offers based on your interests."
+    }
+  ],
+  "howToManage": {
+    "title": "Managing Cookies",
+    "content": "You can control or reset cookies through your browser settings. Note that disabling essential cookies may impact your dashboard performance."
+  }
 }
 
 

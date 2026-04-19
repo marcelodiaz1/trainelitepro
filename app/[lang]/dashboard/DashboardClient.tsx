@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { createClient } from "@supabase/supabase-js";
-import Link from "next/link";
+import LocalizedLink from "@/components/LocalizedLink";
 import { 
   Users, Dumbbell, Activity, UtensilsCrossed, 
   ClipboardList, UserPlus, PlusCircle, Zap, ChevronRight,
@@ -276,14 +276,14 @@ function CapacityCard({ title, current, limit, icon: Icon, label, isLarge, tierN
           {isLarge && <p className="text-[#ff6b1a] text-[10px] font-black uppercase tracking-widest mt-1">{t.labels.tier}: {tierName}</p>}
         </div>
         
-        <Link 
+        <LocalizedLink 
           href={isAtLimit ? "/pricing" : actionHref}
           className={`px-4 py-2 rounded-xl text-[9px] font-black uppercase flex items-center gap-2 transition-all ${
             isAtLimit ? "bg-red-500/10 text-red-500 border border-red-500/20" : "bg-[#ff6b1a] text-black"
           }`}
         >
           {isAtLimit ? t.actions.upgrade : actionLabel} {isAtLimit ? <Zap size={14}/> : actionIcon || <PlusCircle size={14} />}
-        </Link>
+        </LocalizedLink>
       </div>
 
       <div className="space-y-4">

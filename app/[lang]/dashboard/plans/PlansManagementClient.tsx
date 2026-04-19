@@ -3,7 +3,7 @@
 import { useEffect, useState, useCallback } from "react";
 import { createClient } from "@supabase/supabase-js";
 import { motion, AnimatePresence } from "framer-motion";
-import Link from "next/link";
+import LocalizedLink from "@/components/LocalizedLink";
 import { 
   MoreVertical, Search, Plus, Edit2, Trash2, 
   CreditCard, Briefcase, ClipboardList, DollarSign, Lock, Zap,
@@ -141,19 +141,19 @@ export default function PlansManagementClient({ dict, lang }: { dict: any, lang:
             </div> 
 
             {isAtLimit ? (
-              <Link href={`/${lang}/pricing`}>
+              <LocalizedLink href={`/${lang}/pricing`}>
                 <button className="bg-white/5 border border-white/10 hover:border-[#ff6b1a]/50 text-white px-5 py-2.5 rounded-lg text-xs font-black uppercase tracking-widest flex items-center gap-2 transition-all">
                   <Lock size={16} className="text-[#ff6b1a]" /> 
                   {t.limitReachedBtn}
                   <Zap size={14} className="text-[#ff6b1a] animate-pulse" />
                 </button>
-              </Link>
+              </LocalizedLink>
             ) : (
-              <Link href={`/${lang}/dashboard/plans/new`}>
+              <LocalizedLink href={`/${lang}/dashboard/plans/new`}>
                 <button className="bg-[#ff6b1a] hover:bg-orange-500 text-white px-5 py-2.5 rounded-lg text-xs font-black uppercase tracking-widest flex items-center gap-2 transition-all active:scale-95 shadow-lg shadow-orange-600/20">
                   <Plus size={16} /> {t.createPlan}
                 </button>
-              </Link> 
+              </LocalizedLink> 
             )}
           </div>
         </div>
@@ -211,12 +211,12 @@ export default function PlansManagementClient({ dict, lang }: { dict: any, lang:
                                   initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0 }}
                                   className="absolute right-0 mt-2 w-48 bg-[#1a1a1a] border border-slate-700 rounded-xl shadow-2xl z-30 overflow-hidden"
                                 >
-                                  <Link href={`/${lang}/dashboard/plans/${plan.id}`} className="flex items-center gap-3 w-full px-4 py-3 text-xs font-bold hover:bg-slate-800 transition-colors">
+                                  <LocalizedLink href={`/${lang}/dashboard/plans/${plan.id}`} className="flex items-center gap-3 w-full px-4 py-3 text-xs font-bold hover:bg-slate-800 transition-colors">
                                     <Eye size={14} className="text-blue-400" /> {t.viewPlan}
-                                  </Link>
-                                  <Link href={`/${lang}/dashboard/plans/${plan.id}/edit`} className="flex items-center gap-3 w-full px-4 py-3 text-xs font-bold hover:bg-slate-800 transition-colors">
+                                  </LocalizedLink>
+                                  <LocalizedLink href={`/${lang}/dashboard/plans/${plan.id}/edit`} className="flex items-center gap-3 w-full px-4 py-3 text-xs font-bold hover:bg-slate-800 transition-colors">
                                     <Edit2 size={14} className="text-blue-400" /> {t.editPlan}
-                                  </Link> 
+                                  </LocalizedLink> 
                                   <button onClick={() => handleDelete(plan.id)} className="flex items-center gap-3 w-full px-4 py-3 text-xs font-bold hover:bg-red-500/10 text-red-400 border-t border-slate-800">
                                     <Trash2 size={14} /> {t.deletePlan}
                                   </button>

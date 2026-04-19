@@ -7,7 +7,7 @@ import {
   Search, MoreVertical, Trash2, Edit2, Eye, Scale,
   User, ClipboardCheck, ClipboardPlus, Loader2, Lock, Zap
 } from "lucide-react";
-import Link from "next/link";
+import LocalizedLink from "@/components/LocalizedLink";
 import SortableHeader from "@/components/dashboard/SortableHeader";
 import Pagination from "@/components/dashboard/Pagination";
 
@@ -140,18 +140,18 @@ export default function EvaluationsTableClient({ dict, lang }: { dict: any; lang
 
             {role !== "trainee" && (
               isAtLimit ? (
-                <Link href={`/${lang}/pricing`}>
+                <LocalizedLink href={`/${lang}/pricing`}>
                   <button className="bg-white/5 border border-white/10 hover:border-orange-500/50 text-white px-5 py-2.5 rounded-lg text-xs font-black uppercase tracking-widest flex items-center gap-2 transition-all group shadow-lg">
                     <Lock size={16} className="text-orange-500" /> {t.limitReached}
                     <Zap size={14} className="text-orange-500 animate-pulse" />
                   </button>
-                </Link>
+                </LocalizedLink>
               ) : (
-                <Link href={`/${lang}/dashboard/evaluations/new`}>
+                <LocalizedLink href={`/${lang}/dashboard/evaluations/new`}>
                   <button className="bg-orange-600 hover:bg-orange-500 text-white px-5 py-2.5 rounded-lg text-xs font-black uppercase tracking-widest flex items-center gap-2 transition-all active:scale-95 shadow-lg shadow-orange-600/20">
                     <ClipboardPlus size={16} /> {t.addEvaluation}
                   </button>
-                </Link>
+                </LocalizedLink>
               )
             )}
           </div>
@@ -219,16 +219,16 @@ export default function EvaluationsTableClient({ dict, lang }: { dict: any; lang
                             <>
                               <div className="fixed inset-0 z-10" onClick={() => setDropdownOpen(null)} />
                               <motion.div initial={{ opacity: 0, scale: 0.95, y: -10 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95, y: -10 }} className="absolute right-6 mt-2 w-48 bg-[#1a1a1a] border border-slate-700 rounded-xl shadow-2xl z-20 overflow-hidden text-left">
-                                <Link href={`/${lang}/dashboard/evaluations/${e.id}`}>
+                                <LocalizedLink href={`/${lang}/dashboard/evaluations/${e.id}`}>
                                   <button className="flex items-center gap-3 w-full px-4 py-3 text-[11px] font-bold uppercase tracking-tight hover:bg-slate-800 transition-colors text-slate-300">
                                     <Eye size={14} className="text-blue-500" /> {t.actions.view}
                                   </button>
-                                </Link>
-                                <Link href={`/${lang}/dashboard/evaluations/${e.id}/edit`}>
+                                </LocalizedLink>
+                                <LocalizedLink href={`/${lang}/dashboard/evaluations/${e.id}/edit`}>
                                   <button className="flex items-center gap-3 w-full px-4 py-3 text-[11px] font-bold uppercase tracking-tight hover:bg-slate-800 transition-colors text-slate-300 border-t border-slate-800/50">
                                     <Edit2 size={14} className="text-slate-400" /> {t.actions.edit}
                                   </button>
-                                </Link>
+                                </LocalizedLink>
                                 <button onClick={() => handleDelete(e.id)} className="flex items-center gap-3 w-full px-4 py-3 text-[11px] font-bold uppercase tracking-tight hover:bg-red-500/10 text-red-400 border-t border-slate-800 transition-colors">
                                   <Trash2 size={14} /> {t.actions.delete}
                                 </button>

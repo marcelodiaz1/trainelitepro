@@ -22,7 +22,7 @@ import {
 } from "lucide-react";
 import SortableHeader from "@/components/dashboard/SortableHeader";
 import Pagination from "@/components/dashboard/Pagination";
-import Link from "next/link";
+import LocalizedLink from "@/components/LocalizedLink";
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -165,11 +165,11 @@ useEffect(() => {
               />
             </div> 
             
-            <Link href="/dashboard/ingredients/new">
+            <LocalizedLink href="/dashboard/ingredients/new">
               <button className="bg-orange-600 hover:bg-orange-500 text-white px-5 py-2.5 rounded-lg text-xs font-black uppercase tracking-widest flex items-center gap-2 transition-all active:scale-95 shadow-lg shadow-orange-600/20">
                 <Apple size={16} /> Add Ingredient
               </button>
-            </Link>
+            </LocalizedLink>
           </div>
         </div>
 
@@ -198,7 +198,7 @@ useEffect(() => {
                   {ingredients.map((item) => (
                     <tr key={item.id} className="hover:bg-white/[0.02] transition-colors group">
                       <td className="px-6 py-4">
-                        <Link
+                        <LocalizedLink
                           href={`/dashboard/ingredients/${item.id}`}
                           className="flex items-center gap-3 group"
                         >
@@ -217,7 +217,7 @@ useEffect(() => {
                           <span className="font-semibold text-white group-hover:text-orange-400 transition-colors">
                             {item.name}
                           </span>
-                        </Link>
+                        </LocalizedLink>
                       </td>
                       <td className="px-6 py-4">
                         {item.field_category ? (
@@ -256,11 +256,11 @@ useEffect(() => {
                               <div className="fixed inset-0 z-10" onClick={() => setDropdownOpen(null)} />
                               <motion.div initial={{ opacity: 0, y: -5 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="absolute right-6 mt-2 w-40 bg-[#1a1a1a] border border-slate-700 rounded-xl shadow-2xl z-20 overflow-hidden">
                                 
-                              <Link href={`/dashboard/ingredients/${item.id}/edit`}>
+                              <LocalizedLink href={`/dashboard/ingredients/${item.id}/edit`}>
                                 <button className="flex items-center gap-3 w-full px-4 py-3 text-[11px] font-bold uppercase tracking-tight hover:bg-slate-800 transition-colors text-slate-300 border-t border-slate-800/50">
                                   <Edit2 size={14} className="text-slate-400" /> Edit  
                                 </button>
-                              </Link>
+                              </LocalizedLink>
 
                                 <button onClick={() => handleDelete(item.id)} className="flex items-center gap-3 w-full px-4 py-3 text-xs font-bold hover:bg-red-500/10 text-red-400 transition-colors"><Trash2 size={14} /> Delete</button>
                               </motion.div>

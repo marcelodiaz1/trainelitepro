@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import LocalizedLink from "@/components/LocalizedLink";
 import { Facebook, Instagram, Twitter, Linkedin, Mail, MapPin, Dumbbell } from "lucide-react";
 
 export default function Footer({ dict }: { dict: any }) {
@@ -15,12 +15,12 @@ export default function Footer({ dict }: { dict: any }) {
           
           {/* Brand Section */}
           <div className="flex flex-col gap-6 lg:col-span-1">
-            <Link href="/" className="flex items-center gap-2 text-2xl md:text-3xl font-extrabold">
+            <LocalizedLink href="/" className="flex items-center gap-2 text-2xl md:text-3xl font-extrabold">
               <Dumbbell size={30} className="text-[#ff6b1a] drop-shadow-[0_0_8px_#ff6b1a]" />
               <span className="bg-gradient-to-r from-[#ff6b1a] to-orange-400 bg-clip-text text-transparent">
                 TrainElitePro
               </span>
-            </Link>
+            </LocalizedLink>
             <p className="text-sm leading-relaxed max-w-xs">
               {t.description}
             </p>
@@ -31,13 +31,13 @@ export default function Footer({ dict }: { dict: any }) {
                 { icon: <Twitter size={18} />, href: "#" },
                 { icon: <Linkedin size={18} />, href: "#" },
               ].map((social, i) => (
-                <Link 
+                <LocalizedLink 
                   key={i} 
                   href={social.href} 
                   className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-[#ff6b1a] hover:text-black transition-all duration-300"
                 >
                   {social.icon}
-                </Link>
+                </LocalizedLink>
               ))}
             </div>
           </div>
@@ -46,10 +46,10 @@ export default function Footer({ dict }: { dict: any }) {
           <div className="flex flex-col gap-4">
             <h3 className="text-white font-bold text-xs uppercase tracking-[0.2em] mb-2">{t.quickLinks}</h3>
             <nav className="flex flex-col gap-3 text-sm">
-              <Link href="/" className="hover:text-white transition-colors w-fit">{t.links.home}</Link>
-              <Link href="/benefits" className="hover:text-white transition-colors w-fit">{t.links.benefits}</Link>
-              <Link href="/pricing" className="hover:text-white transition-colors w-fit">{t.links.pricing}</Link>
-              <Link href="/trainers" className="hover:text-white transition-colors w-fit">{t.links.trainers}</Link>
+              <LocalizedLink href="/" className="hover:text-white transition-colors w-fit">{t.links.home}</LocalizedLink>
+              <LocalizedLink href="/benefits" className="hover:text-white transition-colors w-fit">{t.links.benefits}</LocalizedLink>
+              <LocalizedLink href="/pricing" className="hover:text-white transition-colors w-fit">{t.links.pricing}</LocalizedLink>
+              <LocalizedLink href="/trainers" className="hover:text-white transition-colors w-fit">{t.links.trainers}</LocalizedLink>
             </nav>
           </div>
 
@@ -57,9 +57,9 @@ export default function Footer({ dict }: { dict: any }) {
           <div className="flex flex-col gap-4">
             <h3 className="text-white font-bold text-xs uppercase tracking-[0.2em] mb-2">{t.account}</h3>
             <nav className="flex flex-col gap-3 text-sm">
-              <Link href="/login" className="hover:text-white transition-colors w-fit">{t.links.login}</Link>
-              <Link href="/register" className="hover:text-white transition-colors w-fit">{t.links.trainerSignUp}</Link>
-              <Link href="/register" className="hover:text-white transition-colors w-fit">{t.links.traineeSignUp}</Link>
+              <LocalizedLink href="/login" className="hover:text-white transition-colors w-fit">{t.links.login}</LocalizedLink>
+              <LocalizedLink href="/register" className="hover:text-white transition-colors w-fit">{t.links.trainerSignUp}</LocalizedLink>
+              <LocalizedLink href="/register" className="hover:text-white transition-colors w-fit">{t.links.traineeSignUp}</LocalizedLink>
             </nav>
           </div>
 
@@ -90,9 +90,9 @@ export default function Footer({ dict }: { dict: any }) {
             © {new Date().getFullYear()} TrainElitePro. {t.rights}
           </p>
           <div className="flex gap-8 text-[11px] uppercase tracking-widest font-bold">
-            <Link href="/privacy" className="hover:text-white transition-colors">Privacy</Link>
-            <Link href="/terms" className="hover:text-white transition-colors">Terms</Link>
-            <Link href="/cookies" className="hover:text-white transition-colors">Cookies</Link>
+            <LocalizedLink href="/privacy" className="hover:text-white transition-colors">Privacy</LocalizedLink>
+            <LocalizedLink href="/terms" className="hover:text-white transition-colors">Terms</LocalizedLink>
+            <LocalizedLink href="/cookies" className="hover:text-white transition-colors">Cookies</LocalizedLink>
           </div>
         </div>
       </div>

@@ -15,7 +15,7 @@ import {
   Lock,
   Zap
 } from "lucide-react";
-import Link from "next/link";
+import LocalizedLink from "@/components/LocalizedLink";
 import Pagination from "@/components/dashboard/Pagination";
 import SortableHeader from "@/components/dashboard/SortableHeader";
 
@@ -148,18 +148,18 @@ export default function WorkoutRoutinesTableClient({ dict, lang }: { dict: any; 
           
             {role !== "trainee" && (
               isAtLimit ? (
-                <Link href={`/${lang}/pricing`}>
+                <LocalizedLink href={`/${lang}/pricing`}>
                   <button className="bg-white/5 border border-white/10 hover:border-orange-500/50 text-white px-5 py-2.5 rounded-lg text-xs font-black uppercase tracking-widest flex items-center gap-2 transition-all group shadow-lg">
                     <Lock size={16} className="text-orange-500" /> {t.limitReached}
                     <Zap size={14} className="text-orange-500 animate-pulse" />
                   </button>
-                </Link>
+                </LocalizedLink>
               ) : (
-                <Link href={`/${lang}/dashboard/routines/new`}>
+                <LocalizedLink href={`/${lang}/dashboard/routines/new`}>
                   <button className="bg-orange-600 hover:bg-orange-500 text-white px-5 py-2.5 rounded-lg text-xs font-black uppercase tracking-widest flex items-center gap-2 transition-all active:scale-95 shadow-lg shadow-orange-600/20">
                     <ListChecks size={16} /> {t.addRoutine}
                   </button>
-                </Link>
+                </LocalizedLink>
               )
             )}
           </div>
@@ -197,9 +197,9 @@ export default function WorkoutRoutinesTableClient({ dict, lang }: { dict: any; 
                             <ClipboardList size={18} />
                           </div>
                           <div>
-                            <Link href={`/${lang}/dashboard/routines/${routine.id}`} className="font-bold text-white hover:text-orange-400 transition-colors uppercase tracking-tight italic">
+                            <LocalizedLink href={`/${lang}/dashboard/routines/${routine.id}`} className="font-bold text-white hover:text-orange-400 transition-colors uppercase tracking-tight italic">
                               {routine.title}
-                            </Link>
+                            </LocalizedLink>
                             <p className="text-[10px] text-slate-500 truncate max-w-[200px]">{routine.description}</p>
                           </div>
                         </div>
@@ -228,14 +228,14 @@ export default function WorkoutRoutinesTableClient({ dict, lang }: { dict: any; 
                             <>
                               <div className="fixed inset-0 z-10" onClick={() => setDropdownOpen(null)} />
                               <motion.div initial={{ opacity: 0, scale: 0.95, y: -10 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95, y: -10 }} className="absolute right-6 mt-2 w-48 bg-[#1a1a1a] border border-slate-700 rounded-xl shadow-2xl z-20 overflow-hidden text-left">
-                                <Link href={`/${lang}/dashboard/routines/${routine.id}`} className="flex items-center gap-3 w-full px-4 py-3 text-xs font-bold hover:bg-slate-800 transition-colors text-slate-300">
+                                <LocalizedLink href={`/${lang}/dashboard/routines/${routine.id}`} className="flex items-center gap-3 w-full px-4 py-3 text-xs font-bold hover:bg-slate-800 transition-colors text-slate-300">
                                   <Eye size={14} className="text-orange-400" /> {t.actions?.view}
-                                </Link>
-                                <Link href={`/${lang}/dashboard/routines/${routine.id}/edit`}>
+                                </LocalizedLink>
+                                <LocalizedLink href={`/${lang}/dashboard/routines/${routine.id}/edit`}>
                                   <button className="flex items-center gap-3 w-full px-4 py-3 text-xs font-bold hover:bg-slate-800 transition-colors text-slate-300">
                                     <Edit2 size={14} className="text-blue-400" /> {t.actions?.edit}
                                   </button>
-                                </Link>
+                                </LocalizedLink>
                                 <button onClick={() => handleDelete(routine.id)} className="flex items-center gap-3 w-full px-4 py-3 text-xs font-bold hover:bg-red-500/10 text-red-400 border-t border-slate-800 transition-colors">
                                   <Trash2 size={14} /> {t.actions?.delete}
                                 </button>

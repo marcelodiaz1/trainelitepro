@@ -7,7 +7,7 @@ import {
   MoreVertical, Trash2, Edit2, Search, Calendar, UtensilsCrossed,
   Lock, Zap
 } from "lucide-react";
-import Link from "next/link";
+import LocalizedLink from "@/components/LocalizedLink";
 import Pagination from "@/components/dashboard/Pagination";
 import SortableHeader from "@/components/dashboard/SortableHeader";
 
@@ -162,19 +162,19 @@ export default function MealPlansClient({ dict, lang }: { dict: any; lang: strin
              
             {role !== "trainee" && (
               isAtLimit ? (
-                <Link href={`/${lang}/pricing`}>
+                <LocalizedLink href={`/${lang}/pricing`}>
                   <button className="bg-white/5 border border-white/10 hover:border-orange-500/50 text-white px-5 py-2.5 rounded-lg text-xs font-black uppercase tracking-widest flex items-center gap-2 transition-all group shadow-lg">
                     <Lock size={16} className="text-orange-500" /> 
                     {t.limitLabel}
                     <Zap size={14} className="text-orange-500 animate-pulse" />
                   </button>
-                </Link>
+                </LocalizedLink>
               ) : (
-                <Link href={`/${lang}/dashboard/meal-plans/new`}>
+                <LocalizedLink href={`/${lang}/dashboard/meal-plans/new`}>
                   <button className="bg-orange-600 hover:bg-orange-500 text-white px-5 py-2.5 rounded-lg text-xs font-black uppercase tracking-widest flex items-center gap-2 transition-all active:scale-95 shadow-lg shadow-orange-600/20">
                     <UtensilsCrossed size={16} /> {t.addPlan}
                   </button>
-                </Link>
+                </LocalizedLink>
               )
             )}
           </div>
@@ -202,7 +202,7 @@ export default function MealPlansClient({ dict, lang }: { dict: any; lang: strin
                     plans.map((plan) => (
                       <tr key={plan.id} className="hover:bg-white/[0.02] transition-colors group">
                         <td className="px-6 py-5">
-                          <Link href={`/${lang}/dashboard/meal-plans/${plan.id}`} className="flex items-center gap-3">
+                          <LocalizedLink href={`/${lang}/dashboard/meal-plans/${plan.id}`} className="flex items-center gap-3">
                             <div className="p-2.5 rounded-xl bg-orange-500/10 text-orange-500 border border-orange-500/20 group-hover:bg-orange-500 group-hover:text-white transition-all">
                               <Calendar size={18} />
                             </div>
@@ -214,7 +214,7 @@ export default function MealPlansClient({ dict, lang }: { dict: any; lang: strin
                                 {plan.id.slice(0, 8)}
                               </div>
                             </div>
-                          </Link>
+                          </LocalizedLink>
                         </td>
                         <td className="px-6 py-5">
                           <UserAvatar profile={plan.trainer} />
@@ -244,11 +244,11 @@ export default function MealPlansClient({ dict, lang }: { dict: any; lang: strin
                                   exit={{ opacity: 0 }} 
                                   className="absolute right-6 mt-2 w-40 bg-[#1a1a1a] border border-slate-700 rounded-xl shadow-2xl z-20 overflow-hidden text-left"
                                 >
-                                  <Link href={`/${lang}/dashboard/meal-plans/${plan.id}/edit`}>
+                                  <LocalizedLink href={`/${lang}/dashboard/meal-plans/${plan.id}/edit`}>
                                     <button className="flex items-center gap-3 w-full px-4 py-3 text-[11px] font-bold uppercase tracking-tight hover:bg-slate-800 transition-colors text-slate-300">
                                       <Edit2 size={14} className="text-slate-400" /> {t.edit}
                                     </button>
-                                  </Link>
+                                  </LocalizedLink>
                                   <button 
                                     onClick={() => handleDelete(plan.id)} 
                                     className="flex items-center gap-3 w-full px-4 py-3 text-xs font-bold hover:bg-red-500/10 text-red-400 border-t border-slate-800 transition-colors"

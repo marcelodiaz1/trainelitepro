@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import Link from "next/link";
+import LocalizedLink from "@/components/LocalizedLink";
 import Script from "next/script";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer"; 
@@ -86,19 +86,18 @@ export default function PricingClient({ dict }: { dict: any }) {
 
   return (
     <main className="bg-[#0b0b0b] text-white overflow-hidden">
-      <Navbar dict={dict}/>
       
       <Script
         src="https://www.paypal.com/sdk/js?client-id=BAAcAlRTScS3Ftf0ZjeBTX4PIuY9psh5AJZ1BNAQpBJlzWI4Mwi5okAyotIbbruWnpqwAK9Ig3tJ_mRZww&components=hosted-buttons&disable-funding=venmo&currency=AUD"
         strategy="lazyOnload"
       />
 
-      <section className="py-32 text-center bg-gradient-to-b from-[#111111] to-[#0b0b0b]">
+      <section className="pt-32 px-6 text-center bg-gradient-to-b from-[#111111] to-[#0b0b0b]">
         <h1 className="text-5xl md:text-6xl font-bold mb-6" dangerouslySetInnerHTML={{ __html: t.hero.title }} />
         <p className="text-gray-400 text-lg md:text-xl max-w-3xl mx-auto mb-12">{t.hero.subtitle}</p>
       </section>
 
-      <section className="py-28 px-6">
+      <section className="px-6">
         {loading ? (
           <div className="flex flex-col justify-center items-center h-64 gap-4">
             <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-[#ff6b1a]"></div>
@@ -127,9 +126,9 @@ export default function PricingClient({ dict }: { dict: any }) {
                 </div>
 
                 {plan.cta ? (
-                  <Link href={plan.cta} className="bg-gray-600 text-white font-bold px-8 py-3 rounded-xl text-lg text-center hover:bg-gray-500 transition">
+                  <LocalizedLink href={plan.cta} className="bg-gray-600 text-white font-bold px-8 py-3 rounded-xl text-lg text-center hover:bg-gray-500 transition">
                     {t.buttons.getStarted}
-                  </Link>
+                  </LocalizedLink>
                 ) : plan.paypalButtonId ? (
                   <button onClick={() => openPaypal(plan.paypalButtonId!)} className="bg-[#ff6b1a] text-black font-bold px-8 py-3 rounded-xl text-lg text-center shadow-lg hover:scale-105 transition">
                     {t.buttons.choosePlan}
@@ -151,12 +150,12 @@ export default function PricingClient({ dict }: { dict: any }) {
         </div>
       )}
 
-      <section className="py-32 text-center bg-[#111111]">
+      <section className="py-32 px-6 text-center bg-[#111111]">
         <h2 className="text-5xl md:text-6xl font-bold mb-6" dangerouslySetInnerHTML={{ __html: t.finalCta.title }} />
         <p className="text-gray-400 text-lg md:text-xl max-w-2xl mx-auto mb-12">{t.finalCta.description}</p>
-        <Link href="/register" className="bg-[#ff6b1a] px-12 py-5 text-xl md:text-2xl rounded-xl font-bold shadow-lg hover:scale-105 transition inline-block text-black">
+        <LocalizedLink href="/register" className="bg-[#ff6b1a] px-12 py-5 text-xl md:text-2xl rounded-xl font-bold shadow-lg hover:scale-105 transition inline-block text-black">
           {t.finalCta.button}
-        </Link>
+        </LocalizedLink>
       </section>
 
       <Footer dict={dict} />

@@ -5,7 +5,7 @@ import { useParams } from "next/navigation";
 import { createClient } from "@supabase/supabase-js";
 import Sidebar from "@/components/dashboard/Sidebar";
 import { Apple, FlaskConical, Activity, Leaf, Church } from "lucide-react";
-import Link from "next/link";
+import LocalizedLink from "@/components/LocalizedLink";
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -215,17 +215,17 @@ export default function IngredientDetailPage() {
 
         {/* ACTIONS */}
         <div className="mt-12 flex gap-4">
-          <Link href={`/dashboard/ingredients/${ingredient.id}/edit`}>
+          <LocalizedLink href={`/dashboard/ingredients/${ingredient.id}/edit`}>
             <button className="bg-orange-600 hover:bg-orange-500 px-6 py-3 rounded-lg text-xs font-bold uppercase">
               Edit Ingredient
             </button>
-          </Link>
+          </LocalizedLink>
 
-          <Link href="/dashboard/ingredients">
+          <LocalizedLink href="/dashboard/ingredients">
             <button className="border border-slate-700 px-6 py-3 rounded-lg text-xs font-bold uppercase">
               Back
             </button>
-          </Link>
+          </LocalizedLink>
         </div>
 
       </div>

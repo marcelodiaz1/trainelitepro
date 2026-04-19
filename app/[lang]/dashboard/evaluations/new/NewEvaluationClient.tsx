@@ -12,7 +12,7 @@ import {
   Layers,
   Loader2
 } from "lucide-react";
-import Link from "next/link";
+import LocalizedLink from "@/components/LocalizedLink";
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -240,9 +240,9 @@ export default function NewEvaluationClient({ dict, lang }: { dict: any; lang: s
   return (
     <main className="bg-[#050505] text-slate-200 min-h-screen flex font-sans">
       <div className="p-8 flex-1 max-w-5xl mx-auto w-full">
-        <Link href={`/${lang}/dashboard/evaluations`} className="flex items-center gap-2 text-slate-500 hover:text-white transition-colors mb-8 text-xs font-bold uppercase tracking-widest">
+        <LocalizedLink href={`/${lang}/dashboard/evaluations`} className="flex items-center gap-2 text-slate-500 hover:text-white transition-colors mb-8 text-xs font-bold uppercase tracking-widest">
           <ChevronLeft size={16} /> {t.cancel}
-        </Link>
+        </LocalizedLink>
 
         <div className="mb-10 text-left">
           <h1 className="text-4xl font-extrabold tracking-tight text-white mb-2 uppercase italic">{t.title}</h1>

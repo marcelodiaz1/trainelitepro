@@ -8,7 +8,7 @@ import {
   MoreVertical, Trash2, Edit2, Lock, LockOpen, Search, 
   UserPlus, Star, Eye, Dumbbell, ShieldCheck
 } from "lucide-react";
-import Link from "next/link";
+import LocalizedLink from "@/components/LocalizedLink";
 import SortableHeader from "@/components/dashboard/SortableHeader";
 import Pagination from "@/components/dashboard/Pagination";
 
@@ -170,11 +170,11 @@ export default function TrainersTable({ dict }: { dict: any }) {
                 className="w-full bg-[#111] border border-slate-800 rounded-lg py-2.5 pl-10 pr-4 text-xs focus:border-orange-500 outline-none transition-all placeholder:text-slate-700"
               />
             </div>
-            <Link href={`/${lang}/dashboard/trainers/new`}>
+            <LocalizedLink href={`/${lang}/dashboard/trainers/new`}>
               <button className="bg-orange-600 hover:bg-orange-500 text-white px-5 py-2.5 rounded-lg text-xs font-black uppercase tracking-widest flex items-center gap-2 transition-all active:scale-95 shadow-lg shadow-orange-600/10">
                 <UserPlus size={16} /> {t.addTrainer}
               </button>
-            </Link>
+            </LocalizedLink>
           </div>
         </div>
 
@@ -208,7 +208,7 @@ export default function TrainersTable({ dict }: { dict: any }) {
                   {trainers.map((trainer) => (
                     <tr key={trainer.id} className="hover:bg-white/[0.01] transition-colors group">
                       <td className="px-6 py-5">
-                        <Link 
+                        <LocalizedLink 
                           href={`/${lang}/dashboard/trainers/${trainer.id}`} 
                           className="font-bold text-white hover:text-orange-400 transition-colors flex items-center gap-2"
                         >
@@ -216,7 +216,7 @@ export default function TrainersTable({ dict }: { dict: any }) {
                             {trainer.first_name[0]}{trainer.last_name[0]}
                           </div>
                           {trainer.first_name} {trainer.last_name}
-                        </Link>
+                        </LocalizedLink>
                       </td>
 
                       <td className="px-6 py-5 text-slate-500 text-xs font-medium lowercase italic">
@@ -292,16 +292,16 @@ export default function TrainersTable({ dict }: { dict: any }) {
                                 exit={{ opacity: 0, scale: 0.95, y: -10 }}
                                 className="absolute right-6 mt-2 w-52 bg-[#161616] border border-slate-800 rounded-2xl shadow-2xl z-20 overflow-hidden ring-1 ring-white/5"
                               >
-                                <Link href={`/${lang}/dashboard/trainers/${trainer.id}`} className="w-full">
+                                <LocalizedLink href={`/${lang}/dashboard/trainers/${trainer.id}`} className="w-full">
                                   <button className="flex items-center gap-3 w-full px-4 py-3 text-[11px] font-bold uppercase tracking-tight hover:bg-slate-800 transition-colors text-slate-300">
                                     <Eye size={14} className="text-orange-500" /> {t.actions.view}
                                   </button>
-                                </Link>
-                                <Link href={`/${lang}/dashboard/trainers/${trainer.id}/edit`} className="w-full">
+                                </LocalizedLink>
+                                <LocalizedLink href={`/${lang}/dashboard/trainers/${trainer.id}/edit`} className="w-full">
                                   <button className="flex items-center gap-3 w-full px-4 py-3 text-[11px] font-bold uppercase tracking-tight hover:bg-slate-800 transition-colors text-slate-300 border-t border-slate-800/50">
                                     <Edit2 size={14} className="text-slate-400" /> {t.actions.edit}
                                   </button>
-                                </Link>
+                                </LocalizedLink>
                                 <button
                                   onClick={() => toggleStatus(trainer.id, trainer.status)}
                                   className="flex items-center gap-3 w-full px-4 py-3 text-[11px] font-bold uppercase tracking-tight hover:bg-slate-800 transition-colors text-slate-300 border-t border-slate-800/50"

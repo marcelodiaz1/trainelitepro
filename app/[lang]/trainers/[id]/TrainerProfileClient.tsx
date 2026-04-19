@@ -111,7 +111,7 @@ export default function TrainerProfilePage({ dict }: { dict: any }) {
 
   return (
     <main className="bg-[#0b0b0b] text-white min-h-screen relative font-sans">
-      <Navbar dict={dict}/>
+   
 
       <section className="max-w-6xl mx-auto py-32 px-6">
         {/* Profile Header */}

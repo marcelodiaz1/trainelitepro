@@ -7,7 +7,7 @@ import {
   ChevronLeft, Star, Mail, Shield, Award, Activity,
   UserCheck, Edit2, CreditCard, Copy, Check, X
 } from "lucide-react";
-import Link from "next/link";
+import LocalizedLink from "@/components/LocalizedLink";
 import { motion, AnimatePresence } from "framer-motion";
 
 const supabase = createClient(
@@ -50,9 +50,9 @@ export default function TrainerProfileClient({ dict, lang, id }: { dict: any; la
     <main className="relative bg-[#050505] text-slate-200 min-h-screen flex font-sans">
       <div className="p-8 flex-1 max-w-5xl mx-auto w-full">
         {/* Breadcrumb */}
-        <Link href={`/${lang}/dashboard/trainers`} className="flex items-center gap-2 text-slate-500 hover:text-white transition-colors mb-8 text-xs font-bold uppercase tracking-widest">
+        <LocalizedLink href={`/${lang}/dashboard/trainers`} className="flex items-center gap-2 text-slate-500 hover:text-white transition-colors mb-8 text-xs font-bold uppercase tracking-widest">
           <ChevronLeft size={16} /> {t.back}
-        </Link>
+        </LocalizedLink>
 
         {/* Profile Header */}
         <div className="bg-[#111] border border-slate-800 rounded-3xl p-8 mb-8 relative overflow-hidden">
@@ -91,11 +91,11 @@ export default function TrainerProfileClient({ dict, lang, id }: { dict: any; la
                     <CreditCard size={14} /> {t.billing}
                   </button>
 
-                  <Link href={`/${lang}/dashboard/trainers/${id}/edit`}>
+                  <LocalizedLink href={`/${lang}/dashboard/trainers/${id}/edit`}>
                     <button className="flex items-center gap-2 px-5 py-2.5 rounded-xl border border-slate-700 bg-slate-800/50 hover:bg-slate-800 hover:border-blue-500/50 text-xs font-bold uppercase tracking-widest text-slate-300 transition-all active:scale-95 shadow-lg">
                       <Edit2 size={14} className="text-blue-400" /> {t.edit}
                     </button>
-                  </Link>
+                  </LocalizedLink>
                 </div>
               </div>
 

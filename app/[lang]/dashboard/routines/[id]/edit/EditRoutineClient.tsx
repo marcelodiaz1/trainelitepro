@@ -13,7 +13,7 @@ import { CSS } from "@dnd-kit/utilities";
 import { 
   ChevronLeft, User, Type, Trash2, Search, GripVertical
 } from "lucide-react";
-import Link from "next/link";
+import LocalizedLink from "@/components/LocalizedLink";
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -177,7 +177,7 @@ export default function EditRoutineClient({ dict, lang }: { dict: any; lang: str
       <div className="flex-1 flex flex-col h-full overflow-hidden">
         <header className="p-6 border-b border-slate-800 flex justify-between items-center bg-[#0b0b0b]">
            <div className="flex items-center gap-4">
-              <Link href={`/${lang}/dashboard/routines/${id}`}><ChevronLeft className="text-slate-500 hover:text-white" /></Link>
+              <LocalizedLink href={`/${lang}/dashboard/routines/${id}`}><ChevronLeft className="text-slate-500 hover:text-white" /></LocalizedLink>
               <h1 className="text-xl font-black italic uppercase tracking-tighter text-white">{t.editRoutine}</h1>
            </div>
            <button onClick={handleUpdate} disabled={saving} className="bg-orange-600 hover:bg-orange-500 text-white px-8 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest transition-all">

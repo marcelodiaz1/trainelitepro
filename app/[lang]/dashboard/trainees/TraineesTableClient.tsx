@@ -9,7 +9,7 @@ import {
 } from "lucide-react";
 import Pagination from "@/components/dashboard/Pagination";
 import SortableHeader from "@/components/dashboard/SortableHeader";
-import Link from "next/link";
+import LocalizedLink from "@/components/LocalizedLink";
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -125,18 +125,18 @@ export default function TraineesTableClient({ dict, lang }: { dict: any; lang: s
             </div>
 
             {isAtLimit ? (
-              <Link href={`/${lang}/pricing`}>
+              <LocalizedLink href={`/${lang}/pricing`}>
                 <button className="bg-white/5 border border-white/10 hover:border-orange-500/50 text-white px-5 py-2.5 rounded-lg text-xs font-black uppercase tracking-widest flex items-center gap-2 transition-all group">
                   <Lock size={16} className="text-orange-500" /> {t.limitReached}
                   <Zap size={14} className="text-orange-500 animate-pulse" />
                 </button>
-              </Link>
+              </LocalizedLink>
             ) : (
-              <Link href={`/${lang}/dashboard/trainees/new`}>
+              <LocalizedLink href={`/${lang}/dashboard/trainees/new`}>
                 <button className="bg-orange-600 hover:bg-orange-500 text-white px-5 py-2.5 rounded-lg text-xs font-black uppercase tracking-widest flex items-center gap-2 transition-all active:scale-95 shadow-lg shadow-orange-600/20">
                   <UserPlus size={16} /> {t.addTrainee}
                 </button>
-              </Link>
+              </LocalizedLink>
             )}
           </div>
         </div>
@@ -194,19 +194,19 @@ export default function TraineesTableClient({ dict, lang }: { dict: any; lang: s
                             <>
                               <div className="fixed inset-0 z-10" onClick={() => setDropdownOpen(null)} />
                               <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="absolute right-6 mt-2 w-48 bg-[#1a1a1a] border border-slate-700 rounded-xl shadow-2xl z-20 overflow-hidden">
-                                <Link href={`/${lang}/dashboard/trainees/${trainee.id}`}>
+                                <LocalizedLink href={`/${lang}/dashboard/trainees/${trainee.id}`}>
                                   <button className="flex items-center gap-3 w-full px-4 py-3 text-[11px] font-bold uppercase tracking-tight hover:bg-slate-800 transition-colors text-slate-300">
                                     <Eye size={14} className="text-blue-500" /> {t.actions.view}
                                   </button>
-                                </Link>
+                                </LocalizedLink>
 
                                 {userRole === "admin" && (
                                   <>
-                                    <Link href={`/${lang}/dashboard/trainees/${trainee.id}/edit`}>
+                                    <LocalizedLink href={`/${lang}/dashboard/trainees/${trainee.id}/edit`}>
                                       <button className="flex items-center gap-3 w-full px-4 py-3 text-[11px] font-bold uppercase tracking-tight hover:bg-slate-800 transition-colors text-slate-300 border-t border-slate-800/50">
                                         <Edit2 size={14} className="text-slate-400" /> {t.actions.edit}
                                       </button>
-                                    </Link> 
+                                    </LocalizedLink> 
                                     <button onClick={() => toggleStatus(trainee.id, trainee.status)} className="flex items-center gap-3 w-full px-4 py-3 text-xs font-bold hover:bg-slate-800 transition-colors text-slate-300 border-t border-slate-800">
                                       {trainee.status === "active" ? <><Lock size={14} className="text-orange-400" /> {t.actions.restrict}</> : <><LockOpen size={14} className="text-emerald-400" /> {t.actions.enable}</>}
                                     </button>

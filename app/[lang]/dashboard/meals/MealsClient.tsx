@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { createClient } from "@supabase/supabase-js";
 import { motion, AnimatePresence } from "framer-motion";
-import Link from "next/link";
+import LocalizedLink from "@/components/LocalizedLink";
 import { 
   MoreVertical, Search, ChefHat, Utensils, Flame, Dna,
   Edit2, Trash2, Eye, Salad, Loader2, Lock, Zap
@@ -194,19 +194,19 @@ export default function MealsClient({ dict, lang }: { dict: any; lang: string })
             </div> 
             
             {isAtLimit ? (
-              <Link href={`/${lang}/pricing`}>
+              <LocalizedLink href={`/${lang}/pricing`}>
                 <button className="bg-white/5 border border-white/10 hover:border-orange-500/50 text-white px-5 py-2.5 rounded-lg text-xs font-black uppercase tracking-widest flex items-center gap-2 transition-all group shadow-lg">
                   <Lock size={16} className="text-orange-500" /> 
                   {t.upgrade}
                   <Zap size={14} className="text-orange-500 animate-pulse" />
                 </button>
-              </Link>
+              </LocalizedLink>
             ) : (
-              <Link href={`/${lang}/dashboard/meals/new`}>
+              <LocalizedLink href={`/${lang}/dashboard/meals/new`}>
                 <button className="bg-orange-600 hover:bg-orange-500 text-white px-5 py-2.5 rounded-lg text-xs font-black uppercase tracking-widest flex items-center gap-2 transition-all active:scale-95 shadow-lg shadow-orange-600/20">
                   <Salad size={16} /> {t.addMeal}
                 </button>
-              </Link>
+              </LocalizedLink>
             )}
           </div>
         </div>
@@ -276,12 +276,12 @@ export default function MealsClient({ dict, lang }: { dict: any; lang: string })
                                     exit={{ opacity: 0, scale: 0.95, y: -10 }}
                                     className="absolute right-0 mt-2 w-48 bg-[#1a1a1a] border border-slate-700 rounded-xl shadow-2xl z-20 overflow-hidden text-left"
                                   >
-                                    <Link href={`/${lang}/dashboard/meals/${meal.id}`} className="flex items-center gap-3 w-full px-4 py-3 text-xs font-bold hover:bg-slate-800 transition-colors text-slate-300">
+                                    <LocalizedLink href={`/${lang}/dashboard/meals/${meal.id}`} className="flex items-center gap-3 w-full px-4 py-3 text-xs font-bold hover:bg-slate-800 transition-colors text-slate-300">
                                       <Eye size={14} className="text-orange-400" /> {t.actions?.view}
-                                    </Link>
-                                    <Link href={`/${lang}/dashboard/meals/${meal.id}/edit`} className="flex items-center gap-3 w-full px-4 py-3 text-xs font-bold hover:bg-slate-800 transition-colors text-slate-300 border-t border-slate-800/50">
+                                    </LocalizedLink>
+                                    <LocalizedLink href={`/${lang}/dashboard/meals/${meal.id}/edit`} className="flex items-center gap-3 w-full px-4 py-3 text-xs font-bold hover:bg-slate-800 transition-colors text-slate-300 border-t border-slate-800/50">
                                       <Edit2 size={14} className="text-blue-400" /> {t.actions?.edit}
-                                    </Link> 
+                                    </LocalizedLink> 
                                     <button
                                       onClick={() => handleDelete(meal.id)}
                                       className="flex items-center gap-3 w-full px-4 py-3 text-xs font-bold hover:bg-red-500/10 text-red-400 border-t border-slate-800 transition-colors"
@@ -313,11 +313,11 @@ export default function MealsClient({ dict, lang }: { dict: any; lang: string })
                             <span>{t.stats?.carbs}: {stats.carbs}g</span>
                             <span>{t.stats?.fat}: {stats.fat}g</span>
                           </div>
-                          <Link href={`/${lang}/dashboard/meals/${meal.id}`}>
+                          <LocalizedLink href={`/${lang}/dashboard/meals/${meal.id}`}>
                             <button className="text-[10px] font-black uppercase text-orange-500 hover:text-orange-400 transition-colors flex items-center gap-1 group/btn">
                               {t.labels?.fullRecipe} <ChefHat size={14} className="group-hover/btn:rotate-12 transition-transform" />
                             </button>
-                          </Link>
+                          </LocalizedLink>
                         </div>
                       </div>
                     </div>

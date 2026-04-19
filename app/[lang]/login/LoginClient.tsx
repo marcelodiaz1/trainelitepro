@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { createClient } from "@supabase/supabase-js";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
+import LocalizedLink from "@/components/LocalizedLink";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { CheckCircle } from "lucide-react";
@@ -44,7 +44,7 @@ export default function Login({ dict }: { dict: any }) {
 
   return (
     <main className="bg-[#0b0b0b] text-white min-h-screen flex flex-col">
-      <Navbar dict={dict}/>
+    
       <section className="flex-1 flex items-center justify-center py-24 px-6">
         <div className="max-w-6xl w-full grid md:grid-cols-2 gap-12">
           
@@ -52,9 +52,9 @@ export default function Login({ dict }: { dict: any }) {
             <h2 className="text-3xl font-bold mb-2">{t.title}</h2>
             <p className="text-gray-400 mb-6">
               {t.noAccount}{" "}
-              <Link href="/register" className="text-[#ff6b1a] hover:underline font-medium">
+              <LocalizedLink href="/register" className="text-[#ff6b1a] hover:underline font-medium">
                 {t.createAccount}
-              </Link>
+              </LocalizedLink>
             </p>
 
             {error && <p className="text-red-500 mb-4 text-sm bg-red-500/10 p-3 rounded-lg border border-red-500/20">{error}</p>}
@@ -78,12 +78,12 @@ export default function Login({ dict }: { dict: any }) {
                   className="w-full p-3 rounded-lg bg-[#161616] border border-gray-700 outline-none focus:border-[#ff6b1a] transition"
                 />
                 <div className="text-right">
-                  <Link 
+                  <LocalizedLink 
                     href="/forgot-password" 
                     className="text-sm text-gray-400 hover:text-[#ff6b1a] transition"
                   >
                     {t.forgotPassword}
-                  </Link>
+                  </LocalizedLink>
                 </div>
               </div>
               

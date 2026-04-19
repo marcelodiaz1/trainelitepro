@@ -5,7 +5,7 @@ import { useRouter, useParams } from "next/navigation";
 import PlanForm from "@/components/dashboard/PlanForm";
 import { createClient } from "@supabase/supabase-js";
 import { ArrowLeft, Edit3 } from "lucide-react";
-import Link from "next/link";
+import LocalizedLink from "@/components/LocalizedLink";
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -77,12 +77,12 @@ export default function EditPlanClient({ dict, lang }: { dict: any, lang: string
     <main className="bg-[#0b0b0b] text-white min-h-screen flex">
       <div className="p-8 flex-1 w-full max-w-4xl mx-auto text-left">
         <div className="mb-12">
-          <Link 
+          <LocalizedLink 
             href={`/${lang}/dashboard/plans`} 
             className="text-slate-500 hover:text-[#ff6b1a] flex items-center gap-2 text-xs font-bold uppercase tracking-widest transition-colors mb-6"
           >
             <ArrowLeft size={16} /> {t.cancelEditing}
-          </Link>
+          </LocalizedLink>
           <h1 className="text-4xl font-extrabold italic uppercase flex items-center gap-3 tracking-tighter text-white">
             <Edit3 className="text-[#ff6b1a]" /> {t.editTier}: <span className="text-slate-400">{planData?.title}</span>
           </h1>

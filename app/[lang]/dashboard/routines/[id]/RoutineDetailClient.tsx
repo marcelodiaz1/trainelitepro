@@ -6,7 +6,7 @@ import { createClient } from "@supabase/supabase-js";
 import { 
   ChevronLeft, Dumbbell, Clock, User, Target, Zap, Pencil 
 } from "lucide-react";
-import Link from "next/link";
+import LocalizedLink from "@/components/LocalizedLink";
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -58,17 +58,17 @@ export default function RoutineDetailClient({ dict, lang }: { dict: any; lang: s
     <main className="bg-[#050505] text-slate-200 min-h-screen flex font-sans">
       <div className="p-8 flex-1 max-w-5xl mx-auto w-full">
         <div className="flex justify-between items-center mb-8">
-          <Link href={`/${lang}/dashboard/routines`} className="flex items-center gap-2 text-slate-500 hover:text-white transition-colors text-sm font-medium">
+          <LocalizedLink href={`/${lang}/dashboard/routines`} className="flex items-center gap-2 text-slate-500 hover:text-white transition-colors text-sm font-medium">
             <ChevronLeft size={16} /> {t.back}
-          </Link>
+          </LocalizedLink>
 
-          <Link 
+          <LocalizedLink 
             href={`/${lang}/dashboard/routines/${id}/edit`} 
             className="flex items-center gap-2 bg-orange-600 hover:bg-orange-500 text-white px-5 py-2.5 rounded-xl font-bold transition-all shadow-lg shadow-orange-600/20"
           >
             <Pencil size={16} />
             <span className="text-sm">{t.edit}</span>
-          </Link>
+          </LocalizedLink>
         </div>
 
         <div className="flex flex-col md:flex-row justify-between items-start gap-8 mb-12 text-left">

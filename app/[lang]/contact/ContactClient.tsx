@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 import { useState } from "react";
-import Link from "next/link";
+import LocalizedLink from "@/components/LocalizedLink";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
@@ -38,11 +38,10 @@ export default function Contact({ dict }: { dict: any }) {
   }
 
   return (
-    <main className="bg-[#0b0b0b] text-white overflow-hidden">
-      <Navbar dict={dict} />
+    <main className="bg-[#0b0b0b] text-white overflow-hidden"> 
 
       {/* HERO */}
-      <section className="py-32 text-center bg-gradient-to-b from-[#111111] to-[#0b0b0b]">
+      <section className="pt-32 px-6 text-center bg-gradient-to-b from-[#111111] to-[#0b0b0b]">
         <h1 
           className="text-5xl md:text-6xl font-bold mb-6"
           dangerouslySetInnerHTML={{ __html: t.hero.title }}
@@ -68,12 +67,12 @@ export default function Contact({ dict }: { dict: any }) {
             <ul className="space-y-2 text-gray-300"> 
               <li><span className="font-bold text-[#ff6b1a]">{t.info.addressLabel}:</span> {t.info.addressValue}</li>
             </ul>
-            <Link
+            <LocalizedLink
               href="/register"
               className="inline-block mt-6 bg-[#ff6b1a] px-10 py-4 rounded-xl font-bold shadow-lg hover:scale-105 transition"
             >
               {t.info.cta}
-            </Link>
+            </LocalizedLink>
           </motion.div>
 
           {/* Contact Form */}
@@ -147,7 +146,7 @@ export default function Contact({ dict }: { dict: any }) {
       </section>
 
       {/* FINAL CTA */}
-      <section className="py-32 text-center bg-[#111111]">
+      <section className="py-32 px-6 text-center bg-[#111111]">
         <h2 
           className="text-5xl md:text-6xl font-bold mb-6"
           dangerouslySetInnerHTML={{ __html: t.finalCta.title }}
@@ -155,12 +154,12 @@ export default function Contact({ dict }: { dict: any }) {
         <p className="text-gray-400 text-lg md:text-xl max-w-2xl mx-auto mb-12">
           {t.finalCta.description}
         </p>
-        <Link
+        <LocalizedLink
           href="/register"
           className="bg-[#ff6b1a] px-12 py-5 text-xl md:text-2xl rounded-xl font-bold shadow-lg hover:scale-105 transition"
         >
           {t.finalCta.button}
-        </Link>
+        </LocalizedLink>
       </section>
 
       <Footer dict={dict} />

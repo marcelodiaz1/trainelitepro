@@ -7,7 +7,7 @@ import { createClient } from "@supabase/supabase-js";
 import { 
   ChevronLeft, Type, Target, Image as ImageIcon, Layers, Plus, Save, Loader2 
 } from "lucide-react";
-import Link from "next/link";
+import LocalizedLink from "@/components/LocalizedLink";
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -133,9 +133,9 @@ export default function NewExercisePage() {
       <div className="flex-1 flex flex-col h-full overflow-hidden">
         <header className="p-6 border-b border-slate-800 flex justify-between items-center bg-[#0b0b0b]">
           <div className="flex items-center gap-4">
-            <Link href="/dashboard/exercises">
+            <LocalizedLink href="/dashboard/exercises">
               <ChevronLeft className="text-slate-500 hover:text-white transition-colors" />
-            </Link>
+            </LocalizedLink>
             <h1 className="text-xl font-black italic uppercase tracking-tighter text-white">Create New Exercise</h1>
           </div>
           <button 

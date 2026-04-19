@@ -106,7 +106,7 @@ export default function TrainersPage({ dict }: { dict: any }) {
 
   return (
     <main className="bg-[#0b0b0b] text-white min-h-screen">
-      <Navbar dict={dict}/>
+      
       <section className="py-28 px-6">
         <h1 className="text-4xl md:text-5xl font-bold text-center mb-16">{t.title}</h1>
 

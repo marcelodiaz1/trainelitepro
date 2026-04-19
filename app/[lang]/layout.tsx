@@ -16,11 +16,12 @@ export default async function RootLayout({
 
   // 2. Fetch the dictionary for the specific language
   // We do this at the layout level so the Navbar can use it on every page
-  const dict = await getDictionary(lang as any);
+  const dict = await getDictionary(lang as any);  
 
   return (
     <html lang={lang}>
       <body className="antialiased">
+        <Navbar dict={dict} lang={lang} />
         {children} 
       </body>
     </html>

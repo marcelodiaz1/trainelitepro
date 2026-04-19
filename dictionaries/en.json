@@ -1034,10 +1034,73 @@
     "passMismatch": "Passwords do not match",
     "passSuccess": "Password updated successfully!"
   }
+},
+"privacyPage": {
+  "title": "Privacy Policy",
+  "lastUpdated": "Last Updated",
+  "sections": [
+    {
+      "heading": "Data Collection",
+      "content": "We collect information you provide directly to us, such as when you create an account, update your fitness profile, or communicate with our professional trainers."
+    },
+    {
+      "heading": "Fitness Data",
+      "content": "Your workout metrics and progress are used strictly to customize your elite training experience. We do not sell your health data to third-party advertisers."
+    },
+    {
+      "heading": "Security",
+      "content": "TrainElitePro utilizes industry-standard encryption to protect your personal information and payment details. Your security is our highest priority."
+    }
+  ],
+  "contact": {
+    "title": "Questions?",
+    "description": "If you have any questions regarding your data, reach out to our legal team."
+  }
+},
+"termsPage": {
+  "title": "Terms of Service",
+  "effectiveDate": "Effective as of April 2026",
+  "sections": [
+    {
+      "heading": "Acceptance of Terms",
+      "content": "By accessing TrainElitePro, you agree to be bound by these terms. If you do not agree to all terms, you are prohibited from using this training platform."
+    },
+    {
+      "heading": "Membership & Billing",
+      "content": "Subscriptions are billed monthly or annually. You may cancel at any time, but no refunds will be issued for partial months of service."
+    },
+    {
+      "heading": "User Conduct",
+      "content": "Users must provide accurate physical data. Misrepresentation of identity or physical condition may result in immediate account termination."
+    }
+  ],
+  "disclaimer": {
+    "title": "Medical Disclaimer",
+    "content": "TrainElitePro is not a medical organization. Consult a physician before beginning any high-intensity training program. You participate at your own risk."
+  }
+},
+"cookiesPage": {
+  "title": "Cookies Policy",
+  "intro": "We use cookies to optimize your performance tracking and provide a seamless elite training experience.",
+  "types": [
+    {
+      "title": "Essential",
+      "description": "Necessary for secure login and account functionality. These cannot be disabled."
+    },
+    {
+      "title": "Analytics",
+      "description": "Helps us understand how you use the platform to improve our training algorithms."
+    },
+    {
+      "title": "Marketing",
+      "description": "Used to deliver relevant fitness content and offers based on your interests."
+    }
+  ],
+  "howToManage": {
+    "title": "Managing Cookies",
+    "content": "You can control or reset cookies through your browser settings. Note that disabling essential cookies may impact your dashboard performance."
+  }
 }
-
-
-
 
 
 

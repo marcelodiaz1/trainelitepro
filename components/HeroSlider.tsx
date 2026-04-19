@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import Link from "next/link";
+import LocalizedLink from "@/components/LocalizedLink";
 import { motion, AnimatePresence } from "framer-motion";
 import { Dumbbell, Users } from "lucide-react";
 
@@ -88,20 +88,20 @@ export default function HeroSlider({ dict }: { dict: any }) {
             </p>
 
             <div className="flex flex-wrap justify-center gap-6">
-              <Link
+              <LocalizedLink
                 href={currentMeta.primaryLink}
                 className="flex items-center gap-2 bg-[#ff6b1a] px-10 py-4 rounded-xl text-lg font-bold hover:scale-105 transition"
               >
                 {currentMeta.icon}
                 {currentText.primaryText}
-              </Link>
+              </LocalizedLink>
 
-              <Link
+              <LocalizedLink
                 href={currentMeta.secondaryLink}
                 className="border border-white px-10 py-4 rounded-xl hover:bg-white hover:text-black transition"
               >
                 {currentText.secondaryText}
-              </Link>
+              </LocalizedLink>
             </div>
           </motion.div>
         </AnimatePresence>

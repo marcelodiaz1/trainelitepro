@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import Link from "next/link";
+import LocalizedLink from "@/components/LocalizedLink";
 import { Dumbbell, Users, Salad, ChartNoAxesColumn, Zap, Heart, Trophy } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -19,11 +19,12 @@ const benefitIcons = [
 ];
 
 export default function Benefits({ dict }: { dict: any }) {
+   
   const t = dict.benefitsPage;
 
+
   return (
-    <main className="bg-[#0b0b0b] text-white overflow-hidden">
-      <Navbar dict={dict} />
+    <main className="bg-[#0b0b0b] text-white overflow-hidden"> 
 
       <Hero
         title={t.hero.title}
@@ -57,12 +58,12 @@ export default function Benefits({ dict }: { dict: any }) {
 
         {/* CTA */}
         <div className="text-center mt-16">
-          <Link
+          <LocalizedLink
             href="/register"
             className="bg-[#ff6b1a] px-12 py-5 rounded-xl font-bold text-xl md:text-2xl shadow-lg hover:scale-105 transition"
           >
             {t.ctaButton}
-          </Link>
+          </LocalizedLink>
         </div>
       </section>
 
@@ -74,12 +75,12 @@ export default function Benefits({ dict }: { dict: any }) {
         <p className="text-gray-400 text-lg md:text-xl max-w-2xl mx-auto mb-12">
           {t.finalCta.description}
         </p>
-        <Link
+        <LocalizedLink
           href="/register"
           className="bg-[#ff6b1a] px-12 py-5 text-xl md:text-2xl rounded-xl font-bold shadow-lg hover:scale-105 transition"
         >
           {t.finalCta.button}
-        </Link>
+        </LocalizedLink>
       </section>
 
       <Footer dict={dict} />

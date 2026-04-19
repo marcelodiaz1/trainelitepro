@@ -13,7 +13,7 @@ import {
   Activity,
   Edit2
 } from "lucide-react";
-import Link from "next/link";
+import LocalizedLink from "@/components/LocalizedLink";
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -59,9 +59,9 @@ export default function EvaluationDetailClient({ dict, lang }: { dict: any; lang
   return (
     <main className="bg-[#050505] text-white min-h-screen flex">
       <div className="flex-1 p-8 overflow-y-auto">
-        <Link href={`/${lang}/dashboard/evaluations`} className="flex items-center gap-2 text-slate-500 hover:text-white transition-colors mb-8 text-xs font-bold uppercase tracking-widest">
+        <LocalizedLink href={`/${lang}/dashboard/evaluations`} className="flex items-center gap-2 text-slate-500 hover:text-white transition-colors mb-8 text-xs font-bold uppercase tracking-widest">
           <ChevronLeft size={16} /> {t.back}
-        </Link>
+        </LocalizedLink>
 
         <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-12 gap-6">
           <div>
@@ -84,12 +84,12 @@ export default function EvaluationDetailClient({ dict, lang }: { dict: any; lang
               <div className="text-xl font-bold text-green-500 uppercase italic leading-none">{data.results || "Optimized"}</div>
             </div>
             
-            <Link href={`/${lang}/dashboard/evaluations/${id}/edit`}>
+            <LocalizedLink href={`/${lang}/dashboard/evaluations/${id}/edit`}>
               <button className="flex items-center gap-2 bg-[#111] border border-slate-700 hover:border-blue-500 hover:bg-blue-600 transition-all px-6 py-3 rounded-2xl text-[11px] font-black uppercase tracking-widest group shadow-xl">
                 <Edit2 size={14} className="text-slate-400 group-hover:text-white" />
                 <span>{t.edit}</span>
               </button>
-            </Link>
+            </LocalizedLink>
           </div>
         </div>
 

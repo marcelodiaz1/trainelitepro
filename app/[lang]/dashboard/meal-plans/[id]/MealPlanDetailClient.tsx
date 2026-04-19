@@ -8,7 +8,7 @@ import {
   ChevronLeft, Clock, LayoutGrid,
   ChevronRight, TrendingUp, Flame, Dna
 } from "lucide-react";
-import Link from "next/link";
+import LocalizedLink from "@/components/LocalizedLink";
 
 // Singleton Supabase Pattern
 let supabaseInstance: any;
@@ -181,7 +181,7 @@ function Badge({ icon, label }: { icon: React.ReactNode; label: string }) {
 
 function MealSlot({ mealId, mealData, lang }: { mealId: number; mealData: any; lang: string }) {
   return (
-    <Link href={`/${lang}/dashboard/meals/${mealId}`}>
+    <LocalizedLink href={`/${lang}/dashboard/meals/${mealId}`}>
       <div className="bg-[#141414] border border-white/5 rounded-2xl p-3 flex items-center gap-3 hover:bg-white/[0.05] hover:border-orange-500/30 transition-all cursor-pointer group/slot">
         <div className="flex-1 min-w-0 text-left">
           <p className="text-xs font-bold text-slate-200 truncate group-hover/slot:text-orange-400 transition-colors">
@@ -198,6 +198,6 @@ function MealSlot({ mealId, mealData, lang }: { mealId: number; mealData: any; l
         </div>
         <ChevronRight size={14} className="text-slate-800 group-hover/slot:text-orange-500 transition-colors" />
       </div>
-    </Link>
+    </LocalizedLink>
   );
 }

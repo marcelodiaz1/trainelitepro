@@ -1,6 +1,6 @@
 "use client";
 import { motion } from "framer-motion";
-import Link from "next/link";
+import LocalizedLink from "@/components/LocalizedLink";
 import { Dumbbell, Users, Salad, ChartNoAxesColumn } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import HeroSlider from "@/components/HeroSlider";
@@ -17,8 +17,7 @@ const iconMap: Record<string, React.ReactNode> = {
 
 export default function HomeClient({ dict }: { dict: any }) { 
   return (
-    <main className="bg-[#0b0b0b] text-white overflow-hidden">
-      <Navbar dict={dict}/>
+    <main className="bg-[#0b0b0b] text-white overflow-hidden"> 
       <HeroSlider  dict={dict} />
 
       {/* STATS */}
@@ -58,12 +57,12 @@ export default function HomeClient({ dict }: { dict: any }) {
         </div>
 
         <div className="text-center mt-16">
-          <Link
+          <LocalizedLink
             href="/register"
             className="bg-[#ff6b1a] px-10 py-4 rounded-xl font-bold text-lg md:text-xl shadow-lg hover:scale-105 transition"
           >
             {dict.features.cta}
-          </Link>
+          </LocalizedLink>
         </div>
       </section>
 
@@ -86,7 +85,7 @@ export default function HomeClient({ dict }: { dict: any }) {
       </section>
 
       {/* FINAL CTA */}
-      <section className="py-32 text-center bg-[#111111]">
+      <section className="py-32  px-6 text-center bg-[#111111]">
         <h2 className="text-5xl md:text-6xl font-bold mb-6">
           {dict.finalCta.titlePre} <span className="text-[#ff6b1a]">{dict.finalCta.titleHighlight}</span>
         </h2>
@@ -95,12 +94,12 @@ export default function HomeClient({ dict }: { dict: any }) {
           {dict.finalCta.description}
         </p>
 
-        <Link
+        <LocalizedLink
           href="/register"
           className="bg-[#ff6b1a] px-12 py-5 text-xl md:text-2xl rounded-xl font-bold shadow-lg hover:scale-105 transition"
         >
           {dict.finalCta.button}
-        </Link>
+        </LocalizedLink>
       </section>
 
       <Footer dict={dict} />

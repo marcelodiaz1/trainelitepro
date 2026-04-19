@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { createClient } from "@supabase/supabase-js";
 import Sidebar from "@/components/dashboard/Sidebar";
-import Link from "next/link";
+import LocalizedLink from "@/components/LocalizedLink";
 import { Globe } from "lucide-react";
 
 const supabase = createClient(
@@ -69,7 +69,7 @@ export default function ClientLayoutWrapper({
             <Globe size={14} className="ml-2 text-gray-500" />
             <div className="flex gap-1 text-[10px] font-black uppercase tracking-tighter">
               {['en', 'es', 'zh'].map((l) => (
-                <Link
+                <LocalizedLink
                   key={l}
                   href={redirectedPathname(l)}
                   className={`px-3 py-1 rounded-lg transition-all ${
@@ -79,7 +79,7 @@ export default function ClientLayoutWrapper({
                   }`}
                 >
                   {l}
-                </Link>
+                </LocalizedLink>
               ))}
             </div>
           </div>
