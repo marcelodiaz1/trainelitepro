@@ -18,9 +18,9 @@
   "testimonials": {
     "title": "Trainers Love TrainElitePro",
     "items": [
-      { "name": "John Carter", "role": "Strength Coach", "quote": "TrainElitePro helped me manage 50+ clients easily and grow my business fast!" },
-      { "name": "Maria Lopez", "role": "Weight Loss Expert", "quote": "I can create custom plans and track progress effortlessly. My clients love it!" },
-      { "name": "Alex Chen", "role": "Bodybuilding Coach", "quote": "The best tool I've used for managing training programs and payments seamlessly." }
+      { "name": "John Carter", "image":"/trainers/images3.jpg", "role": "Strength Coach", "quote": "TrainElitePro helped me manage 50+ clients easily and grow my business fast!" },
+      { "name": "Maria Lopez", "image":"/trainers/images1.jpg", "role": "Weight Loss Expert", "quote": "I can create custom plans and track progress effortlessly. My clients love it!" },
+      { "name": "Alex Chen", "image":"/trainers/images.jpg", "role": "Bodybuilding Coach", "quote": "The best tool I've used for managing training programs and payments seamlessly." }
     ]
   },
   "finalCta": {

@@ -77,7 +77,7 @@ export default function HomeClient({ dict }: { dict: any }) {
               key={i}
               name={t.name}
               role={t.role}
-              image={`/trainers/images${i === 0 ? '' : i === 1 ? '3' : '1'}.jpg`} // Mapping to your specific image paths
+              image={t.image} 
               quote={t.quote}
             />
           ))}

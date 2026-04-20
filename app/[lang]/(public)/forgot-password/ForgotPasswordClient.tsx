@@ -40,7 +40,7 @@ export default function ForgotPassword({ dict }: { dict: any }) {
     <main className="bg-[#0b0b0b] text-white min-h-screen flex flex-col">
     
 
-      <section className="flex-1 flex items-center justify-center py-24 px-6">
+      <section className="flex-1 flex items-center justify-center py-32 px-6">
         <div className="max-w-md w-full bg-[#111111] p-10 rounded-2xl shadow-lg">
 
           <h2 className="text-3xl font-bold mb-4 text-center">

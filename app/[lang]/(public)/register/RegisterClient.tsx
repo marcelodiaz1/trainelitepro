@@ -139,7 +139,7 @@ export default function RegisterClient({ dict }: { dict: any }) {
   return (
     <main className="bg-[#0b0b0b] text-white min-h-screen flex flex-col font-sans">
       
-      <section className="flex-1 flex items-center justify-center py-16 px-6">
+      <section className="flex-1 flex items-center justify-center py-32 px-6">
         <div className="max-w-6xl w-full grid md:grid-cols-2 gap-16 items-center">
           
           <div className="bg-[#111] p-8 md:p-10 rounded-[2.5rem] shadow-2xl border border-white/5">

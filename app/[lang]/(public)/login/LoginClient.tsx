@@ -45,7 +45,7 @@ export default function Login({ dict }: { dict: any }) {
   return (
     <main className="bg-[#0b0b0b] text-white min-h-screen flex flex-col">
     
-      <section className="flex-1 flex items-center justify-center py-24 px-6">
+      <section className="flex-1 flex items-center justify-center py-32 px-6">
         <div className="max-w-6xl w-full grid md:grid-cols-2 gap-12">
           
           <div className="bg-[#111111] p-10 rounded-2xl shadow-lg border border-gray-900">

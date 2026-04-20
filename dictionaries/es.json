@@ -18,9 +18,9 @@
   "testimonials": {
     "title": "A los Entrenadores les encanta TrainElitePro",
     "items": [
-      { "name": "John Carter", "role": "Entrenador de Fuerza", "quote": "¡TrainElitePro me ayudó a gestionar más de 50 clientes fácilmente y a hacer crecer mi negocio rápido!" },
-      { "name": "Maria Lopez", "role": "Experta en Pérdida de Peso", "quote": "Puedo crear planes personalizados y seguir el progreso sin esfuerzo. ¡A mis clientes les encanta!" },
-      { "name": "Alex Chen", "role": "Entrenador de Culturismo", "quote": "La mejor herramienta que he usado para gestionar programas de entrenamiento y pagos sin interrupciones." }
+      { "name": "John Carter", "image":"/trainers/images3.jpg", "role": "Entrenador de Fuerza", "quote": "¡TrainElitePro me ayudó a gestionar más de 50 clientes fácilmente y a hacer crecer mi negocio rápido!" },
+      { "name": "Maria Lopez", "image":"/trainers/images1.jpg", "role": "Experta en Pérdida de Peso", "quote": "Puedo crear planes personalizados y seguir el progreso sin esfuerzo. ¡A mis clientes les encanta!" },
+      { "name": "Alex Chen", "image":"/trainers/images.jpg", "role": "Entrenador de Culturismo", "quote": "La mejor herramienta que he usado para gestionar programas de entrenamiento y pagos sin interrupciones." }
     ]
   },
   "finalCta": {

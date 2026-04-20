@@ -18,9 +18,9 @@
   "testimonials": {
     "title": "教练们都在使用 TrainElitePro",
     "items": [
-      { "name": "John Carter", "role": "力量教练", "quote": "TrainElitePro 帮我轻松管理 50 多名客户，让我的业务快速增长！" },
-      { "name": "Maria Lopez", "role": "减重专家", "quote": "我可以毫不费力地创建定制计划并跟踪进度。我的客户非常喜欢它！" },
-      { "name": "Alex Chen", "role": "健美教练", "quote": "这是我用过的管理训练计划和无缝支付的最佳工具。" }
+      { "name": "John Carter", "image":"/trainers/images3.jpg", "role": "力量教练", "quote": "TrainElitePro 帮我轻松管理 50 多名客户，让我的业务快速增长！" },
+      { "name": "Maria Lopez", "image":"/trainers/images1.jpg", "role": "减重专家", "quote": "我可以毫不费力地创建定制计划并跟踪进度。我的客户非常喜欢它！" },
+      { "name": "Alex Chen", "image":"/trainers/images.jpg", "role": "健美教练", "quote": "这是我用过的管理训练计划和无缝支付的最佳工具。" }
     ]
   },
   "finalCta": {
