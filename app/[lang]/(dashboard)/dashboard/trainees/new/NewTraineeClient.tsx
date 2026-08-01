@@ -94,7 +94,7 @@ export default function NewTraineeClient({ dict, lang }: { dict: any; lang: stri
     setError(null);
 
     try {
-      const response = await fetch("/api/admin/create-user", {
+      const response = await fetch(`/${lang}/api/admin/create-user`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
