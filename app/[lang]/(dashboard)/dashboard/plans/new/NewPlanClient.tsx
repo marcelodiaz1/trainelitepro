@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import PlanForm from "@/components/dashboard/PlanForm";
 import { createClient } from "@supabase/supabase-js";
 import { ArrowLeft, Sparkles, Loader2 } from "lucide-react";
-import LocalizedLink from "LocalizedLink"; 
+import LocalizedLink from "@/components/LocalizedLink"; 
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -129,7 +129,7 @@ export default function NewPlanClient({ dict, lang }: { dict: any, lang: string 
             className="text-slate-500 hover:text-[#ff6b1a] flex items-center gap-2 text-xs font-bold uppercase tracking-widest transition-colors mb-6"
           >
             <ArrowLeft size={16} /> {t.backToPlans}
-          </Link>
+          </LocalizedLink>
           <div className="flex flex-col gap-1">
             <h1 className="text-4xl font-extrabold italic uppercase flex items-center gap-3 tracking-tighter">
               <Sparkles className="text-[#ff6b1a]" /> {t.createNewTier}

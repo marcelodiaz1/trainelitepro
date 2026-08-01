@@ -13,7 +13,7 @@ import {
 } from "lucide-react";
 import LocalizedLink from "@/components/LocalizedLink";
 
-export default function NewTrainerPage() {
+export default function NewTrainerPage({  lang }: {  lang: string }) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -34,7 +34,7 @@ export default function NewTrainerPage() {
 
     try {
       // We call the same API route we created earlier
-      const response = await fetch("/api/admin/create-user", { // You can rename the API folder to 'create-user' later for clarity
+      const response = await fetch(`/${lang}/api/admin/create-user`, {  
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -43,7 +43,7 @@ export default function NewTrainerPage() {
           userData: {
             first_name: formData.first_name,
             last_name: formData.last_name,
-            role: "trainer", // Passing 'trainer' role to the API
+            role: "trainer",  
             status: formData.status,
             specialty: formData.specialty,
           },
