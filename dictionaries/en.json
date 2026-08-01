@@ -757,6 +757,9 @@
       "sets": "Sets",
       "reps": "Reps",
       "weight": "Weight",
+      "rest_period_seconds": "Rest",
+      "duration": "Duration",
+      "range": "Rep. range",
       "allZones": "All"
     },
     "errors": {

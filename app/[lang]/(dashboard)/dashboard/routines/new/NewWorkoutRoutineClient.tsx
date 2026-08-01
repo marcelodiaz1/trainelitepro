@@ -38,7 +38,7 @@ function SortableExerciseRow({ ex, index, exercisesList, updateField, remove, t 
         <GripVertical size={20} />
       </div>
       
-      <div className="col-span-11 md:col-span-4 flex items-center gap-3">  
+      <div className="col-span-11 md:col-span-5 flex items-center gap-3">  
         <div className="h-12 w-12 rounded-lg bg-black border border-slate-800 overflow-visible flex-shrink-0 relative group/img">
           {imageUrl ? (
             <> 
@@ -61,18 +61,131 @@ function SortableExerciseRow({ ex, index, exercisesList, updateField, remove, t 
           <p className="text-sm font-bold text-white truncate">{selectedExercise?.title || t.labels.selectFromLibrary}</p>
         </div>
       </div>
+ 
+      <div className="col-span-3 md:col-span-1 text-left">
+        <label className="text-[9px] uppercase font-bold text-slate-500 block mb-1">
+          {t.labels.sets}
+        </label>
 
-      <div className="col-span-3 md:col-span-2 text-left">
-        <label className="text-[9px] uppercase font-bold text-slate-500 block mb-1">{t.labels.sets}</label>
-        <input type="number" className="w-full bg-black border border-slate-800 rounded-lg py-1.5 px-3 text-sm outline-none focus:border-orange-500 text-white" value={ex.sets} onChange={(e) => updateField(index, "sets", e.target.value)} />
+        <input 
+          type="number"
+          className="w-full bg-black border border-slate-800 rounded-lg py-1.5 px-3 text-sm outline-none focus:border-orange-500 text-white"
+          value={ex.sets}
+          onChange={(e) => updateField(index, "sets", e.target.value)}
+        />
       </div>
-      <div className="col-span-3 md:col-span-2 text-left">
-        <label className="text-[9px] uppercase font-bold text-slate-500 block mb-1">{t.labels.reps}</label>
-        <input type="number" className="w-full bg-black border border-slate-800 rounded-lg py-1.5 px-3 text-sm outline-none focus:border-orange-500 text-white" value={ex.repetitions} onChange={(e) => updateField(index, "repetitions", e.target.value)} />
+
+
+
+      <div className="col-span-3 md:col-span-1 text-left">
+        <label className="text-[9px] uppercase font-bold text-slate-500 block mb-1">
+          {t.labels.weight}
+        </label>
+
+        <input 
+          type="number"
+          step="0.5"
+          className="w-full bg-black border border-slate-800 rounded-lg py-1.5 px-3 text-sm outline-none focus:border-orange-500 text-white"
+          value={ex.weight_kg} 
+          onChange={(e) => updateField(index, "weight_kg", e.target.value)}
+        />
       </div>
-      <div className="col-span-3 md:col-span-2 text-left">
-        <label className="text-[9px] uppercase font-bold text-slate-500 block mb-1">{t.labels.weight}</label>
-        <input type="number" step="0.5" className="w-full bg-black border border-slate-800 rounded-lg py-1.5 px-3 text-sm outline-none focus:border-orange-500 text-white" value={ex.weight_kg} onChange={(e) => updateField(index, "weight_kg", e.target.value)} />
+
+
+      <div className="col-span-3 md:col-span-1 text-left">
+        <label className="text-[9px] uppercase font-bold text-slate-500 block mb-1">
+          {t.labels.rest_period_seconds}
+        </label>
+
+        <input 
+          type="number"
+          className="w-full bg-black border border-slate-800 rounded-lg py-1.5 px-3 text-sm outline-none focus:border-orange-500 text-white"
+          value={ex.rest_period_seconds} 
+          onChange={(e) => updateField(index, "rest_period_seconds", e.target.value)}
+        />
+      </div>
+
+     
+    <div className="col-span-3 md:col-span-2 text-left">
+          <label className="text-[9px] uppercase font-bold text-slate-500 block mb-1">
+            Target
+          </label>
+
+          <div className="flex gap-2 items-center">
+
+            {/* Type selector */}
+            <select
+              className="bg-black border border-slate-800 rounded-lg py-1.5 px-2 text-xs text-white outline-none focus:border-orange-500"
+              value={ex.target_type}
+              onChange={(e) => updateField(index, "target_type", e.target.value)}
+            >
+              <option value="reps">Reps</option>
+              <option value="range">Range</option>
+              <option value="duration">Time</option>
+            </select>
+
+
+            {/* Reps */}
+            {ex.target_type === "reps" && (
+              <input
+                type="number"
+                className="w-20 bg-black border border-slate-800 rounded-lg py-1.5 px-2 text-sm text-white outline-none focus:border-orange-500"
+                value={ex.repetitions}
+                onChange={(e) =>
+                  updateField(index, "repetitions", e.target.value)
+                }
+              />
+            )}
+
+
+            {/* Range */}
+            {ex.target_type === "range" && (
+              <div className="flex items-center gap-1">
+                <input
+                  type="number"
+                  className="w-14 bg-black border border-slate-800 rounded-lg py-1.5 px-2 text-sm text-white outline-none focus:border-orange-500"
+                  value={ex.range_min}
+                  onChange={(e) =>
+                    updateField(index, "range_min", e.target.value)
+                  }
+                />
+
+                <span className="text-slate-600">-</span>
+
+                <input
+                  type="number"
+                  className="w-14 bg-black border border-slate-800 rounded-lg py-1.5 px-2 text-sm text-white outline-none focus:border-orange-500"
+                  value={ex.range_max}
+                  onChange={(e) =>
+                    updateField(index, "range_max", e.target.value)
+                  }
+                />
+                <span className="text-xs text-slate-500">
+                  reps
+                </span>
+              </div>
+            )}
+
+
+            {/* Duration */}
+            {ex.target_type === "duration" && (
+              <div className="flex items-center gap-1">
+                <input
+                  type="number"
+                  className="w-20 bg-black border border-slate-800 rounded-lg py-1.5 px-2 text-sm text-white outline-none focus:border-orange-500"
+                  value={ex.duration}
+                  onChange={(e) =>
+                    updateField(index, "duration", e.target.value)
+                  }
+                />
+
+                <span className="text-xs text-slate-500">
+                  sec
+                </span>
+              </div>
+            )}
+
+          </div>
       </div>
       <div className="col-span-3 md:col-span-1 flex justify-end">
         <button type="button" onClick={() => remove(index)} className="p-2 text-slate-600 hover:text-red-500 transition-colors">
@@ -166,9 +279,13 @@ export default function NewWorkoutRoutineClient({ dict, lang }: { dict: any; lan
       tempId: Math.random().toString(36).substr(2, 9), 
       exercise_id: libEx.id.toString(), 
       weight_kg: "0", 
-      repetitions: "12", 
+      repetitions: "12",  
       sets: "3", 
-      rest_period_seconds: "60" 
+    target_type: "reps",
+      rest_period_seconds: "60" ,
+      duration: "0",
+      range_min: "8",
+      range_max: "10"
     }]);
   };
 
@@ -205,16 +322,35 @@ export default function NewWorkoutRoutineClient({ dict, lang }: { dict: any; lan
 
       if (rError) throw rError;
 
+     
       const finalExercises = exercises.map((ex, idx) => ({
         routine_id: routine.id,
         exercise_id: parseInt(ex.exercise_id),
+
         weight_kg: parseFloat(ex.weight_kg) || 0,
-        repetitions: parseInt(ex.repetitions) || 0,
         sets: parseInt(ex.sets) || 0,
+
+        // Only one of these should have a value
+        repetitions: ex.target_type === "reps" 
+          ? parseInt(ex.repetitions) || null 
+          : null,
+
+        duration_seconds: ex.target_type === "duration" 
+          ? parseInt(ex.duration_seconds) || null 
+          : null,
+
+        rep_range_min: ex.target_type === "range" 
+          ? parseInt(ex.range_min) || null 
+          : null,
+
+        rep_range_max: ex.target_type === "range" 
+          ? parseInt(ex.range_max) || null 
+          : null,
+
         rest_period_seconds: parseInt(ex.rest_period_seconds) || 60,
+
         order_index: idx
       }));
-
       const { error: eError } = await supabase.from("routine_exercises").insert(finalExercises);
       if (eError) throw eError;
 

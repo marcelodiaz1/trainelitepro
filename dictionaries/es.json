@@ -756,6 +756,9 @@
       "selectFromLibrary": "Seleccionar de la biblioteca",
       "sets": "Series",
       "reps": "Reps",
+      "rest_period_seconds": "Descanso",
+      "duration": "Duracion",
+      "range": "Rep. rango",
       "weight": "Peso",
       "allZones": "Todos"
     },

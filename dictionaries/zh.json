@@ -758,6 +758,9 @@
       "sets": "組數",
       "reps": "次數",
       "weight": "重量",
+      "rest_period_seconds": "休息",
+      "duration": "持續時間",
+      "range": "範圍",
       "allZones": "全部"
     },
     "errors": {

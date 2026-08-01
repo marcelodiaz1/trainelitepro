@@ -29,7 +29,14 @@ export default function RoutineDetailClient({ dict, lang }: { dict: any; lang: s
           trainer:users!trainer_id(first_name, last_name, specialty),
           trainee:users!trainee_id(first_name, last_name),
           exercises:routine_exercises(
-            id, weight_kg, repetitions, sets, rest_period_seconds, order_index,
+            id,
+            weight_kg,
+            sets,
+            repetitions,
+            rep_rep_range_min,
+            rep_rep_range_max,
+            duration_seconds_seconds_seconds,  
+            sets, rest_period_seconds, order_index,
             exercise_info:exercise!exercise_id(
               name:title, 
               category:field_exercise_type, 
@@ -120,7 +127,7 @@ export default function RoutineDetailClient({ dict, lang }: { dict: any; lang: s
                             alt="thumb" 
                             className="w-full h-full object-cover opacity-60 group-hover:opacity-100 transition-opacity rounded-lg" 
                           />
-                          <div className="absolute left-12 top-0 z-[100] w-[250px] opacity-0 pointer-events-none group-hover:opacity-100 transition-all duration-200 scale-90 group-hover:scale-100 origin-left shadow-2xl">
+                          <div className="absolute left-12 top-0 z-[100] w-[250px] opacity-0 pointer-events-none group-hover:opacity-100 transition-all duration_seconds-200 scale-90 group-hover:scale-100 origin-left shadow-2xl">
                             <div className="bg-[#161616] border-2 border-orange-500 p-1 rounded-xl">
                               <img src={ex.exercise_info.field_media_image} alt="zoom" className="w-full h-auto rounded-lg" />
                             </div>
@@ -138,9 +145,26 @@ export default function RoutineDetailClient({ dict, lang }: { dict: any; lang: s
                   <td className="px-6 py-6 font-bold text-white text-lg text-left">
                     {ex.weight_kg} <span className="text-xs text-slate-500 font-normal ml-1">kg</span>
                   </td>
-                  <td className="px-6 py-6 text-center">
+                <td className="px-6 py-6 text-center">
                     <span className="bg-slate-900 border border-slate-800 px-3 py-1 rounded-lg font-bold text-white">
-                      {ex.sets} × {ex.repetitions}
+
+                      {ex.duration_seconds > 0 ? (
+                        <>
+                          {ex.duration_seconds}
+                          <span className="text-xs text-slate-400 ml-1">sec</span>
+                        </>
+                      ) : ex.rep_range_min > 0 && ex.rep_range_max > 0 ? (
+                        <>
+                          {ex.rep_range_min}-{ex.rep_range_max}
+                          <span className="text-xs text-slate-400 ml-1">reps</span>
+                        </>
+                      ) : (
+                        <>
+                          {ex.repetitions}
+                          <span className="text-xs text-slate-400 ml-1">reps</span>
+                        </>
+                      )}
+
                     </span>
                   </td>
                   <td className="px-6 py-6 text-right text-slate-400 font-medium">
