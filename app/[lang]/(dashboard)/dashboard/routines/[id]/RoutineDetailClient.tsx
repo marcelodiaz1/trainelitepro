@@ -33,8 +33,8 @@ export default function RoutineDetailClient({ dict, lang }: { dict: any; lang: s
             weight_kg,
             sets,
             repetitions,
-            rep_rep_range_min,
-            rep_rep_range_max,
+            rep_range_min,
+            rep_range_max,
             duration_seconds_seconds_seconds,  
             sets, rest_period_seconds, order_index,
             exercise_info:exercise!exercise_id(
