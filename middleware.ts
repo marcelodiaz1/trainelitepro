@@ -1,34 +1,26 @@
-import { NextRequest, NextResponse } from "next/server";
+// middleware.ts
+import { NextResponse } from 'next/server'
+import type { NextRequest } from 'next/server'
 
-const locales = ["en", "es", "zh"];
+// 1. ADD 'zh' HERE!
+let locales = ['en', 'es', 'zh'] 
 
 export function middleware(request: NextRequest) {
-  const { pathname } = request.nextUrl;
+  const { pathname } = request.nextUrl
+  
+  const pathnameIsMissingLocale = locales.every(
+    (locale) => !pathname.startsWith(`/${locale}/`) && pathname !== `/${locale}`
+  )
 
-  // Skip static files
-  if (
-    pathname.startsWith("/_next") ||
-    pathname.startsWith("/api") ||
-    pathname.includes(".")
-  ) {
-    return NextResponse.next();
-  }
-
-  const hasLocale = locales.some(
-    (locale) =>
-      pathname === `/${locale}` ||
-      pathname.startsWith(`/${locale}/`)
-  );
-
-  if (!hasLocale) {
+  if (pathnameIsMissingLocale) {
+    const locale = 'en'
     return NextResponse.redirect(
-      new URL(`/en${pathname}`, request.url)
-    );
+      new URL(`/${locale}${pathname}`, request.url)
+    )
   }
-
-  return NextResponse.next();
 }
-
 export const config = {
-  matcher: ["/:path*"],
-};
+  matcher: [
+    "/((?!api|_next|favicon.ico|.*\\..*).*)",
+  ],
+}; 
