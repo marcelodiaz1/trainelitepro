@@ -761,7 +761,8 @@
       "rest_period_seconds": "休息",
       "duration": "持續時間",
       "range": "範圍",
-      "allZones": "全部"
+      "allZones": "全部",
+      "target":"目標"
     },
     "errors": {
       "noSession": "找不到用戶會話。",
@@ -808,7 +809,10 @@
       "sets": "組數",
       "reps": "次數",
       "weight": "重量",
-      "loadingMovement": "載入中..."
+      "rest_period_seconds": "休息",
+      "emptySequence": "從動作庫中選擇動作開始序列",
+      "loadingMovement": "載入中...",
+      "target":"目標"
     }
   },
   

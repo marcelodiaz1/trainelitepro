@@ -1,6 +1,5 @@
 "use client";
-
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@supabase/supabase-js";
 import { 
@@ -19,8 +18,8 @@ const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 );
-
-function SortableExerciseRow({ ex, index, exercisesList, updateField, remove, t }: any) {
+ 
+  function SortableExerciseRow({ ex, exercisesList, updateField, remove, t }: any) {
   const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: ex.tempId });
 
   const style = {
@@ -71,7 +70,7 @@ function SortableExerciseRow({ ex, index, exercisesList, updateField, remove, t 
           type="number"
           className="w-full bg-black border border-slate-800 rounded-lg py-1.5 px-3 text-sm outline-none focus:border-orange-500 text-white"
           value={ex.sets}
-          onChange={(e) => updateField(index, "sets", e.target.value)}
+          onChange={(e) => updateField(ex.tempId, "sets", e.target.value)}
         />
       </div>
 
@@ -87,7 +86,7 @@ function SortableExerciseRow({ ex, index, exercisesList, updateField, remove, t 
           step="0.5"
           className="w-full bg-black border border-slate-800 rounded-lg py-1.5 px-3 text-sm outline-none focus:border-orange-500 text-white"
           value={ex.weight_kg} 
-          onChange={(e) => updateField(index, "weight_kg", e.target.value)}
+          onChange={(e) => updateField(ex.tempId, "weight_kg", e.target.value)}
         />
       </div>
 
@@ -101,14 +100,14 @@ function SortableExerciseRow({ ex, index, exercisesList, updateField, remove, t 
           type="number"
           className="w-full bg-black border border-slate-800 rounded-lg py-1.5 px-3 text-sm outline-none focus:border-orange-500 text-white"
           value={ex.rest_period_seconds} 
-          onChange={(e) => updateField(index, "rest_period_seconds", e.target.value)}
+          onChange={(e) => updateField(ex.tempId, "rest_period_seconds", e.target.value)}
         />
       </div>
 
      
-    <div className="col-span-3 md:col-span-2 text-left">
-          <label className="text-[9px] uppercase font-bold text-slate-500 block mb-1">
-            Target
+        <div className="col-span-3 md:col-span-2 text-left">
+          <label className="text-[9px] uppercase font-bold text-slate-500 block mb-1">            
+            {t.labels.target}
           </label>
 
           <div className="flex gap-2 items-center">
@@ -117,7 +116,7 @@ function SortableExerciseRow({ ex, index, exercisesList, updateField, remove, t 
             <select
               className="bg-black border border-slate-800 rounded-lg py-1.5 px-2 text-xs text-white outline-none focus:border-orange-500"
               value={ex.target_type}
-              onChange={(e) => updateField(index, "target_type", e.target.value)}
+              onChange={(e) => updateField(ex.tempId, "target_type", e.target.value)}
             >
               <option value="reps">Reps</option>
               <option value="range">Range</option>
@@ -132,7 +131,7 @@ function SortableExerciseRow({ ex, index, exercisesList, updateField, remove, t 
                 className="w-20 bg-black border border-slate-800 rounded-lg py-1.5 px-2 text-sm text-white outline-none focus:border-orange-500"
                 value={ex.repetitions}
                 onChange={(e) =>
-                  updateField(index, "repetitions", e.target.value)
+                  updateField(ex.tempId, "repetitions", e.target.value)
                 }
               />
             )}
@@ -146,7 +145,7 @@ function SortableExerciseRow({ ex, index, exercisesList, updateField, remove, t 
                   className="w-14 bg-black border border-slate-800 rounded-lg py-1.5 px-2 text-sm text-white outline-none focus:border-orange-500"
                   value={ex.range_min}
                   onChange={(e) =>
-                    updateField(index, "range_min", e.target.value)
+                    updateField(ex.tempId, "range_min", e.target.value)
                   }
                 />
 
@@ -157,7 +156,7 @@ function SortableExerciseRow({ ex, index, exercisesList, updateField, remove, t 
                   className="w-14 bg-black border border-slate-800 rounded-lg py-1.5 px-2 text-sm text-white outline-none focus:border-orange-500"
                   value={ex.range_max}
                   onChange={(e) =>
-                    updateField(index, "range_max", e.target.value)
+                    updateField(ex.tempId, "range_max", e.target.value)
                   }
                 />
                 <span className="text-xs text-slate-500">
@@ -175,7 +174,7 @@ function SortableExerciseRow({ ex, index, exercisesList, updateField, remove, t 
                   className="w-20 bg-black border border-slate-800 rounded-lg py-1.5 px-2 text-sm text-white outline-none focus:border-orange-500"
                   value={ex.duration}
                   onChange={(e) =>
-                    updateField(index, "duration", e.target.value)
+                    updateField(ex.tempId, "duration", e.target.value)
                   }
                 />
 
@@ -188,7 +187,7 @@ function SortableExerciseRow({ ex, index, exercisesList, updateField, remove, t 
           </div>
       </div>
       <div className="col-span-3 md:col-span-1 flex justify-end">
-        <button type="button" onClick={() => remove(index)} className="p-2 text-slate-600 hover:text-red-500 transition-colors">
+        <button type="button" onClick={() => remove(ex.tempId)} className="p-2 text-slate-600 hover:text-red-500 transition-colors">
           <Trash2 size={18} />
         </button>
       </div>
@@ -211,10 +210,13 @@ export default function NewWorkoutRoutineClient({ dict, lang }: { dict: any; lan
 
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedZone, setSelectedZone] = useState(t.labels.allZones);
-
+  const [selectedDay, setSelectedDay] = useState(1);
+  const selectedDayRef = useRef(1);
   const [routineData, setRoutineData] = useState({ title: "", description: "", trainee_id: "" });
   const [exercises, setExercises] = useState<any[]>([]);
-
+  const visibleExercises = exercises.filter(
+    e => Number(e.day_number) === Number(selectedDay) 
+  );
   const sensors = useSensors(useSensor(PointerSensor), useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }));
 
   useEffect(() => {
@@ -274,31 +276,66 @@ export default function NewWorkoutRoutineClient({ dict, lang }: { dict: any; lan
     setFilteredLibrary(filtered);
   }, [searchTerm, selectedZone, fullExerciseLibrary, t.labels.allZones]);
 
-  const addFromLibrary = (libEx: any) => {
-    setExercises([...exercises, { 
-      tempId: Math.random().toString(36).substr(2, 9), 
-      exercise_id: libEx.id.toString(), 
-      weight_kg: "0", 
-      repetitions: "12",  
-      sets: "3", 
-    target_type: "reps",
-      rest_period_seconds: "60" ,
-      duration: "0",
-      range_min: "8",
-      range_max: "10"
-    }]);
-  };
+ const addFromLibrary = (libEx: any) => {
+  setExercises([
+    ...exercises,
+    {
+      tempId: crypto.randomUUID(),
 
-  const handleDragEnd = (event: DragEndEvent) => {
-    const { active, over } = event;
-    if (over && active.id !== over.id) {
-      setExercises((items) => {
-        const oldIndex = items.findIndex(i => i.tempId === active.id);
-        const newIndex = items.findIndex(i => i.tempId === over.id);
-        return arrayMove(items, oldIndex, newIndex);
+      exercise_id: libEx.id.toString(),
+ 
+      day_number: selectedDayRef.current,
+      weight_kg: "0",
+      repetitions: "12",
+      sets: "3",
+
+      target_type: "reps",
+
+      rest_period_seconds: "60",
+
+      duration: "0",
+
+      range_min: "8",
+      range_max: "10",
+    },
+  ]);
+};
+
+    const handleDragEnd = (event: DragEndEvent) => {
+      const {active, over} = event;
+
+      if (!over || active.id === over.id) return;
+
+      setExercises(items => {
+
+        const dayItems = items.filter(
+          e => Number(e.day_number) === Number(selectedDay)
+        );
+
+        const oldIndex = dayItems.findIndex(
+          e => e.tempId === active.id
+        );
+
+        const newIndex = dayItems.findIndex(
+          e => e.tempId === over.id
+        );
+
+        const reorderedDay = arrayMove(
+          dayItems,
+          oldIndex,
+          newIndex
+        );
+
+        const otherDays = items.filter(
+          e => Number(e.day_number) !== Number(selectedDay)
+        );
+
+        return [
+          ...otherDays,
+          ...reorderedDay
+        ];
       });
-    }
-  };
+    };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -323,34 +360,53 @@ export default function NewWorkoutRoutineClient({ dict, lang }: { dict: any; lan
       if (rError) throw rError;
 
      
-      const finalExercises = exercises.map((ex, idx) => ({
-        routine_id: routine.id,
-        exercise_id: parseInt(ex.exercise_id),
+  const finalExercises = exercises.map((ex) => {
+ const dayExercises = exercises
+  .filter(
+    e => Number(e.day_number) === Number(ex.day_number)
+  );
+  const orderIndex = dayExercises.findIndex(
+      e => e.tempId === ex.tempId
+  );
 
-        weight_kg: parseFloat(ex.weight_kg) || 0,
-        sets: parseInt(ex.sets) || 0,
+  return {
 
-        // Only one of these should have a value
-        repetitions: ex.target_type === "reps" 
-          ? parseInt(ex.repetitions) || null 
-          : null,
+    routine_id: routine.id,
 
-        duration_seconds: ex.target_type === "duration" 
-          ? parseInt(ex.duration_seconds) || null 
-          : null,
+    exercise_id: parseInt(ex.exercise_id),
 
-        rep_range_min: ex.target_type === "range" 
-          ? parseInt(ex.range_min) || null 
-          : null,
+    day_number: ex.day_number,
 
-        rep_range_max: ex.target_type === "range" 
-          ? parseInt(ex.range_max) || null 
-          : null,
+    order_index: orderIndex,
 
-        rest_period_seconds: parseInt(ex.rest_period_seconds) || 60,
+    weight_kg: parseFloat(ex.weight_kg) || 0,
 
-        order_index: idx
-      }));
+    sets: parseInt(ex.sets) || 0,
+
+    repetitions:
+      ex.target_type === "reps"
+        ? parseInt(ex.repetitions) || null
+        : null,
+
+    duration_seconds:
+      ex.target_type === "duration"
+        ? parseInt(ex.duration) || null
+        : null,
+
+    rep_range_min:
+      ex.target_type === "range"
+        ? parseInt(ex.range_min) || null
+        : null,
+
+    rep_range_max:
+      ex.target_type === "range"
+        ? parseInt(ex.range_max) || null
+        : null,
+
+    rest_period_seconds:
+      parseInt(ex.rest_period_seconds) || 60,
+  };
+});
       const { error: eError } = await supabase.from("routine_exercises").insert(finalExercises);
       if (eError) throw eError;
 
@@ -372,6 +428,7 @@ export default function NewWorkoutRoutineClient({ dict, lang }: { dict: any; lan
 
   return (
     <main className="bg-[#050505] text-slate-200 min-h-screen flex h-screen overflow-hidden">
+   
       <div className="flex-1 flex flex-col h-full overflow-hidden">
         <header className="p-6 border-b border-slate-800 flex justify-between items-center bg-[#0b0b0b]">
            <div className="flex items-center gap-4">
@@ -403,24 +460,53 @@ export default function NewWorkoutRoutineClient({ dict, lang }: { dict: any; lan
                 </select>
               </div>
             </div>
-
             <div className="space-y-4 pb-24">
               <h3 className="text-xs font-black uppercase tracking-widest text-slate-500 ml-2 text-left">{t.labels.sequence}</h3>
+                        
+            <div className="flex gap-2 mb-6 flex-wrap">
+                  {[1,2,3,4,5,6,7].map(day => (
+                    <button
+                      key={day}
+                      onClick={() => {
+                        setSelectedDay(day);
+                        selectedDayRef.current = day;
+                      }}
+                      className={`px-4 py-2 rounded-xl font-bold transition ${
+                        selectedDay === day
+                          ? "bg-orange-600 text-white"
+                          : "bg-slate-900 text-slate-400"
+                      }`}
+                    >
+                      Day {day}
+                    </button>
+                  ))}
+                </div>
               <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-                <SortableContext items={exercises.map(ex => ex.tempId)} strategy={verticalListSortingStrategy}>
+                <SortableContext 
+                  items={visibleExercises.map(e=>e.tempId)}
+                  strategy={verticalListSortingStrategy}>
                   <div className="space-y-3">
-                    {exercises.map((ex, index) => (
+                    {exercises
+                      .filter(ex => Number(ex.day_number) === Number(selectedDay))
+                      .map((ex,index)=>(
                       <SortableExerciseRow 
                         key={ex.tempId} 
-                        ex={ex} 
-                        index={index} 
+                        ex={ex}  
                         exercisesList={fullExerciseLibrary} 
                         t={t}
-                        remove={(i: any) => setExercises(exercises.filter((_, idx) => idx !== i))}
-                        updateField={(i: any, f: any, v: any) => {
-                          const next = [...exercises];
-                          next[i][f] = v;
-                          setExercises(next);
+                        remove={(tempId: any) =>
+                          setExercises(prev =>
+                            prev.filter(ex => ex.tempId !== tempId)
+                          )
+                        }
+                        updateField={(tempId: any, field: any, value: any) => {
+                          setExercises(prev =>
+                            prev.map(ex =>
+                              ex.tempId === tempId
+                                ? { ...ex, [field]: value }
+                                : ex
+                            )
+                          );
                         }}
                       />
                     ))}
@@ -428,7 +514,7 @@ export default function NewWorkoutRoutineClient({ dict, lang }: { dict: any; lan
                 </SortableContext>
               </DndContext>
 
-              {exercises.length === 0 && (
+            {visibleExercises.length === 0 && (
                 <div className="h-48 border-2 border-dashed border-slate-800 rounded-3xl flex items-center justify-center text-slate-600 italic uppercase font-bold text-xs bg-[#080808]">
                   {t.labels.emptySequence}
                 </div>

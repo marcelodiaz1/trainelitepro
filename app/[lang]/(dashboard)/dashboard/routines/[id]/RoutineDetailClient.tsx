@@ -18,7 +18,11 @@ export default function RoutineDetailClient({ dict, lang }: { dict: any; lang: s
   const t = dict.routineDetail;
   const [routine, setRoutine] = useState<any>(null);
   const [loading, setLoading] = useState(true);
-
+const [selectedDay, setSelectedDay] = useState(1);
+const visibleExercises =
+  routine?.exercises?.filter(
+    (e: any) => Number(e.day_number) === Number(selectedDay)
+  ) || [];
   useEffect(() => {
     const fetchFullRoutine = async () => {
       setLoading(true);
@@ -30,6 +34,7 @@ export default function RoutineDetailClient({ dict, lang }: { dict: any; lang: s
           trainee:users!trainee_id(first_name, last_name),
           exercises:routine_exercises(
             id,
+            day_number,
             weight_kg,
             sets,
             repetitions,
@@ -51,8 +56,21 @@ export default function RoutineDetailClient({ dict, lang }: { dict: any; lang: s
       if (error) {
         console.error("Database Error:", error.message);
       } else {
-        const sortedExercises = data.exercises?.sort((a: any, b: any) => a.order_index - b.order_index) || [];
-        setRoutine({ ...data, exercises: sortedExercises });
+        const sortedExercises =
+          data.exercises
+            ?.map((e:any)=>({
+              ...e,
+              day_number: Number(e.day_number),
+              order_index: Number(e.order_index)
+            }))
+           .sort((a:any,b:any)=>{ 
+              return Number(a.order_index)-Number(b.order_index);
+            })
+
+        setRoutine({
+          ...data,
+          exercises: sortedExercises
+        });
       }
       setLoading(false);
     };
@@ -96,12 +114,40 @@ export default function RoutineDetailClient({ dict, lang }: { dict: any; lang: s
         </div>
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
-          <StatCard icon={<Dumbbell size={18} />} label={t.stats.exercises} value={routine.exercises.length} color="orange" />
-          <StatCard icon={<Zap size={18} />} label={t.stats.totalSets} value={routine.exercises.reduce((acc: number, curr: any) => acc + curr.sets, 0)} color="blue" />
+          <StatCard
+            icon={<Dumbbell size={18} />}
+            label={t.stats.exercises}
+            value={visibleExercises.length}
+            color="orange"
+          />
+
+          <StatCard
+            icon={<Zap size={18} />}
+            label={t.stats.totalSets}
+            value={visibleExercises.reduce(
+              (acc: number, curr: any) => acc + curr.sets,
+              0
+            )}
+            color="blue"
+          />
           <StatCard icon={<Target size={18} />} label={t.stats.focusArea} value={routine.trainer?.specialty || "General"} color="green" />
           <StatCard icon={<Clock size={18} />} label={t.stats.time} value={t.estTime} color="slate" />
         </div>
-
+        <div className="flex gap-2 mb-6 flex-wrap">
+          {[1,2,3,4,5,6,7].map(day => (
+            <button
+              key={day}
+              onClick={() => setSelectedDay(day)}
+              className={`px-4 py-2 rounded-xl font-bold transition ${
+                selectedDay === day
+                  ? "bg-orange-600 text-white"
+                  : "bg-slate-900 text-slate-400 hover:bg-slate-800"
+              }`}
+            >
+              Day {day}
+            </button>
+          ))}
+        </div>
         <div className="bg-[#111] border border-slate-800 rounded-2xl overflow-hidden">
           <table className="w-full text-left">
             <thead>
@@ -114,8 +160,8 @@ export default function RoutineDetailClient({ dict, lang }: { dict: any; lang: s
                 <th className="px-6 py-4 text-right">{t.table.rest}</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-800/50">
-              {routine.exercises.map((ex: any, idx: number) => (
+            <tbody className="divide-y divide-slate-800/50"> 
+                {visibleExercises.map((ex: any, idx: number) => (
                 <tr key={ex.id} className="hover:bg-white/[0.02] transition-colors group">
                   <td className="px-6 py-6 font-mono text-slate-500">{idx + 1}</td>
                   <td className="px-6 py-6">

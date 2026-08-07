@@ -760,7 +760,8 @@
       "rest_period_seconds": "Rest",
       "duration": "Duration",
       "range": "Rep. range",
-      "allZones": "All"
+      "allZones": "All",
+      "target":"Target"
     },
     "errors": {
       "noSession": "User session not found.",
@@ -805,9 +806,12 @@
     "labels": {
       "movement": "Movement",
       "sets": "Sets",
+      "rest_period_seconds": "Rest",
       "reps": "Reps",
       "weight": "Weight",
-      "loadingMovement": "Loading movement..."
+      "emptySequence": "Select movements from the library to begin sequence",
+      "loadingMovement": "Loading movement...",
+      "target":"Target"
     }
   },
   

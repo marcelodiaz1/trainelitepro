@@ -760,7 +760,8 @@
       "duration": "Duracion",
       "range": "Rep. rango",
       "weight": "Peso",
-      "allZones": "Todos"
+      "allZones": "Todos",
+      "target":"Objetivo"
     },
     "errors": {
       "noSession": "Sesión no encontrada.",
@@ -804,10 +805,13 @@
     "filterMovements": "Filtrar Movimientos...",
     "labels": {
       "movement": "Movimiento",
+      "rest_period_seconds": "Descanso",
+      "emptySequence": "Seleccione movimientos de la biblioteca para comenzar la secuencia.",
       "sets": "Series",
       "reps": "Reps",
       "weight": "Peso",
-      "loadingMovement": "Cargando movimiento..."
+      "loadingMovement": "Cargando movimiento...",
+      "target":"Objetivo"
     }
   },
   

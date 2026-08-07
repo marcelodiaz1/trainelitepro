@@ -24,59 +24,171 @@ function SortableExerciseRow({ ex, index, exercisesList, updateField, remove, t 
   const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: ex.tempId });
   const style = { transform: CSS.Transform.toString(transform), transition, zIndex: transform ? 999 : 1 };
   const selectedExercise = exercisesList.find((e: any) => e.id.toString() === ex.exercise_id.toString());
+  
+  const imageUrl = selectedExercise?.field_media_image;
 
   return (
-    <div 
-        ref={setNodeRef} 
-        style={style} 
-        className="grid grid-cols-12 gap-3 bg-[#111] p-4 rounded-2xl border border-slate-800 items-center group relative z-0 hover:z-[999] transition-all"
-      >
-        <div {...attributes} {...listeners} className="col-span-1 cursor-grab active:cursor-grabbing text-slate-700 hover:text-orange-500 transition-colors">
-          <GripVertical size={20} />
-        </div>
-
-        <div className="col-span-11 md:col-span-4 flex items-center gap-3 relative">
-          <div className="h-12 w-12 rounded-lg bg-black border border-slate-800 overflow-visible flex-shrink-0 relative group/img">
-            {selectedExercise?.field_media_image ? (
-              <>
-                <img src={selectedExercise.field_media_image} alt="thumb" className="w-full h-full object-cover rounded-lg opacity-80 group-hover/img:opacity-100 transition-opacity" />
-                <div className="absolute left-0 bottom-0 z-[1000] w-[300px] opacity-0 pointer-events-none group-hover/img:opacity-100 transition-all duration-300 scale-90 group-hover/img:scale-100 origin-top-left shadow-2xl">
-                 <div className="bg-[#161616] border-2 border-orange-500 p-1 rounded-2xl">
-                    <img src={selectedExercise.field_media_image} alt="zoom" className="w-full h-auto rounded-xl" />
+    
+    <div ref={setNodeRef} style={style} className="grid grid-cols-12 gap-3 bg-[#111] p-4 rounded-2xl border border-slate-800 items-center group">
+      <div {...attributes} {...listeners} className="col-span-1 cursor-grab active:cursor-grabbing text-slate-700 hover:text-orange-500 transition-colors">
+        <GripVertical size={20} />
+      </div>
+      
+      <div className="col-span-11 md:col-span-5 flex items-center gap-3">  
+        <div className="h-12 w-12 rounded-lg bg-black border border-slate-800 overflow-visible flex-shrink-0 relative group/img">
+          {imageUrl ? (
+            <> 
+              <img src={imageUrl} alt="thumb" className="w-full h-full object-cover rounded-lg" />
+              <div className="absolute left-14 top-0 z-[100] w-[300px] opacity-0 pointer-events-none group-hover/img:opacity-100 transition-all duration-300 scale-95 group-hover/img:scale-100 shadow-2xl">
+                <div className="bg-[#161616] border border-orange-500/30 p-1 rounded-xl shadow-[0_20px_50px_rgba(0,0,0,0.8)]">
+                  <img src={imageUrl} alt="zoom" className="w-full h-auto rounded-lg" />
+                  <div className="p-2">
+                    <p className="text-[10px] font-black text-orange-500 uppercase">{selectedExercise?.title}</p>
                   </div>
                 </div>
-              </>
-            ) : (
-              <div className="w-full h-full flex items-center justify-center text-[10px] text-slate-700 uppercase font-black">N/A</div>
-            )}
-          </div>
-          <div className="truncate text-left">
-            <p className="text-[10px] font-black uppercase text-orange-500 mb-0.5">{t.labels.movement}</p>
-            <p className="text-sm font-bold text-white truncate">{selectedExercise?.title || t.labels.loadingMovement}</p>
-          </div>
+              </div>
+            </>
+          ) : (
+            <div className="w-full h-full flex items-center justify-center text-[10px] text-slate-700 uppercase font-black">N/A</div>
+          )}
         </div>
-
-        <div className="col-span-3 md:col-span-2 text-left">
-          <label className="text-[9px] uppercase font-bold text-slate-500 block mb-1">{t.labels.sets}</label>
-          <input type="number" className="w-full bg-black border border-slate-800 rounded-lg py-1.5 px-3 text-sm outline-none focus:border-orange-500 text-white" value={ex.sets} onChange={(e) => updateField(index, "sets", e.target.value)} />
-        </div>
-
-        <div className="col-span-3 md:col-span-2 text-left">
-          <label className="text-[9px] uppercase font-bold text-slate-500 block mb-1">{t.labels.reps}</label>
-          <input type="number" className="w-full bg-black border border-slate-800 rounded-lg py-1.5 px-3 text-sm outline-none focus:border-orange-500 text-white" value={ex.repetitions} onChange={(e) => updateField(index, "repetitions", e.target.value)} />
-        </div>
-
-        <div className="col-span-3 md:col-span-2 text-left">
-          <label className="text-[9px] uppercase font-bold text-slate-500 block mb-1">{t.labels.weight}</label>
-          <input type="number" step="0.5" className="w-full bg-black border border-slate-800 rounded-lg py-1.5 px-3 text-sm outline-none focus:border-orange-500 text-white" value={ex.weight_kg} onChange={(e) => updateField(index, "weight_kg", e.target.value)} />
-        </div>
-
-        <div className="col-span-3 md:col-span-1 flex justify-end">
-          <button type="button" onClick={() => remove(index)} className="p-2 text-slate-600 hover:text-red-500 transition-colors">
-            <Trash2 size={18} />
-          </button>
+        <div className="truncate text-left">
+          <p className="text-[10px] font-black uppercase text-orange-500 mb-0.5">{t.labels.movement}</p>
+          <p className="text-sm font-bold text-white truncate">{selectedExercise?.title || t.labels.selectFromLibrary}</p>
         </div>
       </div>
+ 
+      <div className="col-span-3 md:col-span-1 text-left">
+        <label className="text-[9px] uppercase font-bold text-slate-500 block mb-1">
+          {t.labels.sets}
+        </label>
+
+        <input 
+          type="number"
+          className="w-full bg-black border border-slate-800 rounded-lg py-1.5 px-3 text-sm outline-none focus:border-orange-500 text-white"
+          value={ex.sets}
+          onChange={(e) => updateField(ex.tempId, "sets", e.target.value)}
+        />
+      </div>
+
+
+
+      <div className="col-span-3 md:col-span-1 text-left">
+        <label className="text-[9px] uppercase font-bold text-slate-500 block mb-1">
+          {t.labels.weight}
+        </label>
+
+        <input 
+          type="number"
+          step="0.5"
+          className="w-full bg-black border border-slate-800 rounded-lg py-1.5 px-3 text-sm outline-none focus:border-orange-500 text-white"
+          value={ex.weight_kg} 
+          onChange={(e) => updateField(ex.tempId, "weight_kg", e.target.value)}
+        />
+      </div>
+
+
+      <div className="col-span-3 md:col-span-1 text-left">
+        <label className="text-[9px] uppercase font-bold text-slate-500 block mb-1">
+          {t.labels.rest_period_seconds}
+        </label>
+
+        <input 
+          type="number"
+          className="w-full bg-black border border-slate-800 rounded-lg py-1.5 px-3 text-sm outline-none focus:border-orange-500 text-white"
+          value={ex.rest_period_seconds} 
+          onChange={(e) => updateField(ex.tempId, "rest_period_seconds", e.target.value)}
+        />
+      </div>
+
+     
+        <div className="col-span-3 md:col-span-2 text-left">
+          <label className="text-[9px] uppercase font-bold text-slate-500 block mb-1">
+            {t.labels.target}
+          </label>
+
+          <div className="flex gap-2 items-center">
+
+            {/* Type selector */}
+            <select
+              className="bg-black border border-slate-800 rounded-lg py-1.5 px-2 text-xs text-white outline-none focus:border-orange-500"
+              value={ex.target_type}
+              onChange={(e) => updateField(ex.tempId, "target_type", e.target.value)}
+            >
+              <option value="reps">Reps</option>
+              <option value="range">Range</option>
+              <option value="duration">Time</option>
+            </select>
+
+
+            {/* Reps */}
+            {ex.target_type === "reps" && (
+              <input
+                type="number"
+                className="w-20 bg-black border border-slate-800 rounded-lg py-1.5 px-2 text-sm text-white outline-none focus:border-orange-500"
+                value={ex.repetitions}
+                onChange={(e) =>
+                  updateField(ex.tempId, "repetitions", e.target.value)
+                }
+              />
+            )}
+
+
+            {/* Range */}
+            {ex.target_type === "range" && (
+              <div className="flex items-center gap-1">
+                <input
+                  type="number"
+                  className="w-14 bg-black border border-slate-800 rounded-lg py-1.5 px-2 text-sm text-white outline-none focus:border-orange-500"
+                  value={ex.range_min}
+                  onChange={(e) =>
+                    updateField(ex.tempId, "range_min", e.target.value)
+                  }
+                />
+
+                <span className="text-slate-600">-</span>
+
+                <input
+                  type="number"
+                  className="w-14 bg-black border border-slate-800 rounded-lg py-1.5 px-2 text-sm text-white outline-none focus:border-orange-500"
+                  value={ex.range_max}
+                  onChange={(e) =>
+                    updateField(ex.tempId, "range_max", e.target.value)
+                  }
+                />
+                <span className="text-xs text-slate-500">
+                  reps
+                </span>
+              </div>
+            )}
+
+
+            {/* Duration */}
+            {ex.target_type === "duration" && (
+              <div className="flex items-center gap-1">
+                <input
+                  type="number"
+                  className="w-20 bg-black border border-slate-800 rounded-lg py-1.5 px-2 text-sm text-white outline-none focus:border-orange-500"
+                  value={ex.duration}
+                  onChange={(e) =>
+                    updateField(ex.tempId, "duration", e.target.value)
+                  }
+                />
+
+                <span className="text-xs text-slate-500">
+                  sec
+                </span>
+              </div>
+            )}
+
+          </div>
+      </div>
+      <div className="col-span-3 md:col-span-1 flex justify-end">
+        <button type="button" onClick={() => remove(ex.tempId)} className="p-2 text-slate-600 hover:text-red-500 transition-colors">
+          <Trash2 size={18} />
+        </button>
+      </div>
+    </div>
   );
 }
 
@@ -84,7 +196,6 @@ export default function EditRoutineClient({ dict, lang }: { dict: any; lang: str
   const router = useRouter();
   const { id } = useParams();
   const t = dict.routineEdit;
-  
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [trainees, setTrainees] = useState<any[]>([]);
@@ -96,6 +207,10 @@ export default function EditRoutineClient({ dict, lang }: { dict: any; lang: str
   const [routineData, setRoutineData] = useState({ title: "", description: "", trainee_id: "" });
   const [exercises, setExercises] = useState<any[]>([]);
 
+  const [selectedDay, setSelectedDay] = useState(1);
+  const visibleExercises = exercises.filter(
+    ex => Number(ex.day_number) === Number(selectedDay)
+  );
   const sensors = useSensors(useSensor(PointerSensor), useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }));
 
   useEffect(() => {
@@ -115,14 +230,45 @@ export default function EditRoutineClient({ dict, lang }: { dict: any; lang: str
       const { data: routine } = await supabase.from("workout_routines").select(`*, exercises:routine_exercises(*)`).eq("id", id).single();
       if (routine) {
         setRoutineData({ title: routine.title, description: routine.description || "", trainee_id: routine.trainee_id });
-        setExercises(routine.exercises.sort((a: any, b: any) => a.order_index - b.order_index).map((ex: any) => ({
-          tempId: Math.random().toString(36).substr(2, 9),
-          exercise_id: ex.exercise_id.toString(),
-          weight_kg: ex.weight_kg.toString(),
-          repetitions: ex.repetitions.toString(),
-          sets: ex.sets.toString(),
-          rest_period_seconds: ex.rest_period_seconds.toString()
-        })));
+        setExercises(
+          routine.exercises
+            .sort((a:any,b:any)=>a.order_index-b.order_index)
+            .map((ex:any)=>{
+
+              let targetType = "reps";
+
+              if (ex.duration_seconds)
+                targetType = "duration";
+              else if (ex.rep_range_min || ex.rep_range_max)
+                targetType = "range";
+
+              return {
+
+                tempId: crypto.randomUUID(),
+
+                exercise_id: ex.exercise_id.toString(),
+
+               day_number: Number(ex.day_number),
+
+                weight_kg: ex.weight_kg.toString(),
+
+                sets: ex.sets.toString(),
+
+                repetitions: (ex.repetitions ?? "").toString(),
+
+                duration: (ex.duration_seconds ?? "").toString(),
+
+                range_min: (ex.rep_range_min ?? "").toString(),
+
+                range_max: (ex.rep_range_max ?? "").toString(),
+
+                target_type: targetType,
+
+                rest_period_seconds:
+                  ex.rest_period_seconds.toString()
+              };
+            })
+        );
       }
       setLoading(false);
     };
@@ -135,24 +281,81 @@ export default function EditRoutineClient({ dict, lang }: { dict: any; lang: str
     ));
   }, [searchTerm, selectedZone, fullExerciseLibrary]);
 
-  const addFromLibrary = (libEx: any) => {
-    setExercises([...exercises, { 
-      tempId: Math.random().toString(36).substr(2, 9), 
-      exercise_id: libEx.id.toString(), 
-      weight_kg: "0", repetitions: "12", sets: "3", rest_period_seconds: "60" 
-    }]);
+  const addFromLibrary = (libEx:any)=>{
+
+    setExercises([
+      ...exercises,
+      {
+
+        tempId: crypto.randomUUID(),
+
+        exercise_id: libEx.id.toString(), 
+        day_number: selectedDay,
+
+        weight_kg:"0",
+
+        sets:"3",
+
+        repetitions:"12",
+
+        target_type:"reps",
+
+        duration:"",
+
+        range_min:"8",
+
+        range_max:"10",
+
+        rest_period_seconds:"60"
+      }
+    ]);
+
   };
 
-  const handleDragEnd = (event: DragEndEvent) => {
-    const { active, over } = event;
-    if (over && active.id !== over.id) {
-      setExercises((items) => {
-        const oldIndex = items.findIndex(i => i.tempId === active.id);
-        const newIndex = items.findIndex(i => i.tempId === over.id);
-        return arrayMove(items, oldIndex, newIndex);
-      });
-    }
-  };
+const handleDragEnd = (event: DragEndEvent) => {
+
+  const {active, over} = event;
+
+  if (!over || active.id === over.id) return;
+
+
+  setExercises(items => {
+
+    const dayItems = items.filter(
+      e => Number(e.day_number) === Number(selectedDay)
+    );
+
+
+    const oldIndex = dayItems.findIndex(
+      e => e.tempId === active.id
+    );
+
+
+    const newIndex = dayItems.findIndex(
+      e => e.tempId === over.id
+    );
+
+
+    const reorderedDay = arrayMove(
+      dayItems,
+      oldIndex,
+      newIndex
+    );
+
+
+    const otherDays = items.filter(
+      e => Number(e.day_number) !== Number(selectedDay)
+    );
+
+
+    return [
+      ...otherDays,
+      ...reorderedDay
+    ];
+
+  });
+
+};
 
   const handleUpdate = async () => {
     setSaving(true);
@@ -161,11 +364,56 @@ export default function EditRoutineClient({ dict, lang }: { dict: any; lang: str
         title: routineData.title, description: routineData.description, trainee_id: routineData.trainee_id 
       }).eq("id", id);
       await supabase.from("routine_exercises").delete().eq("routine_id", id);
-      await supabase.from("routine_exercises").insert(exercises.map((ex, idx) => ({
-        routine_id: id, exercise_id: parseInt(ex.exercise_id), weight_kg: parseFloat(ex.weight_kg) || 0,
-        repetitions: parseInt(ex.repetitions) || 0, sets: parseInt(ex.sets) || 0,
-        rest_period_seconds: parseInt(ex.rest_period_seconds) || 60, order_index: idx
-      })));
+     
+      await supabase.from("routine_exercises").insert(
+  exercises.map((ex) => {
+
+    const dayExercises = exercises.filter(
+      e => Number(e.day_number) === Number(ex.day_number)
+    );
+
+    const orderIndex = dayExercises.findIndex(
+      e => e.tempId === ex.tempId
+    );
+
+    return {
+      routine_id: id,
+      exercise_id: parseInt(ex.exercise_id),
+
+      day_number: Number(ex.day_number),
+
+      order_index: orderIndex,
+
+      weight_kg: parseFloat(ex.weight_kg) || 0,
+
+      sets: parseInt(ex.sets) || 0,
+
+      repetitions:
+        ex.target_type === "reps"
+          ? parseInt(ex.repetitions) || null
+          : null,
+
+      duration_seconds:
+        ex.target_type === "duration"
+          ? parseInt(ex.duration) || null
+          : null,
+
+      rep_range_min:
+        ex.target_type === "range"
+          ? parseInt(ex.range_min) || null
+          : null,
+
+      rep_range_max:
+        ex.target_type === "range"
+          ? parseInt(ex.range_max) || null
+          : null,
+
+      rest_period_seconds:
+        parseInt(ex.rest_period_seconds) || 60
+    };
+
+  })
+);
       router.push(`/${lang}/dashboard/routines/${id}`);
     } catch (err) { console.error(err); } finally { setSaving(false); }
   };
@@ -202,22 +450,71 @@ export default function EditRoutineClient({ dict, lang }: { dict: any; lang: str
 
             <div className="space-y-4 pb-24 text-left">
               <h3 className="text-xs font-black uppercase tracking-widest text-slate-500 ml-2">{t.movementSequence}</h3>
+              <div className="flex gap-2 mb-6 flex-wrap">
+
+                  {[1,2,3,4,5,6,7].map(day=>(
+
+                      <button
+
+                          key={day}
+
+                          onClick={()=>setSelectedDay(day)}
+
+                          className={`px-4 py-2 rounded-xl font-bold transition ${
+                              selectedDay===day
+                                  ? "bg-orange-600 text-white"
+                                  : "bg-slate-900 text-slate-400"
+                          }`}
+
+                      >
+                          Day {day}
+                      </button>
+
+                  ))}
+
+              </div>
               <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-                <SortableContext items={exercises.map(ex => ex.tempId)} strategy={verticalListSortingStrategy}>
+                <SortableContext     items={visibleExercises.map(e=>e.tempId)}      strategy={verticalListSortingStrategy}>
                   <div className="space-y-3">
-                    {exercises.map((ex, index) => (
-                      <SortableExerciseRow key={ex.tempId} ex={ex} index={index} exercisesList={fullExerciseLibrary} t={t}
-                        remove={(i: any) => setExercises(exercises.filter((_, idx) => idx !== i))}
-                        updateField={(i: any, f: any, v: any) => {
-                          const next = [...exercises];
-                          next[i][f] = v;
-                          setExercises(next);
-                        }}
-                      />
-                    ))}
+                    {visibleExercises.map((ex)=>{
+
+                      const realIndex = exercises.findIndex(e=>e.tempId===ex.tempId);
+
+                      return (
+
+                        <SortableExerciseRow 
+                          key={ex.tempId} 
+                          ex={ex}  
+                          exercisesList={fullExerciseLibrary} 
+                          t={t}
+                          remove={(tempId: any) =>
+                            setExercises(prev =>
+                              prev.filter(ex => ex.tempId !== tempId)
+                            )
+                          }
+                          updateField={(tempId: any, field: any, value: any) => {
+                            setExercises(prev =>
+                              prev.map(ex =>
+                                ex.tempId === tempId
+                                  ? { ...ex, [field]: value }
+                                  : ex
+                              )
+                            );
+                          }}
+                        />
+
+                      );
+
+                    })} 
                   </div>
                 </SortableContext>
               </DndContext>
+              
+            {visibleExercises.length === 0 && (
+                <div className="h-48 border-2 border-dashed border-slate-800 rounded-3xl flex items-center justify-center text-slate-600 italic uppercase font-bold text-xs bg-[#080808]">
+                  {t.labels.emptySequence}
+                </div>
+              )}
             </div>
           </div>
 
